@@ -1,5 +1,5 @@
 import { Button, FormControl, FormGroup, InputLabel, OutlinedInput, Typography } from '@mui/material';
-import { useForm, type SubmitHandler, type UseFormRegister } from 'react-hook-form';
+import { useForm, type SubmitHandler } from 'react-hook-form';
 import LedgerItemsFormTable from '../components/LedgerItemsFormTable';
 
 export interface LedgerEntry {
@@ -14,11 +14,6 @@ interface LedgerItem {
     coa: string;
     amount: number;
     type: string;
-}
-
-export interface RegisterIndexProps {
-    register: UseFormRegister<LedgerEntry>;
-    itemOrder: number;
 }
 
 export default function LedgerCreateForm() {

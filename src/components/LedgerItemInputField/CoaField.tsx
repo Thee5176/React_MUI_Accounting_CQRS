@@ -1,6 +1,6 @@
 import { FormControl, MenuItem, Select } from '@mui/material';
 import { useEffect, useState } from 'react';
-import type { RegisterIndexProps } from '../pages/LedgerCreateForm';
+import type { RegisterIndexProps } from './index';
 
 interface AvailableCodeOfAccount {
     code: number;
@@ -8,7 +8,7 @@ interface AvailableCodeOfAccount {
     type: string;
 }
 
-export default function CoaField({register, itemOrder}:RegisterIndexProps) {
+export default function CoaField({register, insertIndex}:RegisterIndexProps) {
     // fetch list of available COA from Query Service
     const [codeOfAccounts, setCodeOfAccounts] = useState<AvailableCodeOfAccount[]>([]);
     useEffect(() => {
@@ -25,15 +25,15 @@ export default function CoaField({register, itemOrder}:RegisterIndexProps) {
     // update selected Code
     const [selectedCode, setSelectedCode] = useState('');
 
-    return <FormControl sx={{py:3, width:'50%'}}>
+    return <FormControl sx={{py:3, width:'60%', minWidth:'171px'}}>
         <Select
-            {...register(`ledgerItems.${itemOrder}.coa`)}
+            {...register(`ledgerItems.${insertIndex}.coa`)}
             value={selectedCode}
             onChange={e => setSelectedCode(e.target.value as string)}
             required
         >
             {codeOfAccounts.map((coa, idx) => (
-                <MenuItem key={`${coa.code}-${itemOrder}-${idx}`} value={coa.code}>
+                <MenuItem key={`${coa.code}-${insertIndex}-${idx}`} value={coa.code}>
                     {coa.code} - {coa.title}
                 </MenuItem>
             ))}
