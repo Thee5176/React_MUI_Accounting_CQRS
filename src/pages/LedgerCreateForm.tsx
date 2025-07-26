@@ -1,4 +1,9 @@
-import { Button, FormControl, FormGroup, InputLabel, OutlinedInput, Typography } from '@mui/material';
+import Button from '@mui/material/Button';
+import FormControl from '@mui/material/FormControl';
+import FormGroup from '@mui/material/FormGroup';
+import InputLabel from '@mui/material/InputLabel';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import Typography from '@mui/material/Typography';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import LedgerItemsFormTable from '../components/LedgerItemsFormTable';
 
@@ -20,12 +25,25 @@ export default function LedgerCreateForm() {
     // DateField - prefilled today's date
     const currentDate = new Date().toISOString().substring(0,10);
 
+    // Handle Form with React Hook Form
     const {
         register, 
-        handleSubmit
+        handleSubmit,
     } = useForm<LedgerEntry>()
-    const onSubmit: SubmitHandler<LedgerEntry> = (data) => console.log(data);
-    
+
+    // Send Data to Command Service
+    const onSubmit: SubmitHandler<LedgerEntry> = async (data: LedgerEntry) => {
+        const response = await fetch('http://localhost:8181/ledger', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data),
+        });
+        const result = await response.json();
+        console.log(result);
+    };
+
     return (
         <>
         <Typography sx={{py:3}} variant='h2'>Record Transaction Form</Typography>

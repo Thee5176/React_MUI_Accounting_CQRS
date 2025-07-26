@@ -1,4 +1,5 @@
-import { FormControl, OutlinedInput } from '@mui/material';
+import FormControl from '@mui/material/FormControl';
+import OutlinedInput from '@mui/material/OutlinedInput';
 import type { RegisterIndexProps } from './index';
 
 export default function AmountField({register, insertIndex}: RegisterIndexProps) {

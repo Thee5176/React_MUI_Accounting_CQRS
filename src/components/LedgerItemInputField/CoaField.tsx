@@ -1,5 +1,7 @@
-import { FormControl, MenuItem, Select, type SelectChangeEvent } from '@mui/material';
-import { useEffect, useState, type ChangeEvent } from 'react';
+import FormControl from '@mui/material/FormControl';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
+import { useState } from 'react';
 import type { RegisterIndexProps } from './index';
 
 interface AvailableCodeOfAccount {
@@ -11,13 +13,18 @@ interface AvailableCodeOfAccount {
 export default function CoaField({register, insertIndex}:RegisterIndexProps) {
     // fetch list of available COA from Query Service
     const [codeOfAccounts, setCodeOfAccounts] = useState<AvailableCodeOfAccount[]>([]);
-    useEffect(() => {
-        fetch('http://localhost:8182/available-coa/json', {
+    
+    const fetchCoa = async () => {
+        const res = await fetch('http://localhost:8182/available-coa/json', {
             method: 'POST',
-        })
-            .then((res: Response) => res.json())
-            .then((data: AvailableCodeOfAccount[]) => setCodeOfAccounts(data));
-    }, []);
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        const data: AvailableCodeOfAccount[] = await res.json();
+        setCodeOfAccounts(data);
+    };
+    fetchCoa();
 
     // update selected Code
     const [selectedCode, setSelectedCode] = useState('');

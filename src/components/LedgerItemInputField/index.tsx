@@ -1,5 +1,7 @@
-import { AddCircle } from "@mui/icons-material";
-import { Button, TableCell, TableRow } from "@mui/material";
+import AddCircle from "@mui/icons-material/AddCircle";
+import Button from "@mui/material/Button";
+import TableCell from "@mui/material/TableCell";
+import TableRow from "@mui/material/TableRow";
 import { useState } from "react";
 import type { UseFormRegister } from "react-hook-form";
 import type { LedgerEntry } from "../../pages/LedgerCreateForm";

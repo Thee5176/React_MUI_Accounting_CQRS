@@ -1,5 +1,4 @@
-import { Container } from '@mui/material'
-import './App.css'
+import Container from '@mui/material/Container'
 import LedgerCreateForm from './pages/LedgerCreateForm'
 
 
