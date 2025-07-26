@@ -1,5 +1,5 @@
-import { FormControl, MenuItem, Select } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { FormControl, MenuItem, Select, type SelectChangeEvent } from '@mui/material';
+import { useEffect, useState, type ChangeEvent } from 'react';
 import type { RegisterIndexProps } from './index';
 
 interface AvailableCodeOfAccount {
@@ -14,9 +14,6 @@ export default function CoaField({register, insertIndex}:RegisterIndexProps) {
     useEffect(() => {
         fetch('http://localhost:8182/available-coa/json', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            }
         })
             .then((res: Response) => res.json())
             .then((data: AvailableCodeOfAccount[]) => setCodeOfAccounts(data));

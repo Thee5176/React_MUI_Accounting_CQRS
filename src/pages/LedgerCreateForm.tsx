@@ -52,7 +52,7 @@ export default function LedgerCreateForm() {
                         {...register('description')} 
                         id='description'
                         name='description'
-                        type='description'
+                        type='text'
                         placeholder='Being <Account1> <verb> From <Account2>'
                         autoComplete='description'
                         required

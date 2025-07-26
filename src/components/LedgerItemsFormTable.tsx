@@ -16,6 +16,7 @@ export default function LedgerItemsFormTable({register}: LedgerItemsFormProps) {
     const [totalRowCount, setTotalRowCount] = useState(3);
     const insertLedgerItemForm = () => {
         setTotalRowCount(prev => prev + 1)
+        console.log(totalRowCount);
     }
 
     return <>
@@ -39,6 +40,7 @@ export default function LedgerItemsFormTable({register}: LedgerItemsFormProps) {
                         </TableRow>
                         <LedgerItemInputField 
                             register={register}
+                            balanceType={type}
                             insertFunction={insertLedgerItemForm}
                         ></LedgerItemInputField>
                     </TableBody>

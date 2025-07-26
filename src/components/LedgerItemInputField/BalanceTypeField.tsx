@@ -15,6 +15,7 @@ export default function BalanceTypeHiddenField({ register, balanceType, insertIn
             {...register(`ledgerItems.${insertIndex}.type`)}
             sx={{ display: 'none' }}
             id={`input-balance-type-${insertIndex}`}
+            name='balance-type'
             defaultValue={`${balanceType}`}
             required
         >

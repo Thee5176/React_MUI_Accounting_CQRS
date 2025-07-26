@@ -14,10 +14,11 @@ export interface RegisterIndexProps {
 
 interface LedgerItemInputFieldProps {
     register: UseFormRegister<LedgerEntry>;
+    balanceType: string;
     insertFunction: () => void;
 }
 
-export default function LedgerItemInputField ({register, insertFunction}:LedgerItemInputFieldProps) {
+export default function LedgerItemInputField ({register, balanceType, insertFunction}:LedgerItemInputFieldProps) {
     
     const [insertRowCount, setInsertRowCount] = useState(1);
     const insertLedgerItemForm = () => {
@@ -25,18 +26,22 @@ export default function LedgerItemInputField ({register, insertFunction}:LedgerI
         insertFunction();
     }
     
+    const adjustedIndex = (balanceType:string, insertIndex:number) => {
+        return balanceType == 'Debit' ? insertIndex * 2 : (insertIndex * 2) + 1;
+    };
+
     return (
         <>
             {Array.from({ length: insertRowCount }).map((_, insertIndex: number) => (
-                <TableRow key={`ledgeritems-${insertIndex}`}>
+                <TableRow key={`ledgeritems-${adjustedIndex(balanceType, insertIndex)}`}>
                     <TableCell>
-                        <CoaField register={register} insertIndex={insertIndex}/>
+                        <CoaField register={register} insertIndex={adjustedIndex(balanceType, insertIndex)}/>
                     </TableCell>
                     <TableCell>
-                        <AmountField register={register} insertIndex={insertIndex}/>
+                        <AmountField register={register} insertIndex={adjustedIndex(balanceType, insertIndex)}/>
                     </TableCell>
-                    <TableCell sx={{ display: 'none'}}>
-                        <BalanceTypeField register={register} insertIndex={insertIndex} balanceType={"debit"} />
+                    <TableCell sx={{ display:'none'}}>
+                        <BalanceTypeField register={register} balanceType={balanceType} insertIndex={ adjustedIndex(balanceType, insertIndex)}/>
                     </TableCell>
                 </TableRow>
             ))}
