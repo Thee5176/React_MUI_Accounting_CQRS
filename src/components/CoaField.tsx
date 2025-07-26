@@ -1,4 +1,4 @@
-import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import { FormControl, MenuItem, Select } from "@mui/material";
 import { useEffect, useState } from "react";
 
 interface AvailableCodeOfAccount {
@@ -8,9 +8,8 @@ interface AvailableCodeOfAccount {
 }
 
 export default function CoaField() {
-    const [codeOfAccounts, setCodeOfAccounts] = useState<AvailableCodeOfAccount[]>([]);
-    
     // fetch list of available COA from Query Service
+    const [codeOfAccounts, setCodeOfAccounts] = useState<AvailableCodeOfAccount[]>([]);
     useEffect(() => {
         fetch("http://localhost:8182/available-coa/json", {
             method: "POST",
@@ -22,11 +21,15 @@ export default function CoaField() {
             .then((data: AvailableCodeOfAccount[]) => setCodeOfAccounts(data));
     }, []);
 
-    return <FormControl  sx={{py:3}}>
-        <InputLabel id="coa">
-            Code of account
-        </InputLabel>
-        <Select>
+    // update selected Code
+    const [selectedCode, setSelectedCode] = useState("");
+
+    return <FormControl sx={{py:3}}>
+        <Select
+            autoWidth
+            value={selectedCode}
+            onChange={e => setSelectedCode(e.target.value as string)}
+        >
             {codeOfAccounts.map(coa => (
                 <MenuItem key={coa.code} value={coa.code}>
                     {coa.code} - {coa.title}

@@ -30,7 +30,7 @@ export default function LedgerCreateForm() {
                     id="description"
                     name="description"
                     type="description"
-                    placeholder="Snow"
+                    placeholder="Being <Account1> <verb> From <Account2>"
                     autoComplete="description"
                     required
                 />

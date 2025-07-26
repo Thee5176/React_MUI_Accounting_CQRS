@@ -1,5 +1,5 @@
 import type { SelectChangeEvent } from "@mui/material";
-import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import { FormControl, MenuItem, Select } from "@mui/material";
 import { useState } from "react";
 
 export default function BalanceTypeField() {
@@ -7,16 +7,13 @@ export default function BalanceTypeField() {
     const [balanceType, setBalanceType] = useState('')
     
     const handleDropDown = ( event: SelectChangeEvent) => {
-    setBalanceType(event.target.value);
+        setBalanceType(event.target.value);
     }
 
     return <FormControl sx={{display:"none"}} >
-    <InputLabel sx={{display:"none"}} id="balance-type">Balance Type</InputLabel>
     <Select
-        labelId="balance-type"
-        id="demo-select-small"
+        id="select-balance-type"
         value={balanceType}
-        label="Age"
         onChange={handleDropDown}
         sx={{display:"none"}}
         required

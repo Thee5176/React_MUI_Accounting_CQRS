@@ -1,23 +1,25 @@
 import { AddCircle } from '@mui/icons-material'
-import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material"
+import { Button, Table, TableBody, TableCell, TableContainer, TableRow } from "@mui/material"
+import { useState } from 'react'
 import AmountField from "./AmountField"
 import CoaField from "./CoaField"
 
 export default function LedgerItemsFormTable() {
-    
+
     const BalanceTypes: string[] = ["Dr.", "Cr."]
 
     // add LedgerItems button
+    const [totalrows, setTotalRows] = useState(3);
     const insertLedgerItemForm = () => {
-
+        setTotalRows(prev => prev + 1 ) 
     }
 
     return <TableContainer>
                 {BalanceTypes.map( type => (
-                    <Table sx={{ minWidth: 700 }} aria-label="LedgerItemsFormTable">
-                        <TableHead>
+                    <Table sx={{ minWidth: 700 }} aria-label={`${type}InputTable`}>
+                        <TableBody>
                             <TableRow>
-                                <TableCell align="center" rowSpan={2} variant="head">
+                                <TableCell align="center" rowSpan={totalrows} variant="head">
                                     {type}
                                 </TableCell>
                                 <TableCell variant="head">
@@ -27,10 +29,7 @@ export default function LedgerItemsFormTable() {
                                     Amount
                                 </TableCell>
                             </TableRow>
-                        </TableHead>
-                        <TableBody>
                             <TableRow>
-                                <TableCell rowSpan={2} />
                                 <TableCell>
                                     <CoaField />
                                 </TableCell>
