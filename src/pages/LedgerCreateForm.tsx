@@ -32,7 +32,7 @@ export default function LedgerCreateForm() {
     } = useForm<LedgerEntry>()
 
     // Send Data to Command Service
-    const onSubmit: SubmitHandler<LedgerEntry> = async (data: LedgerEntry) => {
+    const sendLedgerEntry = async (data: LedgerEntry) => {
         const response = await fetch('http://localhost:8181/ledger', {
             method: 'POST',
             headers: {
@@ -40,9 +40,14 @@ export default function LedgerCreateForm() {
             },
             body: JSON.stringify(data),
         });
-        const result = await response.json();
-        console.log(result);
+        return await response.json();
     };
+    const onSubmit: SubmitHandler<LedgerEntry> = async (data: LedgerEntry) => {
+        data.timestamp = new Date().toISOString();
+        console.log(data);
+        const result = await sendLedgerEntry(data);
+        console.log(result);
+    }
 
     return (
         <>
