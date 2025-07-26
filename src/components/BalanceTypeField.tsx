@@ -1,28 +1,23 @@
-import type { SelectChangeEvent } from "@mui/material";
-import { FormControl, MenuItem, Select } from "@mui/material";
-import { useState } from "react";
+import { FormControl, OutlinedInput } from '@mui/material';
+import type { UseFormRegister } from 'react-hook-form';
+import type { LedgerEntry } from '../pages/LedgerCreateForm';
 
-export default function BalanceTypeField() {
-    // BalanceTypeField - hook
-    const [balanceType, setBalanceType] = useState('')
-    
-    const handleDropDown = ( event: SelectChangeEvent) => {
-        setBalanceType(event.target.value);
-    }
+interface BalanceTypeHiddenFieldProps {
+    register: UseFormRegister<LedgerEntry>;
+    itemOrder: number;
+    balanceType: string;
+}
 
-    return <FormControl sx={{display:"none"}} >
-    <Select
-        id="select-balance-type"
-        value={balanceType}
-        onChange={handleDropDown}
-        sx={{display:"none"}}
-        required
-    >
-        <MenuItem value="">
-        <em>None</em>
-        </MenuItem>
-        <MenuItem value={'Debit'}>Debit</MenuItem>
-        <MenuItem value={'Credit'}>Credit</MenuItem>
-    </Select>
+export default function BalanceTypeHiddenField({ register, itemOrder, balanceType }: BalanceTypeHiddenFieldProps) {
+
+    return <FormControl sx={{ display: 'none' }}>
+        <OutlinedInput
+            {...register(`ledgerItems.${itemOrder}.type`)}
+            sx={{ display: 'none' }}
+            id={`input-balance-type-${itemOrder}`}
+            defaultValue={`${balanceType}`}
+            required
+        >
+        </OutlinedInput>
     </FormControl>
 }
