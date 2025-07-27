@@ -1,51 +1,57 @@
-import { AddCircle } from '@mui/icons-material'
-import { Button, Table, TableBody, TableCell, TableContainer, TableRow } from "@mui/material"
+import Paper from '@mui/material/Paper'
+import Table from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import TableContainer from '@mui/material/TableContainer'
+import TableRow from '@mui/material/TableRow'
+import Typography from '@mui/material/Typography'
 import { useState } from 'react'
-import AmountField from "./AmountField"
-import CoaField from "./CoaField"
+import type { UseFormRegister } from 'react-hook-form'
+import type { LedgerEntry } from '../pages/LedgerCreateForm'
+import LedgerItemInputField from './LedgerItemInputField'
 
-export default function LedgerItemsFormTable() {
+interface LedgerItemsFormProps{
+    register: UseFormRegister<LedgerEntry>;
+}
 
-    const BalanceTypes: string[] = ["Dr.", "Cr."]
+export default function LedgerItemsFormTable({register}: LedgerItemsFormProps) {
+
+    const BalanceTypes: string[] = ['Debit', 'Credit']
 
     // add LedgerItems button
-    const [totalrows, setTotalRows] = useState(3);
+    const [totalRowCount, setTotalRowCount] = useState(3);
     const insertLedgerItemForm = () => {
-        setTotalRows(prev => prev + 1 ) 
+        setTotalRowCount(prev => prev + 1)
+        console.log(totalRowCount);
     }
 
-    return <TableContainer>
-                {BalanceTypes.map( type => (
-                    <Table sx={{ minWidth: 700 }} aria-label={`${type}InputTable`}>
-                        <TableBody>
-                            <TableRow>
-                                <TableCell align="center" rowSpan={totalrows} variant="head">
-                                    {type}
-                                </TableCell>
-                                <TableCell variant="head">
-                                    Code of Account
-                                </TableCell>
-                                <TableCell variant="head">
-                                    Amount
-                                </TableCell>
-                            </TableRow>
-                            <TableRow>
-                                <TableCell>
-                                    <CoaField />
-                                </TableCell>
-                                <TableCell>
-                                    <AmountField />
-                                </TableCell>
-                            </TableRow>
-                            <TableRow>
-                                <TableCell colSpan={2} align="center">
-                                    <Button onClick={insertLedgerItemForm}>
-                                        <AddCircle />
-                                    </Button>
-                                </TableCell>
-                            </TableRow>
-                        </TableBody>
-                    </Table>
-                ))}
+    return <>
+        {BalanceTypes.map( (type, itemOrder) => (
+            <TableContainer sx={{ py:3 }} key={`tablecontainer-${itemOrder}`} component={Paper}>
+                <Table sx={{ minWidth: 700 }} aria-label={`${type}InputTable`}>
+                    <TableBody>
+                        <TableRow>
+                            <TableCell align='center' rowSpan={totalRowCount} variant='head'>
+                                <Typography variant='h4'>{type}</Typography>
+                            </TableCell>
+                            <TableCell sx={{ width:'30%'}} variant='head'>
+                                Code of Account
+                            </TableCell>
+                            <TableCell sx={{ width:'30%'}} variant='head'>
+                                Amount
+                            </TableCell>
+                            <TableCell sx={{ width:'25%'}} variant='head'>
+                                Sum
+                            </TableCell>
+                        </TableRow>
+                        <LedgerItemInputField 
+                            register={register}
+                            balanceType={type}
+                            insertFunction={insertLedgerItemForm}
+                        ></LedgerItemInputField>
+                    </TableBody>
+                </Table>
             </TableContainer>
+        ))}
+    </>
 }
