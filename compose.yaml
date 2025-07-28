@@ -1,0 +1,6 @@
+services:
+  test_frontend_service:
+    build: .
+    container_name: test_react_mui_cqrs
+    ports:
+    - "8185:5173"
