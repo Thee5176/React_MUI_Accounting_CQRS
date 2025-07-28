@@ -4,7 +4,9 @@ import FormGroup from '@mui/material/FormGroup';
 import InputLabel from '@mui/material/InputLabel';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import Typography from '@mui/material/Typography';
+import { useEffect } from 'react';
 import { useForm, type SubmitHandler } from 'react-hook-form';
+import ErrorAlert from '../components/ErrorAlert';
 import LedgerItemsFormTable from '../components/LedgerItemsFormTable';
 
 export interface LedgerEntry {
@@ -29,7 +31,12 @@ export default function LedgerCreateForm() {
     const {
         register,
         handleSubmit,
-        reset
+        watch,
+        reset,
+        formState: { 
+            errors,
+            isSubmitSuccessful,
+        },
     } = useForm<LedgerEntry>()
 
     // Send Data to Command Service
@@ -50,42 +57,65 @@ export default function LedgerCreateForm() {
         console.log(data);
         const result = await sendLedgerEntry(data);
         console.log(result);
-        reset();
     }
+    // Reset form after submission
+    useEffect(() => {
+        if (isSubmitSuccessful) {
+            reset({
+                id: '',
+                date: currentDate,
+                description: '',
+                ledgerItems: [
+                    {coa: '', amount: 0, type: 'debit'},
+                    {coa: '', amount: 0, type: 'credit'}
+                ],
+                timestamp: '',
+            });
+        }
+    }, [isSubmitSuccessful, currentDate]);
 
+    console.log(watch());
     return (
         <>
         <Typography sx={{py:3}} variant='h2'>Record Transaction Form</Typography>
         <form onSubmit={handleSubmit(onSubmit)}>
             <FormGroup>
                 <FormControl sx={{py:3}}>
-                    <InputLabel htmlFor='date' required>
+                    <InputLabel htmlFor='date'>
                         Date
                     </InputLabel>
                     <OutlinedInput
-                        {...register('date')}
-                        id='date'
-                        name='date'
+                        {...register('date', {
+                            required: true,
+                            validate: (value:string) => {
+                                const date = new Date(value);
+                                return (date.getTime() < new Date().getTime()) || 'Invalid date';
+                            }
+                        })}
                         type='date'
                         defaultValue={currentDate}
-                        required
+                    />
+                    <ErrorAlert
+                        message={errors.date?.message}
                     />
                 </FormControl>
                 <FormControl sx={{py:3}}>
-                    <InputLabel htmlFor='description' required>
+                    <InputLabel htmlFor='description'>
                         Description
                     </InputLabel>
                     <OutlinedInput
-                        {...register('description')} 
-                        id='description'
-                        name='description'
+                        {...register('description', {
+                            required: true,
+                        })} 
                         type='text'
                         placeholder='Being <Account1> <verb> From <Account2>'
                         autoComplete='description'
-                        required
+                    />
+                    <ErrorAlert
+                        message={errors.description?.message}
                     />
                 </FormControl>
-                <LedgerItemsFormTable register={register}></LedgerItemsFormTable>
+                <LedgerItemsFormTable register={register} errors={errors}></LedgerItemsFormTable>
                 <Button type='submit' variant='contained'>
                     Record
                 </Button>

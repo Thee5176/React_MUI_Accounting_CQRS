@@ -3,8 +3,9 @@ import Button from "@mui/material/Button";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import { useState } from "react";
-import type { UseFormRegister } from "react-hook-form";
+import type { FieldErrors, UseFormRegister } from "react-hook-form";
 import type { LedgerEntry } from "../../pages/LedgerCreateForm";
+import ErrorAlert from "../ErrorAlert";
 import AmountField from "./AmountField";
 import BalanceTypeField from "./BalanceTypeField";
 import CoaField from "./CoaField";
@@ -16,11 +17,12 @@ export interface RegisterIndexProps {
 
 interface LedgerItemInputFieldProps {
     register: UseFormRegister<LedgerEntry>;
+    errors: FieldErrors<LedgerEntry>;
     balanceType: string;
     insertFunction: () => void;
 }
 
-export default function LedgerItemInputField ({register, balanceType, insertFunction}:LedgerItemInputFieldProps) {
+export default function LedgerItemInputField ({register, balanceType, errors, insertFunction}:LedgerItemInputFieldProps) {
     
     const [insertRowCount, setInsertRowCount] = useState(1);
     const insertLedgerItemForm = () => {
@@ -29,6 +31,8 @@ export default function LedgerItemInputField ({register, balanceType, insertFunc
     }
     
     const adjustedIndex = (balanceType:string, insertIndex:number) => {
+        // Debit: starts at 0, Credit: starts at 1
+        // Debit: 0, 2, 4, ... Credit: 1, 3, 5, ...
         return balanceType == 'Debit' ? insertIndex * 2 : (insertIndex * 2) + 1;
     };
 
@@ -38,9 +42,15 @@ export default function LedgerItemInputField ({register, balanceType, insertFunc
                 <TableRow key={`ledgeritems-${adjustedIndex(balanceType, insertIndex)}`}>
                     <TableCell>
                         <CoaField register={register} insertIndex={adjustedIndex(balanceType, insertIndex)}/>
+                        <ErrorAlert
+                            message={errors.ledgerItems?.[adjustedIndex(balanceType, insertIndex)]?.coa?.message}
+                        />
                     </TableCell>
                     <TableCell>
                         <AmountField register={register} insertIndex={adjustedIndex(balanceType, insertIndex)}/>
+                        <ErrorAlert
+                            message={errors.ledgerItems?.[adjustedIndex(balanceType, insertIndex)]?.amount?.message}
+                        />
                     </TableCell>
                     <TableCell sx={{ display:'none'}}>
                         <BalanceTypeField register={register} balanceType={balanceType} insertIndex={ adjustedIndex(balanceType, insertIndex)}/>

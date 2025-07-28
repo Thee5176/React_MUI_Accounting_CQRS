@@ -13,12 +13,11 @@ export default function BalanceTypeHiddenField({ register, balanceType, insertIn
 
     return <FormControl sx={{ display: 'none' }}>
         <OutlinedInput
-            {...register(`ledgerItems.${insertIndex}.type`)}
+            {...register(`ledgerItems.${insertIndex}.type`, {
+                required: true,
+            })}
             sx={{ display: 'none' }}
-            id={`input-balance-type-${insertIndex}`}
-            name='balance-type'
             defaultValue={`${balanceType}`}
-            required
         >
         </OutlinedInput>
     </FormControl>
