@@ -8,7 +8,7 @@ import { useForm, type SubmitHandler } from 'react-hook-form';
 import LedgerItemsFormTable from '../components/LedgerItemsFormTable';
 
 export interface LedgerEntry {
-    id:string,
+    id:string;
     date: string;
     description: string;
     ledgerItems: LedgerItem[];
@@ -27,8 +27,9 @@ export default function LedgerCreateForm() {
 
     // Handle Form with React Hook Form
     const {
-        register, 
+        register,
         handleSubmit,
+        reset
     } = useForm<LedgerEntry>()
 
     // Send Data to Command Service
@@ -40,13 +41,16 @@ export default function LedgerCreateForm() {
             },
             body: JSON.stringify(data),
         });
-        return await response.json();
+        return await response.text();
     };
     const onSubmit: SubmitHandler<LedgerEntry> = async (data: LedgerEntry) => {
+        // Add id and timestamp to the data
         data.timestamp = new Date().toISOString();
+        
         console.log(data);
         const result = await sendLedgerEntry(data);
         console.log(result);
+        reset();
     }
 
     return (
@@ -59,7 +63,7 @@ export default function LedgerCreateForm() {
                         Date
                     </InputLabel>
                     <OutlinedInput
-                        {...register('date')} 
+                        {...register('date')}
                         id='date'
                         name='date'
                         type='date'
