@@ -7,7 +7,7 @@ import type { FieldErrors, UseFormRegister } from "react-hook-form";
 import type { LedgerEntry } from "../../pages/LedgerEntryForm";
 import ErrorAlert from "../ErrorAlert";
 import AmountField from "./AmountField";
-import BalanceTypeField from "./BalanceTypeField";
+import BalanceTypeHiddenField from "./BalanceTypeHiddenField";
 import CoaField from "./CoaField";
 
 export interface RegisterIndexProps {
@@ -53,7 +53,7 @@ export default function LedgerItemInputField ({register, balanceType, errors, in
                         />
                     </TableCell>
                     <TableCell sx={{ display:'none'}}>
-                        <BalanceTypeField register={register} balanceType={balanceType} insertIndex={adjustedIndex(balanceType, insertIndex)}/>
+                        <BalanceTypeHiddenField register={register} balanceType={balanceType} insertIndex={adjustedIndex(balanceType, insertIndex)}/>
                     </TableCell>
                 </TableRow>
             ))}
