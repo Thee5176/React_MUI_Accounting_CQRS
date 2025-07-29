@@ -6,19 +6,20 @@ import TableContainer from '@mui/material/TableContainer'
 import TableRow from '@mui/material/TableRow'
 import Typography from '@mui/material/Typography'
 import { useState } from 'react'
-import type { UseFormRegister } from 'react-hook-form'
-import type { LedgerEntry } from '../pages/LedgerCreateForm'
+import type { FieldErrors, UseFormRegister } from 'react-hook-form'
+import type { LedgerEntry } from '../pages/LedgerEntryForm'
 import LedgerItemInputField from './LedgerItemInputField'
 
 interface LedgerItemsFormProps{
     register: UseFormRegister<LedgerEntry>;
+    errors: FieldErrors<LedgerEntry>;
 }
 
-export default function LedgerItemsFormTable({register}: LedgerItemsFormProps) {
+export default function LedgerItemsFormTable({register, errors}: LedgerItemsFormProps) {
 
     const BalanceTypes: string[] = ['Debit', 'Credit']
 
-    // add LedgerItems button
+    // use for adjust row-span for Table Header
     const [totalRowCount, setTotalRowCount] = useState(3);
     const insertLedgerItemForm = () => {
         setTotalRowCount(prev => prev + 1)
@@ -47,6 +48,7 @@ export default function LedgerItemsFormTable({register}: LedgerItemsFormProps) {
                         <LedgerItemInputField 
                             register={register}
                             balanceType={type}
+                            errors={errors}
                             insertFunction={insertLedgerItemForm}
                         ></LedgerItemInputField>
                     </TableBody>

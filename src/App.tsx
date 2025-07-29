@@ -1,11 +1,11 @@
 import Container from '@mui/material/Container'
-import LedgerCreateForm from './pages/LedgerCreateForm'
+import LedgerEntryForm from './pages/LedgerEntryForm'
 
 
 function App() {
 
   return <Container sx={{height:'100vh'}}>
-    <LedgerCreateForm></LedgerCreateForm>
+    <LedgerEntryForm></LedgerEntryForm>
   </Container>
 }
 

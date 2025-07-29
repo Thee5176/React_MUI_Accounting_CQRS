@@ -1,7 +1,7 @@
 import FormControl from '@mui/material/FormControl';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { RegisterIndexProps } from './index';
 
 interface AvailableCodeOfAccount {
@@ -24,18 +24,20 @@ export default function CoaField({register, insertIndex}:RegisterIndexProps) {
         const data: AvailableCodeOfAccount[] = await res.json();
         setCodeOfAccounts(data);
     };
-    fetchCoa();
+    
+    useEffect(() => {
+        fetchCoa();
+    }, []);
 
-    // update selected Code
-    const [selectedCode, setSelectedCode] = useState('');
-
-    return <FormControl sx={{py:3, width:'60%', minWidth:'171px'}}>
+    return ( <FormControl sx={{ py: 3, width: '60%', minWidth: '171px' }}>
         <Select
-            {...register(`ledgerItems.${insertIndex}.coa`)}
-            value={selectedCode}
-            onChange={e => setSelectedCode(e.target.value as string)}
-            required
+            {...register(`ledgerItems.${insertIndex}.coa`, {
+                required: { value: true, message: 'COA is required' },
+            })}
         >
+            <MenuItem>
+                <em>Choose COA</em>
+            </MenuItem>
             {codeOfAccounts.map((coa, idx) => (
                 <MenuItem key={`${coa.code}-${insertIndex}-${idx}`} value={coa.code}>
                     {coa.code} - {coa.title}
@@ -43,4 +45,5 @@ export default function CoaField({register, insertIndex}:RegisterIndexProps) {
             ))}
         </Select>
     </FormControl>
+    );
 }
