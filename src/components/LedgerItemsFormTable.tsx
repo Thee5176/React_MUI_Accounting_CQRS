@@ -19,7 +19,7 @@ export default function LedgerItemsFormTable({register, errors}: LedgerItemsForm
 
     const BalanceTypes: string[] = ['Debit', 'Credit']
 
-    // add LedgerItems button
+    // use for adjust row-span for Table Header
     const [totalRowCount, setTotalRowCount] = useState(3);
     const insertLedgerItemForm = () => {
         setTotalRowCount(prev => prev + 1)

@@ -86,7 +86,7 @@ export default function LedgerEntryForm() {
                     </InputLabel>
                     <OutlinedInput
                         {...register('date', {
-                            required: true,
+                            required: { value: true, message: 'Date is required' },
                             validate: (value:string) => {
                                 const date = new Date(value);
                                 return (date.getTime() < new Date().getTime()) || 'Invalid date';
@@ -105,7 +105,7 @@ export default function LedgerEntryForm() {
                     </InputLabel>
                     <OutlinedInput
                         {...register('description', {
-                            required: true,
+                            required: { value: true, message: 'Description is required' },
                             minLength: { value: 5, message: 'Description must be at least 5 characters' },
                             maxLength: { value: 50, message: 'Description must be less than 50 characters' },
                         })} 

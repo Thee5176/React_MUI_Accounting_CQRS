@@ -24,9 +24,9 @@ interface LedgerItemInputFieldProps {
 
 export default function LedgerItemInputField ({register, balanceType, errors, insertFunction}:LedgerItemInputFieldProps) {
     
-    const [insertRowCount, setInsertRowCount] = useState(1);
+    const [insertRowCount, setInsertRowCount] = useState(1); // Change to List of unique ID (still need number index -> key for input field)
     const insertLedgerItemForm = () => {
-        setInsertRowCount(prev => prev + 1)
+        setInsertRowCount(prev => prev + 1)                  // Change to add ID to List
         insertFunction();
     }
     
@@ -53,7 +53,7 @@ export default function LedgerItemInputField ({register, balanceType, errors, in
                         />
                     </TableCell>
                     <TableCell sx={{ display:'none'}}>
-                        <BalanceTypeField register={register} balanceType={balanceType} insertIndex={ adjustedIndex(balanceType, insertIndex)}/>
+                        <BalanceTypeField register={register} balanceType={balanceType} insertIndex={adjustedIndex(balanceType, insertIndex)}/>
                     </TableCell>
                 </TableRow>
             ))}

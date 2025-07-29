@@ -8,7 +8,7 @@ export default function AmountField({register, insertIndex}: RegisterIndexProps)
         <FormControl sx={{py:3}}>
             <OutlinedInput
                 {...register(`ledgerItems.${insertIndex}.amount`, {
-                    required: true,
+                    required: { value: true, message: 'Amount is required' },
                     min: { value: 1, message: 'Amount must be at least 1' },
                 })}
                 id={`input-amount-${insertIndex}`}
