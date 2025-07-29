@@ -23,7 +23,7 @@ interface LedgerItem {
     type: string;
 }
 
-export default function LedgerCreateForm() {
+export default function LedgerEntryForm() {
     // DateField - prefilled today's date
     const currentDate = new Date().toISOString().substring(0,10);
 
@@ -66,8 +66,8 @@ export default function LedgerCreateForm() {
                 date: currentDate,
                 description: '',
                 ledgerItems: [
-                    {coa: '', amount: 0, type: 'debit'},
-                    {coa: '', amount: 0, type: 'credit'}
+                    {coa: '', amount: 0, type: 'Debit'},
+                    {coa: '', amount: 0, type: 'Credit'}
                 ],
                 timestamp: '',
             });
@@ -106,6 +106,8 @@ export default function LedgerCreateForm() {
                     <OutlinedInput
                         {...register('description', {
                             required: true,
+                            minLength: { value: 5, message: 'Description must be at least 5 characters' },
+                            maxLength: { value: 50, message: 'Description must be less than 50 characters' },
                         })} 
                         type='text'
                         placeholder='Being <Account1> <verb> From <Account2>'

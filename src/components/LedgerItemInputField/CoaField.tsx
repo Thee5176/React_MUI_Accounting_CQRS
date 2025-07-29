@@ -2,6 +2,8 @@ import FormControl from '@mui/material/FormControl';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import { useEffect, useState } from 'react';
+import { Controller } from "react-hook-form";
+import ErrorAlert from '../ErrorAlert';
 import type { RegisterIndexProps } from './index';
 
 interface AvailableCodeOfAccount {
@@ -31,21 +33,22 @@ export default function CoaField({register, insertIndex}:RegisterIndexProps) {
 
     return (
         <FormControl sx={{ py: 3, width: '60%', minWidth: '171px' }}>
-            <Select
-                {...register(`ledgerItems.${insertIndex}.coa`, {
-                    required: true,
-                })}
-                defaultValue=""
-            >
-                <MenuItem value="">
-                    <em>Choose COA</em>
-                </MenuItem>
-                {codeOfAccounts.map((coa, idx) => (
-                    <MenuItem key={`${coa.code}-${insertIndex}-${idx}`} value={coa.code}>
-                        {coa.code} - {coa.title}
-                    </MenuItem>
-                ))}
-            </Select>
+            <Controller
+            render={({ field }) => (
+                <Select {...field}>
+                    {codeOfAccounts.map((coa, idx) => (
+                        <MenuItem key={`${coa.code}-${insertIndex}-${idx}`} value={coa.code}>
+                            {coa.code} - {coa.title}
+                        </MenuItem>
+                    ))}
+                </Select>
+            )}
+            name="Select"
+            control={`ledgerItems.${insertIndex}.coa`}
+            />
+            <ErrorAlert
+                message={errors.ledgerItems?.[insertIndex]?.coa?.message}
+            />
         </FormControl>
     );
 }

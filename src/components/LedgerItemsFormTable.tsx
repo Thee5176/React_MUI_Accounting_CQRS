@@ -7,7 +7,7 @@ import TableRow from '@mui/material/TableRow'
 import Typography from '@mui/material/Typography'
 import { useState } from 'react'
 import type { FieldErrors, UseFormRegister } from 'react-hook-form'
-import type { LedgerEntry } from '../pages/LedgerCreateForm'
+import type { LedgerEntry } from '../pages/LedgerEntryForm'
 import LedgerItemInputField from './LedgerItemInputField'
 
 interface LedgerItemsFormProps{

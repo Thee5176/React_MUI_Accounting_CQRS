@@ -1,7 +1,7 @@
 import FormControl from '@mui/material/FormControl';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import type { UseFormRegister } from 'react-hook-form/';
-import type { LedgerEntry } from '../../pages/LedgerCreateForm';
+import type { LedgerEntry } from '../../pages/LedgerEntryForm';
 
 interface BalanceTypeHiddenFieldProps {
     register: UseFormRegister<LedgerEntry>;

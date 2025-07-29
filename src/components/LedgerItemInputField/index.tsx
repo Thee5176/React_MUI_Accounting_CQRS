@@ -4,7 +4,7 @@ import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import { useState } from "react";
 import type { FieldErrors, UseFormRegister } from "react-hook-form";
-import type { LedgerEntry } from "../../pages/LedgerCreateForm";
+import type { LedgerEntry } from "../../pages/LedgerEntryForm";
 import ErrorAlert from "../ErrorAlert";
 import AmountField from "./AmountField";
 import BalanceTypeField from "./BalanceTypeField";
