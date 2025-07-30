@@ -29,6 +29,3 @@ Quick Handsketch for form page UI design
 Detail of reusable component composition
 
 <img width="684" height="781" alt="image" src="https://github.com/user-attachments/assets/e2a81153-967a-4c5b-a9f1-16e8aca2060f" />
-
-
-## Development Process
