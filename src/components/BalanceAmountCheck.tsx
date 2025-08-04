@@ -6,7 +6,7 @@ export default function BalanceCheckRow({ type, getValues }: { type: string; get
     const calculateBalance : (type:string) => number = (type:string) => {
         const ledgerItems = getValues("ledgerItems") || [];
         return ledgerItems.filter(item => item.type === type)
-            .reduce((acc, item) => acc + (item.amount), 0);
+            .reduce((acc, item) => acc + (item.amount || 0), 0);
     };
     
     return (
@@ -16,7 +16,9 @@ export default function BalanceCheckRow({ type, getValues }: { type: string; get
                     <Typography variant='h6'>Total {type}</Typography>
                 </TableCell>
                 <TableCell colSpan={2} sx={{ textAlign:'end' }}>
-                    <Typography variant='h6'>${calculateBalance(type)}</Typography>
+                    <Typography variant='h6'>
+                        $<span id={`total-${type.toLowerCase()}`}>{calculateBalance(type)}</span>
+                    </Typography>
                 </TableCell>
             </TableRow>
         </>

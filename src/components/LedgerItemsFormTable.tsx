@@ -34,7 +34,7 @@ export default function LedgerItemsFormTable({register, errors, getValues}: Ledg
                 <Table sx={{ minWidth: 700 }} aria-label={`${type}InputTable`}>
                     <TableBody>
                         <TableRow>
-                            <TableCell align='center' rowSpan={totalRowCount} variant='head'>
+                            <TableCell sx={{ width:'30%' }} align='center' rowSpan={totalRowCount} variant='head'>
                                 <Typography variant='h4'>{type}</Typography>
                             </TableCell>
                             <TableCell sx={{ width:'30%'}} variant='head'>

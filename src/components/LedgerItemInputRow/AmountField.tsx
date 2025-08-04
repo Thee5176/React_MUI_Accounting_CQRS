@@ -10,6 +10,7 @@ export default function AmountField({register, insertIndex}: RegisterIndexProps)
                 {...register(`ledgerItems.${insertIndex}.amount`, {
                     required: { value: true, message: 'Amount is required' },
                     min: { value: 1, message: 'Amount must be at least 1' },
+                    valueAsNumber: true,
                 })}
                 id={`input-amount-${insertIndex}`}
                 type="number"
