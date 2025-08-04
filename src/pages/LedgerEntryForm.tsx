@@ -7,6 +7,7 @@ import Typography from '@mui/material/Typography';
 import { useEffect } from 'react';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import ErrorAlert from '../components/ErrorAlert';
+import DateField from '../components/LedgerInputField/DateField';
 import LedgerItemsFormTable from '../components/LedgerItemsFormTable';
 
 export interface LedgerEntry {
@@ -17,7 +18,7 @@ export interface LedgerEntry {
     timestamp: string;
 }
 
-interface LedgerItem {
+export interface LedgerItem {
     coa: string;
     amount: number;
     type: string;
@@ -25,11 +26,13 @@ interface LedgerItem {
 
 export default function LedgerEntryForm() {
     // DateField - prefilled today's date
-    const currentDate = new Date().toISOString().substring(0,10);
+    const currentDate: string = new Date().toISOString().substring(0,10);
 
     // Handle Form with React Hook Form
     const {
         register,
+        control,
+        getValues,
         handleSubmit,
         watch,
         reset,
@@ -80,25 +83,10 @@ export default function LedgerEntryForm() {
         <Typography sx={{py:3}} variant='h2'>Record Transaction Form</Typography>
         <form onSubmit={handleSubmit(onSubmit)}>
             <FormGroup>
-                <FormControl sx={{py:3}}>
-                    <InputLabel htmlFor='date'>
-                        Date
-                    </InputLabel>
-                    <OutlinedInput
-                        {...register('date', {
-                            required: { value: true, message: 'Date is required' },
-                            validate: (value:string) => {
-                                const date = new Date(value);
-                                return (date.getTime() < new Date().getTime()) || 'Invalid date';
-                            }
-                        })}
-                        type='date'
-                        defaultValue={currentDate}
-                    />
-                    <ErrorAlert
-                        message={errors.date?.message}
-                    />
-                </FormControl>
+                <DateField currentDate={currentDate} control={control} />
+                <ErrorAlert
+                    message={errors.date?.message}
+                />
                 <FormControl sx={{py:3}}>
                     <InputLabel htmlFor='description'>
                         Description
@@ -117,7 +105,7 @@ export default function LedgerEntryForm() {
                         message={errors.description?.message}
                     />
                 </FormControl>
-                <LedgerItemsFormTable register={register} errors={errors}></LedgerItemsFormTable>
+                <LedgerItemsFormTable register={register} errors={errors} getValues={getValues}></LedgerItemsFormTable>
                 <Button type='submit' variant='contained'>
                     Record
                 </Button>

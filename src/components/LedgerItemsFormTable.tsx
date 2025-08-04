@@ -7,15 +7,17 @@ import TableRow from '@mui/material/TableRow'
 import Typography from '@mui/material/Typography'
 import { useState } from 'react'
 import type { FieldErrors, UseFormRegister } from 'react-hook-form'
-import type { LedgerEntry } from '../pages/LedgerEntryForm'
-import LedgerItemInputField from './LedgerItemInputField'
+import type { LedgerEntry, LedgerItem } from '../pages/LedgerEntryForm'
+import BalanceCheckRow from './BalanceAmountCheck'
+import LedgerItemInputRow from './LedgerItemInputRow'
 
 interface LedgerItemsFormProps{
     register: UseFormRegister<LedgerEntry>;
     errors: FieldErrors<LedgerEntry>;
+    getValues: (payload?: string) => LedgerItem[];
 }
 
-export default function LedgerItemsFormTable({register, errors}: LedgerItemsFormProps) {
+export default function LedgerItemsFormTable({register, errors, getValues}: LedgerItemsFormProps) {
 
     const BalanceTypes: string[] = ['Debit', 'Credit']
 
@@ -41,16 +43,14 @@ export default function LedgerItemsFormTable({register, errors}: LedgerItemsForm
                             <TableCell sx={{ width:'30%'}} variant='head'>
                                 Amount
                             </TableCell>
-                            <TableCell sx={{ width:'25%'}} variant='head'>
-                                Sum
-                            </TableCell>
                         </TableRow>
-                        <LedgerItemInputField 
+                        <LedgerItemInputRow 
                             register={register}
                             balanceType={type}
                             errors={errors}
                             insertFunction={insertLedgerItemForm}
-                        ></LedgerItemInputField>
+                        ></LedgerItemInputRow>
+                        <BalanceCheckRow type={type} getValues={getValues} />
                     </TableBody>
                 </Table>
             </TableContainer>

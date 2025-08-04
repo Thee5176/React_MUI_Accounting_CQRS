@@ -15,14 +15,14 @@ export interface RegisterIndexProps {
     insertIndex: number;
 }
 
-interface LedgerItemInputFieldProps {
+interface LedgerItemInputRowProps {
     register: UseFormRegister<LedgerEntry>;
     errors: FieldErrors<LedgerEntry>;
     balanceType: string;
     insertFunction: () => void;
 }
 
-export default function LedgerItemInputField ({register, balanceType, errors, insertFunction}:LedgerItemInputFieldProps) {
+export default function LedgerItemInputRow ({register, balanceType, errors, insertFunction}:LedgerItemInputRowProps) {
     
     const [insertRowCount, setInsertRowCount] = useState(1); // Change to List of unique ID (still need number index -> key for input field)
     const insertLedgerItemForm = () => {
