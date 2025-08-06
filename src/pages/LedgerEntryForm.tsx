@@ -1,13 +1,11 @@
 import Button from '@mui/material/Button';
-import FormControl from '@mui/material/FormControl';
 import FormGroup from '@mui/material/FormGroup';
-import InputLabel from '@mui/material/InputLabel';
-import OutlinedInput from '@mui/material/OutlinedInput';
 import Typography from '@mui/material/Typography';
 import { useEffect } from 'react';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import ErrorAlert from '../components/ErrorAlert';
 import DateField from '../components/LedgerInputField/DateField';
+import DescriptionField from '../components/LedgerInputField/DescriptionField';
 import LedgerItemsFormTable from '../components/LedgerItemsFormTable';
 
 export interface LedgerEntry {
@@ -30,7 +28,6 @@ export default function LedgerEntryForm() {
 
     // Handle Form with React Hook Form
     const {
-        register,
         control,
         getValues,
         handleSubmit,
@@ -75,7 +72,7 @@ export default function LedgerEntryForm() {
                 timestamp: '',
             });
         }
-    }, [isSubmitSuccessful, currentDate]);
+    }, [reset, isSubmitSuccessful, currentDate]);
 
     console.log(watch());
     return (
@@ -87,25 +84,11 @@ export default function LedgerEntryForm() {
                 <ErrorAlert
                     message={errors.date?.message}
                 />
-                <FormControl sx={{py:3}}>
-                    <InputLabel htmlFor='description'>
-                        Description
-                    </InputLabel>
-                    <OutlinedInput
-                        {...register('description', {
-                            required: { value: true, message: 'Description is required' },
-                            minLength: { value: 5, message: 'Description must be at least 5 characters' },
-                            maxLength: { value: 50, message: 'Description must be less than 50 characters' },
-                        })} 
-                        type='text'
-                        placeholder='Being <Account1> <verb> From <Account2>'
-                        autoComplete='description'
-                    />
-                    <ErrorAlert
-                        message={errors.description?.message}
-                    />
-                </FormControl>
-                <LedgerItemsFormTable register={register} errors={errors} getValues={getValues}></LedgerItemsFormTable>
+                <DescriptionField control={control} />
+                <ErrorAlert
+                    message={errors.description?.message}
+                />
+                <LedgerItemsFormTable control={control} errors={errors} getValues={getValues}></LedgerItemsFormTable>
                 <Button type='submit' variant='contained'>
                     Record
                 </Button>

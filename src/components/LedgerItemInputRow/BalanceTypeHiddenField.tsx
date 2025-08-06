@@ -1,24 +1,28 @@
 import FormControl from '@mui/material/FormControl';
 import OutlinedInput from '@mui/material/OutlinedInput';
-import type { UseFormRegister } from 'react-hook-form/';
+import { Controller, type Control } from 'react-hook-form';
 import type { LedgerEntry } from '../../pages/LedgerEntryForm';
 
 interface BalanceTypeHiddenFieldProps {
-    register: UseFormRegister<LedgerEntry>;
+    control: Control<LedgerEntry>;
     balanceType: string;
     insertIndex: number;
 }
 
-export default function BalanceTypeHiddenField({ register, balanceType, insertIndex }: BalanceTypeHiddenFieldProps) {
+export default function BalanceTypeHiddenField({ control, balanceType, insertIndex }: BalanceTypeHiddenFieldProps) {
 
     return <FormControl sx={{ display: 'none' }}>
-        <OutlinedInput
-            {...register(`ledgerItems.${insertIndex}.type`, {
-                required: true,
-            })}
-            sx={{ display: 'none' }}
-            defaultValue={`${balanceType}`}
-        >
-        </OutlinedInput>
+        <Controller
+            name={`ledgerItems.${insertIndex}.type`}
+            control={control}
+            defaultValue={balanceType}
+            render={({ field }) => (
+            <OutlinedInput
+                {...field}
+                sx={{ display: 'none' }}
+            />
+            )}
+            rules={{ required: true }}
+        />
     </FormControl>
 }

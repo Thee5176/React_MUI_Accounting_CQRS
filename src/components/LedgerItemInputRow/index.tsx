@@ -3,26 +3,26 @@ import Button from "@mui/material/Button";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import { useState } from "react";
-import type { FieldErrors, UseFormRegister } from "react-hook-form";
+import type { Control, FieldErrors } from "react-hook-form";
 import type { LedgerEntry } from "../../pages/LedgerEntryForm";
 import ErrorAlert from "../ErrorAlert";
 import AmountField from "./AmountField";
 import BalanceTypeHiddenField from "./BalanceTypeHiddenField";
 import CoaField from "./CoaField";
 
-export interface RegisterIndexProps {
-    register: UseFormRegister<LedgerEntry>;
+export interface controlIndexProps {
+    control: Control<LedgerEntry>;
     insertIndex: number;
 }
 
 interface LedgerItemInputRowProps {
-    register: UseFormRegister<LedgerEntry>;
+    control: Control<LedgerEntry>;
     errors: FieldErrors<LedgerEntry>;
     balanceType: string;
     insertFunction: () => void;
 }
 
-export default function LedgerItemInputRow ({register, balanceType, errors, insertFunction}:LedgerItemInputRowProps) {
+export default function LedgerItemInputRow ({control, balanceType, errors, insertFunction}:LedgerItemInputRowProps) {
     
     const [insertRowCount, setInsertRowCount] = useState(1); // Change to List of unique ID (still need number index -> key for input field)
     const insertLedgerItemForm = () => {
@@ -41,19 +41,19 @@ export default function LedgerItemInputRow ({register, balanceType, errors, inse
             {Array.from({ length: insertRowCount }).map((_, insertIndex: number) => (
                 <TableRow key={`ledgeritems-${adjustedIndex(balanceType, insertIndex)}`}>
                     <TableCell>
-                        <CoaField register={register} insertIndex={adjustedIndex(balanceType, insertIndex)}/>
+                        <CoaField control={control} insertIndex={adjustedIndex(balanceType, insertIndex)}/>
                         <ErrorAlert
                             message={errors.ledgerItems?.[adjustedIndex(balanceType, insertIndex)]?.coa?.message}
                         />
                     </TableCell>
                     <TableCell>
-                        <AmountField register={register} insertIndex={adjustedIndex(balanceType, insertIndex)}/>
+                        <AmountField control={control} insertIndex={adjustedIndex(balanceType, insertIndex)}/>
                         <ErrorAlert
                             message={errors.ledgerItems?.[adjustedIndex(balanceType, insertIndex)]?.amount?.message}
                         />
                     </TableCell>
                     <TableCell sx={{ display:'none'}}>
-                        <BalanceTypeHiddenField register={register} balanceType={balanceType} insertIndex={adjustedIndex(balanceType, insertIndex)}/>
+                        <BalanceTypeHiddenField control={control} balanceType={balanceType} insertIndex={adjustedIndex(balanceType, insertIndex)}/>
                     </TableCell>
                 </TableRow>
             ))}

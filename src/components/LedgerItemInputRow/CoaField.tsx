@@ -2,7 +2,8 @@ import FormControl from '@mui/material/FormControl';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import { useEffect, useState } from 'react';
-import type { RegisterIndexProps } from './index';
+import { Controller } from 'react-hook-form';
+import type { controlIndexProps } from './index';
 
 interface AvailableCodeOfAccount {
     code: number;
@@ -10,7 +11,7 @@ interface AvailableCodeOfAccount {
     type: string;
 }
 
-export default function CoaField({register, insertIndex}:RegisterIndexProps) {
+export default function CoaField({control, insertIndex}:controlIndexProps) {
     // fetch list of available COA from Query Service
     const [codeOfAccounts, setCodeOfAccounts] = useState<AvailableCodeOfAccount[]>([]);
     
@@ -29,21 +30,27 @@ export default function CoaField({register, insertIndex}:RegisterIndexProps) {
         fetchCoa();
     }, []);
 
-    return ( <FormControl sx={{ py: 3, width: '60%', minWidth: '171px' }}>
-        <Select
-            {...register(`ledgerItems.${insertIndex}.coa`, {
-                required: { value: true, message: 'COA is required' },
-            })}
-        >
-            <MenuItem>
-                <em>Choose COA</em>
-            </MenuItem>
-            {codeOfAccounts.map((coa, idx) => (
-                <MenuItem key={`${coa.code}-${insertIndex}-${idx}`} value={coa.code}>
-                    {coa.code} - {coa.title}
-                </MenuItem>
-            ))}
-        </Select>
-    </FormControl>
+    return ( 
+        <FormControl sx={{ py: 3, width: '60%', minWidth: '171px' }}>
+            <Controller 
+                control={control}
+                name={`ledgerItems.${insertIndex}.coa`}
+                rules={{
+                    required: { value: true, message: 'COA is required' },
+                }}
+                render={({ field }) => (
+                    <Select {...field}>
+                        <MenuItem>
+                            <em>Choose COA</em>
+                        </MenuItem>
+                        {codeOfAccounts.map((coa, idx) => (
+                            <MenuItem key={`${coa.code}-${insertIndex}-${idx}`} value={coa.code}>
+                                {coa.code} - {coa.title}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                )}
+            />
+        </FormControl>
     );
 }
