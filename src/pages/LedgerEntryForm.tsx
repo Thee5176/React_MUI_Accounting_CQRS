@@ -6,7 +6,7 @@ import { useForm, type SubmitHandler } from 'react-hook-form';
 import ErrorAlert from '../components/ErrorAlert';
 import DateField from '../components/LedgerInputField/DateField';
 import DescriptionField from '../components/LedgerInputField/DescriptionField';
-import LedgerItemsFormTable from '../components/LedgerItemsFormTable';
+import LedgerItemsFormTable from '../components/LedgerItemsFormTable/LedgerItemsFormTable';
 
 export interface LedgerEntry {
     id:string;
@@ -88,7 +88,7 @@ export default function LedgerEntryForm() {
                 <ErrorAlert
                     message={errors.description?.message}
                 />
-                <LedgerItemsFormTable control={control} errors={errors} getValues={getValues}></LedgerItemsFormTable>
+                <LedgerItemsFormTable control={control} errors={errors} getValues={getValues}/>
                 <Button type='submit' variant='contained'>
                     Record
                 </Button>
