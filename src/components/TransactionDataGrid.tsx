@@ -26,13 +26,21 @@ export default function TransactionDataGrid() {
     const cols: GridColDef[] = [
         { field: 'date', headerName: 'Date', minWidth: 150},
         { field: 'description', headerName: 'Description', minWidth: 150 },
-        { field: 'coa', headerName: 'Account', minWidth: 150 },
+        { 
+            field: 'coa', 
+            headerName: 'Account', 
+            minWidth: 150,
+            sortable: false,
+
+        },
         { 
             field: 'debit', 
             headerName: 'Debit', 
             minWidth: 150,
             valueFormatter: (value : number) => (value ? `$ ${value.toFixed(2)}` : ``),
             rowSpanValueGetter: () => null,
+            sortable: false,
+
         },
         { 
             field: 'credit', 
@@ -40,12 +48,15 @@ export default function TransactionDataGrid() {
             minWidth: 150,  
             valueFormatter: (value : number) => (value ? `$ ${value.toFixed(2)}` : ``),
             rowSpanValueGetter: () => null,
+            sortable: false,
         },
         { 
             field: 'balance', 
             headerName: 'Balance', 
             minWidth: 150,
             valueFormatter: (value : number) => (value ? `$ ${value.toFixed(2)}` : ``),
+            sortable: false,
+            
         },
     ];
 
@@ -82,11 +93,15 @@ export default function TransactionDataGrid() {
                 description: ledger.description,
                 debit: item.type === 'Debit' ? item.amount : '',
                 credit: item.type === 'Credit' ? item.amount : '',
-                balance: ledger.ledgerItems.map((entry) => (
+                balance: item.type == 'Debit' ? item.amount : -item.amount,
+                transaction_balance: ledger.ledgerItems.map((entry) => (  //TODO refactor o**n pattern!!
                     entry.amount / 2
                 )).reduce((curr, balance) => curr + balance, 0),
-            }))
-        );
+            })
+        ).sort((a,b) => a.coa - b.coa)
+
+    );
+    // Sort entries by Date -> Balance Type -> COA -> Balance
         
         setRowData(dataRows);
     };
@@ -102,16 +117,21 @@ export default function TransactionDataGrid() {
             rows={rowData}
             columns={cols}
             initialState={{
+                sorting: {
+                    sortModel: [
+                        { field: 'date', sort: 'desc' },
+                    ],
+                },
                 pagination: {
-                paginationModel: { pageSize: 20, page: 0 }
+                    paginationModel: { pageSize: 20, page: 0 }
                 }
             }}
-            pageSizeOptions={[20, 50, 100]}
-            disableRowSelectionOnClick
             showCellVerticalBorder
             showColumnVerticalBorder
+            disableRowSelectionOnClick
             rowSpanning
             columnGroupingModel={columnGroupingModel}
+            pageSizeOptions={[20, 50, 100]}
             />
         </Box>
     )
