@@ -30,7 +30,7 @@ export default function CoaField({control, insertIndex}:controlIndexProps) {
         fetchCoa();
     }, []);
 
-    return ( 
+    return (
         <FormControl sx={{ py: 3, width: '60%', minWidth: '171px' }}>
             <Controller 
                 control={control}

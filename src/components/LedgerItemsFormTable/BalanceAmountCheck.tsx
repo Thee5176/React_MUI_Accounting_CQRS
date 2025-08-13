@@ -1,5 +1,5 @@
 import { TableCell, TableRow, Typography } from "@mui/material";
-import type { LedgerItem } from "../pages/LedgerEntryForm";
+import type { LedgerItem } from "../../pages/LedgerEntryForm";
 
 export default function BalanceCheckRow({ type, getValues }: { type: string; getValues: (payload?: string) => LedgerItem[] }) {
     // calculate total row count based on balance types
@@ -17,7 +17,7 @@ export default function BalanceCheckRow({ type, getValues }: { type: string; get
                 </TableCell>
                 <TableCell colSpan={2} sx={{ textAlign:'end' }}>
                     <Typography variant='h6'>
-                        $<span id={`total-${type.toLowerCase()}`}>{calculateBalance(type)}</span>
+                        $ <span id={`total-${type.toLowerCase()}`}>{calculateBalance(type)}</span>
                     </Typography>
                 </TableCell>
             </TableRow>
