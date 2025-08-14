@@ -2,7 +2,8 @@ import FormControl from '@mui/material/FormControl';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import { useEffect, useState } from 'react';
-import { Controller } from 'react-hook-form';
+import { Controller, useFormContext } from 'react-hook-form';
+import type { LedgerEntry } from '../../../pages/LedgerEntryForm';
 import type { controlIndexProps } from './index';
 
 interface AvailableCodeOfAccount {
@@ -11,7 +12,9 @@ interface AvailableCodeOfAccount {
     type: string;
 }
 
-export default function CoaField({control, insertIndex}:controlIndexProps) {
+export default function CoaField({insertIndex}:controlIndexProps) {
+    const {control} = useFormContext<LedgerEntry>();
+
     // fetch list of available COA from Query Service
     const [codeOfAccounts, setCodeOfAccounts] = useState<AvailableCodeOfAccount[]>([]);
     

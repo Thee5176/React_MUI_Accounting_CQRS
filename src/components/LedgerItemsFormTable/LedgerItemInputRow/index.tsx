@@ -3,7 +3,7 @@ import Button from "@mui/material/Button";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import { useState } from "react";
-import type { Control, FieldErrors } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 import type { LedgerEntry } from "../../../pages/LedgerEntryForm";
 import ErrorAlert from "../../ErrorAlert";
 import AmountField from "./AmountField";
@@ -11,19 +11,21 @@ import BalanceTypeHiddenField from "./BalanceTypeHiddenField";
 import CoaField from "./CoaField";
 
 export interface controlIndexProps {
-    control: Control<LedgerEntry>;
     insertIndex: number;
 }
 
 interface LedgerItemInputRowProps {
-    control: Control<LedgerEntry>;
-    errors: FieldErrors<LedgerEntry>;
     balanceType: string;
     insertFunction: () => void;
 }
 
-export default function LedgerItemInputRow ({control, balanceType, errors, insertFunction}:LedgerItemInputRowProps) {
+export default function LedgerItemInputRow ({balanceType, insertFunction}:LedgerItemInputRowProps) {
     
+    const {
+      formState: { errors },
+    } = useFormContext<LedgerEntry>();
+    
+
     const [insertRowCount, setInsertRowCount] = useState(1); // Change to List of unique ID (still need number index -> key for input field)
     const insertLedgerItemForm = () => {
         setInsertRowCount(prev => prev + 1)                  // Change to add ID to List

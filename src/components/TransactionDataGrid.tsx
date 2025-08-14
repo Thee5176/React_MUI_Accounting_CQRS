@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 interface LedgerItemsAggregate {
     coa: number;
     amount: number;
-    type: string;
+    balanceType: string;
     createdAt: string;
     updatedAt: string;
 }
@@ -104,9 +104,9 @@ export default function TransactionDataGrid() {
                 date: ledger.date,
                 coa: item.coa,
                 description: ledger.description,
-                debit: item.type === 'Debit' ? item.amount : '',
-                credit: item.type === 'Credit' ? item.amount : '',
-                balance: item.type == 'Debit' ? item.amount : -item.amount,
+                debit: item.balanceType === 'Debit' ? item.amount : '',
+                credit: item.balanceType === 'Credit' ? item.amount : '',
+                balance: item.balanceType === 'Debit' ? item.amount : -item.amount,
                 transaction_balance: ledger.ledgerItems.map((entry) => (  //TODO refactor o**n pattern!!
                     entry.amount / 2
                 )).reduce((curr, balance) => curr + balance, 0),
