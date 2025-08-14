@@ -1,4 +1,3 @@
-import Box from "@mui/material/Box";
 import { DataGrid } from "@mui/x-data-grid/DataGrid";
 import type { GridColDef, GridColumnGroupingModel, GridRowsProp } from "@mui/x-data-grid/models";
 import { useEffect, useState } from "react";
@@ -24,40 +23,54 @@ export interface LedgerResponse {
 
 export default function TransactionDataGrid() {
     const cols: GridColDef[] = [
-        { field: 'date', headerName: 'Date', minWidth: 150},
-        { field: 'description', headerName: 'Description', minWidth: 150 },
-        { 
-            field: 'coa', 
-            headerName: 'Account', 
-            minWidth: 150,
-            sortable: false,
-
-        },
-        { 
-            field: 'debit', 
-            headerName: 'Debit', 
-            minWidth: 150,
-            valueFormatter: (value : number) => (value ? `$ ${value.toFixed(2)}` : ``),
-            rowSpanValueGetter: () => null,
-            sortable: false,
-
-        },
-        { 
-            field: 'credit', 
-            headerName: 'Credit', 
-            minWidth: 150,  
-            valueFormatter: (value : number) => (value ? `$ ${value.toFixed(2)}` : ``),
-            rowSpanValueGetter: () => null,
-            sortable: false,
-        },
-        { 
-            field: 'balance', 
-            headerName: 'Balance', 
-            minWidth: 150,
-            valueFormatter: (value : number) => (value ? `$ ${value.toFixed(2)}` : ``),
-            sortable: false,
-            
-        },
+      {
+        field: "date",
+        headerName: "Date",
+        minWidth: 150,
+        flex: 1
+    },
+      {
+        field: "description",
+        headerName: "Description",
+        minWidth: 150,
+        flex: 1,
+      },
+      {
+        field: "coa",
+        headerName: "Account",
+        minWidth: 150,
+        sortable: false,
+        flex: 1,
+      },
+      {
+        field: "debit",
+        headerName: "Debit",
+        minWidth: 50,
+        valueFormatter: (value: number) =>
+          value ? `$ ${value.toFixed(2)}` : ``,
+        rowSpanValueGetter: () => null,
+        sortable: false,
+        flex: 1,
+      },
+      {
+        field: "credit",
+        headerName: "Credit",
+        minWidth: 50,
+        valueFormatter: (value: number) =>
+          value ? `$ ${value.toFixed(2)}` : ``,
+        rowSpanValueGetter: () => null,
+        sortable: false,
+        flex: 1,
+      },
+      {
+        field: "balance",
+        headerName: "Balance",
+        minWidth: 100,
+        valueFormatter: (value: number) =>
+          value ? `$ ${value.toFixed(2)}` : ``,
+        sortable: false,
+        flex: 1,
+      },
     ];
 
     const columnGroupingModel : GridColumnGroupingModel = [
@@ -66,8 +79,8 @@ export default function TransactionDataGrid() {
             description: '',
             headerAlign: 'center',
             children: [
-                { field: 'debit'},
-                { field: 'credit'},
+                { field: 'debit' },
+                { field: 'credit' },
             ]
         }
     ] 
@@ -85,9 +98,9 @@ export default function TransactionDataGrid() {
         const data: LedgerResponse[] = await res.json();
 
         // Flatten ledgerItems for each ledger into rows
-        const dataRows = data.flatMap((ledger) =>
-            ledger.ledgerItems.map((item, idx) => ({
-                id: `${ledger.ledgerId}-${idx}`,
+        const dataRows = data.flatMap((ledger, idx) =>
+            ledger.ledgerItems.map((item, idy) => ({
+                id: `${idx}-${idy}`,
                 date: ledger.date,
                 coa: item.coa,
                 description: ledger.description,
@@ -98,11 +111,9 @@ export default function TransactionDataGrid() {
                     entry.amount / 2
                 )).reduce((curr, balance) => curr + balance, 0),
             })
-        ).sort((a,b) => a.coa - b.coa)
-
-    );
-    // Sort entries by Date -> Balance Type -> COA -> Balance
-        
+            // sort ledgeritem by Code of Account
+            ).sort((a,b) => a.coa - b.coa)
+        );
         setRowData(dataRows);
     };
 
@@ -112,27 +123,25 @@ export default function TransactionDataGrid() {
     })
 
     return (
-        <Box>
-            <DataGrid
-            rows={rowData}
-            columns={cols}
-            initialState={{
-                sorting: {
-                    sortModel: [
-                        { field: 'date', sort: 'desc' },
-                    ],
-                },
-                pagination: {
-                    paginationModel: { pageSize: 20, page: 0 }
-                }
-            }}
-            showCellVerticalBorder
-            showColumnVerticalBorder
-            disableRowSelectionOnClick
-            rowSpanning
-            columnGroupingModel={columnGroupingModel}
-            pageSizeOptions={[20, 50, 100]}
-            />
-        </Box>
-    )
+      <DataGrid
+        sx={{ width: '100%' }}
+        rows={rowData}
+        columns={cols}
+        initialState={{
+        // sort ledger by Date
+        sorting: {
+          sortModel: [{ field: "date", sort: "desc" }],
+        },
+        pagination: {
+          paginationModel: { pageSize: 20, page: 0 },
+        },
+        }}
+        showCellVerticalBorder
+        showColumnVerticalBorder
+        disableRowSelectionOnClick
+        rowSpanning
+        columnGroupingModel={columnGroupingModel}
+        pageSizeOptions={[20, 50, 100]}
+      />
+    );
 }

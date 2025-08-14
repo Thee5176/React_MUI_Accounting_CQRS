@@ -10,7 +10,7 @@ export default function Layout() {
         <Container sx={{ display: "flex" }}>
             <NavDrawer drawerWidth={drawerWidth}/>
             <Box sx={{
-                width: `calc(100% - ${drawerWidth}px)`,
+                width: {sm: `100%`, md:`calc(100% - ${drawerWidth}px)`},
                 py: 3
             }}>
                 <Outlet />

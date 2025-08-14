@@ -77,8 +77,8 @@ export default function LedgerEntryForm() {
     console.log(watch());
     return (
         <>
-        <Typography sx={{py:3}} variant='h2'>Record Transaction Form</Typography>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <Typography sx={{py:3}} variant='h2'>Record Transaction</Typography> 
+        <form onSubmit={handleSubmit(onSubmit)}> //Remove this and place into page
             <FormGroup>
                 <DateField currentDate={currentDate} control={control} />
                 <ErrorAlert

@@ -31,7 +31,7 @@ export default function LedgerItemsFormTable({control, errors, getValues}: Ledge
     return <>
         {BalanceTypes.map( (type, itemOrder) => (
             <TableContainer sx={{ py:3 }} key={`tablecontainer-${itemOrder}`} component={Paper}>
-                <Table sx={{ minWidth: 700 }} aria-label={`${type}InputTable`}>
+                <Table sx={{ minWidth: 500 }} aria-label={`${type}InputTable`}>
                     <TableBody>
                         <TableRow>
                             <TableCell sx={{ width:'30%' }} align='center' rowSpan={totalRowCount} variant='head'>
