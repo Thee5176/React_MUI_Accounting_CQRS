@@ -1,8 +1,10 @@
 import { FormControl, InputLabel, OutlinedInput } from "@mui/material";
-import { Controller, type Control } from "react-hook-form";
+import { Controller, useFormContext } from "react-hook-form";
 import type { LedgerEntry } from "../../pages/LedgerEntryForm";
 
-export default function DateField({ currentDate, control }:{currentDate: string, control: Control<LedgerEntry>}) {
+export default function DateField({ currentDate }:{currentDate: string}) {
+    const {control} = useFormContext<LedgerEntry>();
+    
     return (
         <FormControl sx={{py:3}}>
             <InputLabel htmlFor='date'>
