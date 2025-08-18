@@ -23,9 +23,6 @@ export interface LedgerItem {
 }
 
 export default function LedgerEntryForm() {
-  // DateField - prefilled today's date
-  const currentDate: string = new Date().toISOString().substring(0, 10);
-
   // declare FormHook into Context
   const methods = useForm<LedgerEntry>();
   
@@ -38,9 +35,8 @@ export default function LedgerEntryForm() {
   } = methods;
 
   // Send Data to Command Service
-  const sendLedgerEntry = async (data: LedgerEntry) => {
+  const sendLedgerEntry = async (data: LedgerEntry) => {  
     const response = await fetch("http://localhost:8181/ledger", {
-      method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
@@ -53,6 +49,14 @@ export default function LedgerEntryForm() {
     // Add id and timestamp to the data
     data.timestamp = new Date().toISOString();
 
+    // Adjust null and fix ledgeritem order
+    data.ledgerItems = data.ledgerItems
+      .filter(item => item != null)
+      .map((item, idx) => ({
+          ...item,
+          id: idx + 1
+    }));
+
     console.log(data);
     const result = await sendLedgerEntry(data);
     console.log(result);
@@ -62,7 +66,7 @@ export default function LedgerEntryForm() {
     if (isSubmitSuccessful) {
       reset({
         id: "",
-        date: currentDate,
+        date: "",
         description: "",
         ledgerItems: [
           { coa: "", amount: 0, balanceType: "Debit" },
@@ -71,7 +75,7 @@ export default function LedgerEntryForm() {
         timestamp: "",
       });
     }
-  }, [reset, isSubmitSuccessful, currentDate]);
+  }, [reset, isSubmitSuccessful]);
 
   console.log(watch());
   return (
@@ -82,11 +86,14 @@ export default function LedgerEntryForm() {
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <FormGroup>
-            <DateField currentDate={currentDate} />
+            <DateField />
             <ErrorAlert message={errors.date?.message} />
+
             <DescriptionField />
             <ErrorAlert message={errors.description?.message} />
+
             <LedgerItemsFormTable />
+            
             <Button type="submit" variant="contained">
               Record
             </Button>

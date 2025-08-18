@@ -6,6 +6,7 @@ import TableContainer from '@mui/material/TableContainer'
 import TableRow from '@mui/material/TableRow'
 import Typography from '@mui/material/Typography'
 import { useState } from 'react'
+import { DynamicIndexContext } from '../../contexts/DynamicIndexContext'
 import BalanceCheckRow from './BalanceAmountCheck'
 import LedgerItemInputRow from './LedgerItemInputRow'
 
@@ -14,14 +15,14 @@ export default function LedgerItemsFormTable() {
     const BalanceTypes: string[] = ['Debit', 'Credit']
 
     // use for adjust row-span for Table Header
-    const [totalRowCount, setTotalRowCount] = useState(3);
-    const insertLedgerItemForm = () => {
-        setTotalRowCount(prev => prev + 1)
-        console.log(totalRowCount);
+    const [totalRowSpan, setTotalRowSpan] = useState(3);
+    const addRowSpan: () => void = () => {
+        setTotalRowSpan(prev => prev + 1)
     }
 
     return (
       <>
+      <DynamicIndexContext.Provider value={{totalRowSpan, addRowSpan}}>
         {BalanceTypes.map((type, itemOrder) => (
           <TableContainer
             sx={{ py: 3 }}
@@ -32,29 +33,29 @@ export default function LedgerItemsFormTable() {
               <TableBody>
                 <TableRow>
                   <TableCell
-                    sx={{ width: "30%" }}
+                    sx={{ width: "20%" }}
                     align="center"
-                    rowSpan={totalRowCount}
+                    rowSpan={totalRowSpan}
                     variant="head"
                   >
                     <Typography variant="h4">{type}</Typography>
                   </TableCell>
-                  <TableCell sx={{ width: "30%" }} variant="head">
+                  <TableCell sx={{ width: "40%" }} variant="head">
                     Code of Account
                   </TableCell>
-                  <TableCell sx={{ width: "30%" }} variant="head">
+                  <TableCell sx={{ width: "40%" }} variant="head">
                     Amount
                   </TableCell>
                 </TableRow>
                 <LedgerItemInputRow
                   balanceType={type}
-                  insertFunction={insertLedgerItemForm}
                 ></LedgerItemInputRow>
                 <BalanceCheckRow balanceType={type} />
               </TableBody>
             </Table>
           </TableContainer>
         ))}
+      </DynamicIndexContext.Provider>
       </>
     );
 }

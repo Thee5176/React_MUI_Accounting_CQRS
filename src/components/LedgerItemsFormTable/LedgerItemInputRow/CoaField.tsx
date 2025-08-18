@@ -35,16 +35,23 @@ export default function CoaField({insertIndex}:controlIndexProps) {
 
     return (
         <FormControl sx={{ py: 3, width: '60%', minWidth: '171px' }}>
-            <Controller 
+            <Controller
                 control={control}
                 name={`ledgerItems.${insertIndex}.coa`}
+                defaultValue=""
                 rules={{
                     required: { value: true, message: 'COA is required' },
                 }}
                 render={({ field }) => (
-                    <Select {...field}>
-                        <MenuItem>
-                            <em>Choose COA</em>
+                    <Select
+                        value={field.value ?? ""}
+                        onChange={field.onChange}
+                        onBlur={field.onBlur}
+                        inputRef={field.ref}
+                        displayEmpty
+                    >
+                        <MenuItem value="">
+                            <em> -Select COA- </em>
                         </MenuItem>
                         {codeOfAccounts.map((coa, idx) => (
                             <MenuItem key={`${coa.code}-${insertIndex}-${idx}`} value={coa.code}>
