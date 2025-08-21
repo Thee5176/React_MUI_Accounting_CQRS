@@ -89,7 +89,7 @@ export default function TransactionDataGrid() {
 
     //define function to fetch data from the server
     const fetchRows = async () => {
-        const res = await fetch("http://localhost:8182/api/ledgers/all", {
+        const res = await fetch( process.env.HOST_IP + '/api/ledgers/all', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

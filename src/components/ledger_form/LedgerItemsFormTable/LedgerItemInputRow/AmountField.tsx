@@ -1,9 +1,11 @@
 import { OutlinedInput } from '@mui/material';
 import FormControl from '@mui/material/FormControl';
-import { Controller } from 'react-hook-form';
+import { Controller, useFormContext } from 'react-hook-form';
+import type { LedgerEntry } from '../../../../pages/LedgerEntryForm';
 import type { controlIndexProps } from './index';
 
-export default function AmountField({control, insertIndex}: controlIndexProps) {
+export default function AmountField({insertIndex}: controlIndexProps) {
+    const {control} = useFormContext<LedgerEntry>();
     
     return (
         <FormControl sx={{py:3}}>

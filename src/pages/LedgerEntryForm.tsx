@@ -36,12 +36,15 @@ export default function LedgerEntryForm() {
 
   // Send Data to Command Service
   const sendLedgerEntry = async (data: LedgerEntry) => {  
-    const response = await fetch("http://localhost:8181/ledger", {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
+    const response = await fetch(
+      process.env.HOST_IP + '/ledger',
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      }
+    );
     return await response.text();
   };
 

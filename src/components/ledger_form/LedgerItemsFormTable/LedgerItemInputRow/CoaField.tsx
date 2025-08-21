@@ -19,7 +19,7 @@ export default function CoaField({insertIndex}:controlIndexProps) {
     const [codeOfAccounts, setCodeOfAccounts] = useState<AvailableCodeOfAccount[]>([]);
     
     const fetchCoa = async () => {
-        const res = await fetch('http://localhost:8182/available-coa/json', {
+        const res = await fetch( process.env.HOST_IP + '/available-coa/json', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
