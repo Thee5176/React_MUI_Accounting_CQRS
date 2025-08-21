@@ -13,7 +13,7 @@ export default function BalanceTypeHiddenField({ control, balanceType, insertInd
 
     return <FormControl sx={{ display: 'none' }}>
         <Controller
-            name={`ledgerItems.${insertIndex}.type`}
+            name={`ledgerItems.${insertIndex}.balanceType`}
             control={control}
             defaultValue={balanceType}
             render={({ field }) => (

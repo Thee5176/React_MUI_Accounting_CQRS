@@ -3,7 +3,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import { useEffect, useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
-import type { LedgerEntry } from '../../../pages/LedgerEntryForm';
+import type { LedgerEntry } from '../../../../pages/LedgerEntryForm';
 import type { controlIndexProps } from './index';
 
 interface AvailableCodeOfAccount {

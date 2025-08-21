@@ -1,7 +1,7 @@
 import FormControl from '@mui/material/FormControl';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import { Controller, useFormContext } from 'react-hook-form';
-import type { LedgerEntry } from '../../../pages/LedgerEntryForm';
+import type { LedgerEntry } from '../../../../pages/LedgerEntryForm';
 
 interface BalanceTypeHiddenFieldProps {
     balanceType: string;

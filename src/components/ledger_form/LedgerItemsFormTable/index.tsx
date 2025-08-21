@@ -6,7 +6,7 @@ import TableContainer from '@mui/material/TableContainer'
 import TableRow from '@mui/material/TableRow'
 import Typography from '@mui/material/Typography'
 import { useState } from 'react'
-import { DynamicIndexContext } from '../../contexts/DynamicIndexContext'
+import { DynamicIndexContext } from '../../../contexts/DynamicIndexContext'
 import BalanceCheckRow from './BalanceAmountCheck'
 import LedgerItemInputRow from './LedgerItemInputRow'
 

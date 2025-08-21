@@ -130,11 +130,11 @@ export default function TransactionDataGrid() {
         initialState={{
         // sort ledger by Date
         sorting: {
-          sortModel: [{ field: "date", sort: "desc" }],
-        },
-        pagination: {
-          paginationModel: { pageSize: 20, page: 0 },
-        },
+            sortModel: [{ field: "date", sort: "desc" }],
+          },
+          pagination: {
+            paginationModel: { pageSize: 20, page: 0 },
+          },
         }}
         showCellVerticalBorder
         showColumnVerticalBorder

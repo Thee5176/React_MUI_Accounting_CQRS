@@ -5,7 +5,7 @@ import TableRow from "@mui/material/TableRow";
 import { useState } from "react";
 import type { Control, FieldErrors } from "react-hook-form";
 import type { LedgerEntry } from "../../../pages/LedgerEntryForm";
-import ErrorAlert from "../../ErrorAlert";
+import ErrorAlert from "../ErrorAlert";
 import AmountField from "./AmountField";
 import BalanceTypeHiddenField from "./BalanceTypeHiddenField";
 import CoaField from "./CoaField";
@@ -41,19 +41,19 @@ export default function LedgerItemInputRow ({control, balanceType, errors, inser
             {Array.from({ length: insertRowCount }).map((_, insertIndex: number) => (
                 <TableRow key={`ledgeritems-${adjustedIndex(balanceType, insertIndex)}`}>
                     <TableCell>
-                        <CoaField insertIndex={adjustedIndex(balanceType, insertIndex)}/>
+                        <CoaField control={control} insertIndex={adjustedIndex(balanceType, insertIndex)}/>
                         <ErrorAlert
                             message={errors.ledgerItems?.[adjustedIndex(balanceType, insertIndex)]?.coa?.message}
                         />
                     </TableCell>
                     <TableCell>
-                        <AmountField insertIndex={adjustedIndex(balanceType, insertIndex)}/>
+                        <AmountField control={control} insertIndex={adjustedIndex(balanceType, insertIndex)}/>
                         <ErrorAlert
                             message={errors.ledgerItems?.[adjustedIndex(balanceType, insertIndex)]?.amount?.message}
                         />
                     </TableCell>
                     <TableCell sx={{ display:'none'}}>
-                        <BalanceTypeHiddenField balanceType={balanceType} insertIndex={adjustedIndex(balanceType, insertIndex)}/>
+                        <BalanceTypeHiddenField control={control} balanceType={balanceType} insertIndex={adjustedIndex(balanceType, insertIndex)}/>
                     </TableCell>
                 </TableRow>
             ))}

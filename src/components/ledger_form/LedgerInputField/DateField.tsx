@@ -1,6 +1,6 @@
 import { FormControl, InputLabel, OutlinedInput } from "@mui/material";
 import { Controller, useFormContext } from "react-hook-form";
-import type { LedgerEntry } from "../../pages/LedgerEntryForm";
+import type { LedgerEntry } from "../../../pages/LedgerEntryForm";
 
 export default function DateField() {
   const { control } = useFormContext<LedgerEntry>();

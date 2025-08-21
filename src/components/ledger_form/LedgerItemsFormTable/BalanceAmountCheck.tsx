@@ -1,6 +1,6 @@
 import { TableCell, TableRow, Typography } from "@mui/material";
 import { useFormContext } from "react-hook-form";
-import type { LedgerEntry } from "../../pages/LedgerEntryForm";
+import type { LedgerEntry } from "../../../pages/LedgerEntryForm";
 
 export default function BalanceCheckRow({ balanceType }: { balanceType: string }) {
   const { getValues } = useFormContext<LedgerEntry>();

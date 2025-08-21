@@ -3,10 +3,10 @@ import FormGroup from "@mui/material/FormGroup";
 import Typography from "@mui/material/Typography";
 import { useEffect } from "react";
 import { FormProvider, useForm, type SubmitHandler } from "react-hook-form";
-import ErrorAlert from "../components/ErrorAlert";
-import DateField from "../components/LedgerInputField/DateField";
-import DescriptionField from "../components/LedgerInputField/DescriptionField";
-import LedgerItemsFormTable from "../components/LedgerItemsFormTable/index";
+import ErrorAlert from "../components/ledger_form/ErrorAlert";
+import DateField from "../components/ledger_form/LedgerInputField/DateField";
+import DescriptionField from "../components/ledger_form/LedgerInputField/DescriptionField";
+import LedgerItemsFormTable from "../components/ledger_form/LedgerItemsFormTable/index";
 
 export interface LedgerEntry {
   id: string;
@@ -24,7 +24,7 @@ export interface LedgerItem {
 
 export default function LedgerEntryForm() {
   // declare FormHook into Context
-  const methods = useForm<LedgerEntry>();
+  const formContext = useForm<LedgerEntry>();
   
   // get FormHook from Context
   const {
@@ -32,7 +32,7 @@ export default function LedgerEntryForm() {
     watch,
     reset,
     formState: { errors, isSubmitSuccessful },
-  } = methods;
+  } = formContext;
 
   // Send Data to Command Service
   const sendLedgerEntry = async (data: LedgerEntry) => {  
@@ -83,7 +83,7 @@ export default function LedgerEntryForm() {
       <Typography sx={{ py: 3 }} variant="h2">
         Record Transaction Form
       </Typography>
-      <FormProvider {...methods}>
+      <FormProvider {...formContext}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <FormGroup>
             <DateField />
