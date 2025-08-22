@@ -7,7 +7,7 @@ import { BaseUrlContext } from "../../contexts/BaseUrlContext";
 interface LedgerItemsAggregate {
     coa: number;
     amount: number;
-    balanceType: string;
+    type: string;
     createdAt: string;
     updatedAt: string;
 }
@@ -99,24 +99,34 @@ export default function TransactionDataGrid() {
         });
         const data: LedgerResponse[] = await res.json();
 
+        console.log('Before :' ,data);
+
         // Flatten ledgerItems for each ledger into rows
-        const dataRows = data.flatMap((ledger, idx) =>
-            ledger.ledgerItems.map((item, idy) => ({
-                id: `${idx}-${idy}`,
-                date: ledger.date,
-                coa: item.coa,
-                description: ledger.description,
-                debit: item.balanceType === 'Debit' ? item.amount : '',
-                credit: item.balanceType === 'Credit' ? item.amount : '',
-                balance: item.balanceType === 'Debit' ? item.amount : -item.amount,
-                transaction_balance: ledger.ledgerItems.map((entry) => (
-                    entry.amount / 2
-                )).reduce((curr, balance) => curr + balance, 0),
-            })
+        const dataRows = data
+          .flatMap((ledger, idx) =>
+            ledger.ledgerItems.map((item, idy) => {
+              const isDebit = item.type == 'Debit';
+              const isCredit = item.type == 'Credit';
+
+              return {
+                  id: `${idx}-${idy}`,
+                  date: ledger.date,
+                  coa: item.coa,
+                  description: ledger.description,
+                  debit: isDebit ? item.amount : 0,
+                  credit: isCredit ? item.amount : 0,
+                  balance: isDebit ? item.amount : -item.amount,
+                  transaction_balance: ledger.ledgerItems.map((entry) => (
+                      entry.amount / 2
+                  )).reduce((sum, balance) => sum + balance, 0)
+                }
+            }
             // sort ledgeritem by Code of Account
             ).sort((a,b) => a.coa - b.coa)
         );
         setRowData(dataRows);
+        
+        console.log("After :", dataRows);
     };
 
     //fetch data on mount
