@@ -1,12 +1,13 @@
 import Button from "@mui/material/Button";
 import FormGroup from "@mui/material/FormGroup";
 import Typography from "@mui/material/Typography";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { FormProvider, useForm, type SubmitHandler } from "react-hook-form";
 import ErrorAlert from "../components/ledger_form/ErrorAlert";
 import DateField from "../components/ledger_form/LedgerInputField/DateField";
 import DescriptionField from "../components/ledger_form/LedgerInputField/DescriptionField";
 import LedgerItemsFormTable from "../components/ledger_form/LedgerItemsFormTable/index";
+import { BaseUrlContext } from "../contexts/BaseUrlContext";
 
 export interface LedgerEntry {
   id: string;
@@ -35,16 +36,15 @@ export default function LedgerEntryForm() {
   } = formContext;
 
   // Send Data to Command Service
+  const endpoint = useContext(BaseUrlContext);
   const sendLedgerEntry = async (data: LedgerEntry) => {  
-    const response = await fetch(
-      process.env.HOST_IP + '/ledger',
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      }
-    );
+    const response = await fetch( endpoint.command + "/ledger", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
     return await response.text();
   };
 

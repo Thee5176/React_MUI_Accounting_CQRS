@@ -1,8 +1,9 @@
 import FormControl from '@mui/material/FormControl';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
+import { BaseUrlContext } from '../../../../contexts/BaseUrlContext';
 import type { LedgerEntry } from '../../../../pages/LedgerEntryForm';
 import type { controlIndexProps } from './index';
 
@@ -14,12 +15,13 @@ interface AvailableCodeOfAccount {
 
 export default function CoaField({insertIndex}:controlIndexProps) {
     const {control} = useFormContext<LedgerEntry>();
-
+    
     // fetch list of available COA from Query Service
     const [codeOfAccounts, setCodeOfAccounts] = useState<AvailableCodeOfAccount[]>([]);
     
+    const endpoint = useContext(BaseUrlContext);
     const fetchCoa = async () => {
-        const res = await fetch( process.env.HOST_IP + '/available-coa/json', {
+        const res = await fetch( endpoint.query + '/available-coa/json', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -31,7 +33,7 @@ export default function CoaField({insertIndex}:controlIndexProps) {
     
     useEffect(() => {
         fetchCoa();
-    }, []);
+    });
 
     return (
         <FormControl sx={{ py: 3, width: '60%', minWidth: '171px' }}>
