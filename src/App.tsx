@@ -1,13 +1,12 @@
 import Container from '@mui/material/Container';
 import { RouterProvider } from 'react-router-dom';
-import { routesBasic } from './routes';
-
+import { routes } from './routes';
 
 function App() {
 
   return (
       <Container sx={{height:'100vh'}}>
-        <RouterProvider router={routesBasic}/>
+        <RouterProvider router={routes}/>
       </Container>
   ) 
 }
