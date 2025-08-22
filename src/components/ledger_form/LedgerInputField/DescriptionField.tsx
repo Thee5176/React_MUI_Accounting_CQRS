@@ -1,8 +1,10 @@
 import { FormControl, InputLabel, OutlinedInput } from "@mui/material";
-import { Controller, type Control } from "react-hook-form";
-import type { LedgerEntry } from "../../pages/LedgerEntryForm";
+import { Controller, useFormContext } from "react-hook-form";
+import type { LedgerEntry } from "../../../pages/LedgerEntryForm";
 
-export default function DescriptionField({ control }: { control: Control<LedgerEntry> }) {
+export default function DescriptionField() {
+    const { control } = useFormContext<LedgerEntry>();
+    
     return (
         <FormControl sx={{py:3}}>
             <InputLabel htmlFor='description'>
