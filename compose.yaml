@@ -2,5 +2,12 @@ services:
   test_frontend_service:
     build: .
     container_name: test_react_mui_cqrs
+    develop:
+      watch:
+        - path: ./src
+          action: sync
+          target: /app/src
+        - path: package.json
+          action: rebuild
     ports:
     - "8185:5173"

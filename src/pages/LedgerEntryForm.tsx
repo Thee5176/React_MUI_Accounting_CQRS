@@ -97,7 +97,7 @@ export default function LedgerEntryForm() {
 
             <LedgerItemsFormTable />
             
-            <Button type="submit" variant="contained">
+            <Button type="submit" variant="contained" sx={{ my : 2 }}>
               Record
             </Button>
           </FormGroup>
