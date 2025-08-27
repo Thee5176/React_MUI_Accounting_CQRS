@@ -22,7 +22,7 @@ export default function CoaField({ insertIndex }: { insertIndex: number }) {
 
   const endpoint = useContext(BaseUrlContext);
   const fetchCoa = async () => {
-    const res = await fetch(endpoint.query + "/available-coa/json", {
+    const res = await fetch(`${endpoint.query}/available-coa/json`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

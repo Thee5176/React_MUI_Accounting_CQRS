@@ -13,27 +13,15 @@ interface ExpandMoreProps extends IconButtonProps {
 }
 // Expand Icon Animation
 const ExpandMore = styled((props: ExpandMoreProps) => {
-  const { ...other } = props;
-  return <IconButton {...other} />;
+  const { expand, ...other } = props;
+  return <IconButton style={{
+    transform: expand ? 'rotate(180deg)' : 'rotate(0deg)'
+  }} {...other} />;
 })(({ theme }) => ({
   marginLeft: 'auto',
   transition: theme.transitions.create('transform', {
     duration: theme.transitions.duration.shortest,
-  }),
-  variants: [
-    {
-      props: ({ expand }) => !expand,
-      style: {
-        transform: 'rotate(0deg)',
-      },
-    },
-    {
-      props: ({ expand }) => !!expand,
-      style: {
-        transform: 'rotate(180deg)',
-      },
-    },
-  ],
+  })
 }));
 
 export default function BalanceCheckRow() {

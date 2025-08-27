@@ -91,7 +91,7 @@ export default function TransactionDataGrid() {
     //define function to fetch data from the server
     const endpoint = useContext(BaseUrlContext);
     const fetchRows = async () => {
-        const res = await fetch( endpoint.query + '/api/ledgers/all', {
+        const res = await fetch( `${endpoint.query}/api/ledgers/all`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
