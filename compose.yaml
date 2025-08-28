@@ -9,5 +9,7 @@ services:
           target: /app/src
         - path: package.json
           action: rebuild
+    env_file:
+      - ../env.properties
     ports:
-    - "8185:5173"
+    - "80:5173"

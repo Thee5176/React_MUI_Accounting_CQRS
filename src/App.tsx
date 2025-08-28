@@ -1,6 +1,6 @@
 import Container from '@mui/material/Container';
 import { RouterProvider } from 'react-router-dom';
-import { routes } from './routes';
+import { routes } from './Routes';
 
 function App() {
 
