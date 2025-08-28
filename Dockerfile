@@ -1,14 +1,7 @@
-FROM node:22-alpine
+FROM node:22-alpine AS builder
 
 WORKDIR /app
 
-COPY package*.json .
-COPY tsconfig*.json .
+COPY /dist ./dist
 
-RUN npm install
-
-COPY . .
-
-EXPOSE 5173
-
-CMD [ "npm","run", "dev" ]
+CMD ["npx", "serve", "-s", "dist"]
