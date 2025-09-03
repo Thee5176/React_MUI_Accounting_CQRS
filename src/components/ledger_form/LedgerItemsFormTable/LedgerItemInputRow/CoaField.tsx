@@ -1,7 +1,7 @@
 import FormControl from '@mui/material/FormControl';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useRef, useState } from "react";
 import { Controller, useFormContext } from 'react-hook-form';
 import { BaseUrlContext } from '../../../../contexts/BaseUrlContext';
 import type { LedgerEntry } from '../../../../pages/LedgerEntryForm';
@@ -22,7 +22,7 @@ export default function CoaField({ insertIndex }: { insertIndex: number }) {
 
   const endpoint = useContext(BaseUrlContext);
   const fetchCoa = async () => {
-    const res = await fetch(`${endpoint.query}/available-coa/json`, {
+    const res = await fetch(endpoint.query + "/available-coa/json", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -32,12 +32,12 @@ export default function CoaField({ insertIndex }: { insertIndex: number }) {
     setCodeOfAccounts(data);
   };
 
-  useEffect(() => {
+  useRef(() => {
     fetchCoa();
   });
 
   return (
-    <FormControl sx={{ width: "100%", minWidth: "171px" }}>
+    <FormControl sx={{ py: 3, width: "60%", minWidth: "171px" }}>
       <Controller
         control={control}
         name={`ledgerItems.${insertIndex}.coa`}

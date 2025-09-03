@@ -7,14 +7,14 @@ import { useFieldArray, useFormContext } from "react-hook-form";
 import type { LedgerEntry } from "../../../../pages/LedgerEntryForm";
 import ErrorAlert from "../../ErrorAlert";
 import AmountField from "./AmountField";
-import BalanceTypeField from "./BalanceTypeField";
+import BalanceTypeHiddenField from "./BalanceTypeField";
 import CoaField from "./CoaField";
 
-export interface indexProps {
-  setRowCount: React.Dispatch<React.SetStateAction<number>>;
-}
-
-export default function LedgerItemInputRow() {
+export default function LedgerItemInputRow({
+  balanceType,
+}: {
+  balanceType: string;
+}) {
   const {
     control,
     formState: { errors },
