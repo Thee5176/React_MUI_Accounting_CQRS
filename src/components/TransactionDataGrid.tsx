@@ -1,6 +1,7 @@
 import { DataGrid } from "@mui/x-data-grid/DataGrid";
 import type { GridColDef, GridColumnGroupingModel, GridRowsProp } from "@mui/x-data-grid/models";
-import { useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
+import { BaseUrlContext } from "../contexts/BaseUrlContext";
 
 //instance type of LedgerItemsAggregate
 interface LedgerItemsAggregate {
@@ -121,8 +122,9 @@ export default function TransactionDataGrid() {
     //fetch once every render
     const hasFetched = useRef<boolean>(false);
 
-    if (hasFetched) {
+    if (! hasFetched.current) {
       fetchRows()
+      hasFetched.current = true;
       console.log(`Transaction Data Last Update : ${Date.now}`)
     }
 

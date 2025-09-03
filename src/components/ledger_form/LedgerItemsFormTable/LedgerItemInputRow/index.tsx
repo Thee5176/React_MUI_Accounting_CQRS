@@ -7,14 +7,10 @@ import { useFieldArray, useFormContext } from "react-hook-form";
 import type { LedgerEntry } from "../../../../pages/LedgerEntryForm";
 import ErrorAlert from "../../ErrorAlert";
 import AmountField from "./AmountField";
-import BalanceTypeHiddenField from "./BalanceTypeField";
+import BalanceTypeField from "./BalanceTypeField";
 import CoaField from "./CoaField";
 
-export default function LedgerItemInputRow({
-  balanceType,
-}: {
-  balanceType: string;
-}) {
+export default function LedgerItemInputRow() {
   const {
     control,
     formState: { errors },

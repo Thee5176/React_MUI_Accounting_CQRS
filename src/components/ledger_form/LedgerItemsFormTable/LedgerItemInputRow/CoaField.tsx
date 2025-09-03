@@ -32,9 +32,12 @@ export default function CoaField({ insertIndex }: { insertIndex: number }) {
     setCodeOfAccounts(data);
   };
 
-  useRef(() => {
+  const hasFetched = useRef<boolean>(false); 
+
+  if (! hasFetched.current) {
     fetchCoa();
-  });
+    hasFetched.current = true;
+  };
 
   return (
     <FormControl sx={{ py: 3, width: "60%", minWidth: "171px" }}>
