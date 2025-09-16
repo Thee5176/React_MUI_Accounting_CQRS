@@ -27,25 +27,25 @@ export default function SlotsSignIn() {
           axios({
             method: "POST",
             url: "/api/v1/auth/login",
-            headers: { "Authorization" : cookies?.token},
+            headers: { Authorization: `Bearer ${cookies?.token}` },
             data: {
               username: provider.name,
               password: formData.get("password"),
             },
           })
-          // TODO : fetch result flag and reder error message
-          .then(
-            (response) => {
+            // TODO : fetch result flag and reder error message
+            .then((response) => {
               if (response.status === 200) {
                 // TODO : redirect and  render sucessful notification
                 setCookie("token", response.data.token);
+                console.log("Login Sucesfully")
               }
               throw new Error("Invalid credentials");
-            }
-          )
-          .catch((error) => {
-            throw new Error(error.response.data.message);
-          })
+            })
+            .catch((error) => {
+              console.log("Login Sucesfully")
+              throw new Error(error.response.data.message);
+            })
         }
         slots={{
           title: Title,
