@@ -12,4 +12,4 @@ services:
     env_file:
       - ../env.properties
     ports:
-    - "3000:3000"
+    - "80:3000"

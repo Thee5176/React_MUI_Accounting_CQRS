@@ -7,7 +7,7 @@ import ErrorAlert from "../components/ledger_form/ErrorAlert";
 import DateField from "../components/ledger_form/LedgerInputField/DateField";
 import DescriptionField from "../components/ledger_form/LedgerInputField/DescriptionField";
 import LedgerItemsFormTable from "../components/ledger_form/LedgerItemsFormTable/index";
-import { BaseUrlContext } from "../contexts/BaseUrlContext";
+import { BaseUrlContext } from "../hooks/contexts/BaseUrlContext";
 
 export interface LedgerEntry {
   id: string;

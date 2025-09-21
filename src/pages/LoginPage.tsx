@@ -1,8 +1,6 @@
 import { useTheme } from "@mui/material/styles";
 import { AppProvider } from "@toolpad/core/AppProvider";
 import { SignInPage } from "@toolpad/core/SignInPage";
-import axios from "axios";
-import { useCookies } from "react-cookie";
 import {
   ForgotPasswordLink,
   SignUpLink,
@@ -13,40 +11,20 @@ import {
 import EmailField from "../components/login/EmailField";
 import PasswordField from "../components/login/PasswordField";
 import RememberMeCheckbox from "../components/login/RememberMeCheckbox";
+import { axiosQueryClient } from "../service/api";
 
 const providers = [{ id: "credentials", name: "Email and Password" }];
 
 export default function SlotsSignIn() {
   const theme = useTheme();
-  const [cookies, setCookie] = useCookies();
 
   return (
     <AppProvider theme={theme}>
       <SignInPage
-        signIn={(provider, formData) =>
-          axios({
-            method: "POST",
-            url: "/api/v1/auth/login",
-            headers: { Authorization: `Bearer ${cookies?.token}` },
-            data: {
-              username: provider.name,
-              password: formData.get("password"),
-            },
-          })
-            // TODO : fetch result flag and reder error message
-            .then((response) => {
-              if (response.status === 200) {
-                // TODO : redirect and  render sucessful notification
-                setCookie("token", response.data.token);
-                console.log("Login Sucesfully")
-              }
-              throw new Error("Invalid credentials");
-            })
-            .catch((error) => {
-              console.log("Login Sucesfully")
-              throw new Error(error.response.data.message);
-            })
-        }
+        signIn={async (formData) => {
+            const response = await axiosQueryClient.post("/api/v1/auth/login", formData);
+            return response.data;
+        }}
         slots={{
           title: Title,
           subtitle: Subtitle,

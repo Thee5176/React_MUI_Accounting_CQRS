@@ -1,7 +1,7 @@
 import { DataGrid } from "@mui/x-data-grid/DataGrid";
 import type { GridColDef, GridColumnGroupingModel, GridRowsProp } from "@mui/x-data-grid/models";
 import { useContext, useRef, useState } from "react";
-import { BaseUrlContext } from "../contexts/BaseUrlContext";
+import { BaseUrlContext } from "../hooks/contexts/BaseUrlContext";
 
 //instance type of LedgerItemsAggregate
 interface LedgerItemsAggregate {

@@ -1,40 +1,53 @@
 import { createTheme } from '@mui/material/styles';
 
 const theme = createTheme({
+  cssVariables: {
+    colorSchemeSelector: "data-toolpad-color-scheme",
+  },
+  colorSchemes: { light: true, dark: true },
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 600,
+      md: 600,
+      lg: 1200,
+      xl: 1536,
+    },
+  },
   palette: {
     primary: {
-      main: '#2196F3',
-      contrastText: '#FFFFFF',
+      main: "#2196F3",
+      contrastText: "#FFFFFF",
     },
     secondary: {
-      main: '#9C27B0',
+      main: "#9C27B0",
     },
     error: {
-      main: '#D32F2F',
+      main: "#D32F2F",
     },
     warning: {
-      main: '#EF6C00',
-      dark: '#E65100',
+      main: "#EF6C00",
+      dark: "#E65100",
     },
     info: {
-      main: '#0288D1',
+      main: "#0288D1",
     },
     success: {
-      main: '#2E7D32',
+      main: "#2E7D32",
     },
     text: {
-      primary: 'rgba(0, 0, 0, 0.87)',
+      primary: "rgba(0, 0, 0, 0.87)",
     },
     common: {
-      white: '#FFFFFF',
+      white: "#FFFFFF",
     },
     action: {
-      disabledBackground: 'rgba(0, 0, 0, 0.12)',
+      disabledBackground: "rgba(0, 0, 0, 0.12)",
     },
   },
   typography: {
-    fontFamily : 'roboto'
-  }
+    fontFamily: "roboto",
+  },
 });
 
 export default theme;
