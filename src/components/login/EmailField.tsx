@@ -2,7 +2,7 @@ import AccountCircle from "@mui/icons-material/AccountCircle";
 import InputAdornment from "@mui/material/InputAdornment";
 import TextField from "@mui/material/TextField";
 
-export default function EmailField() {
+export function EmailField() {
   return (
     <TextField
       id="input-with-icon-textfield"

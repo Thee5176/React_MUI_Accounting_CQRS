@@ -4,11 +4,12 @@ import { axiosCommandClient } from ".";
 
 //Config Command API Endpoint
 export function AxiosCommandClientProvider({children}: {children: React.ReactNode}) {
+  // const [cookies, , ] = useCookies(['token']);
+  
   useEffect(() => {
     const requestInterceptor = axiosCommandClient.interceptors.request.use((config) => {
       if (config.headers !== undefined) {
-        // ヘッダにアクセストークンを埋める
-        // const accessToken = getAccessToken()
+        // const accessToken = cookies.get('token')
         // if (accessToken) {
         //   config.headers.Authorization = `Bearer ${accessToken}`
         // }

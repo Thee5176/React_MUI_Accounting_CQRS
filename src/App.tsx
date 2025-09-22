@@ -1,12 +1,14 @@
 import Container from '@mui/material/Container';
+import { CookiesProvider } from 'react-cookie';
 import { RouterProvider } from 'react-router-dom';
 import { routes } from './Routes';
 
-function App() {
-
+function App() : React.ReactElement {
   return (
       <Container sx={{height:'100vh'}}>
-        <RouterProvider router={routes}/>
+        <CookiesProvider>
+          <RouterProvider router={routes}/>
+        </CookiesProvider>
       </Container>
   ) 
 }

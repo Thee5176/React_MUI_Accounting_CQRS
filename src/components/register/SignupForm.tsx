@@ -1,16 +1,20 @@
 import { Typography } from "@mui/material";
 import Button from "@mui/material/Button";
 import FormGroup from "@mui/material/FormGroup";
-import { useContext, useEffect } from "react";
+import { useEffect } from "react";
 import { FormProvider, useForm, type SubmitHandler } from "react-hook-form";
-import { BaseUrlContext } from "../../hooks/contexts/BaseUrlContext";
+import { axiosCommandClient } from "../../service/api";
+import EmailField from "../login/EmailField";
+import PasswordField from "../login/PasswordField";
+import FirstNameField from "./FirstNameField";
+import LastNameField from "./LastNameField";
 
 
 export interface CreateUser{
-    username : string,
-    password : string,
-    firstname : string,
-    lastname : string,
+  firstname : string,
+  lastname : string,
+  username : string,
+  password : string,
 
 };
 
@@ -23,37 +27,28 @@ export default function SignUpForm(){
         handleSubmit,
         watch,
         reset,
-        formState: { errors, isSubmitSuccessful },
+        formState: { isSubmitSuccessful },
       } = formContext;
     
-      // Send Data to Command Service
-      const endpoint = useContext(BaseUrlContext);
-      
       const postCreateUser = async (data: CreateUser) => {  
-        const response = await fetch( endpoint.command + "/ledger", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        });
-        return await response.text();
+        return await axiosCommandClient.post('/auth/v1/login', data)
       };
     
       const onSubmit: SubmitHandler<CreateUser> = async (data: CreateUser) => {    
     
         console.log(data);
-        const result = await console.log(data);
+        const result = await postCreateUser(data)
         console.log(result);
       };
+
       // Reset form after submission
       useEffect(() => {
         if (isSubmitSuccessful) {
           reset({
-            username: "",
-            password: "",
             firstname: "",
             lastname: "",
+            username: "",
+            password: "",
           });
         }
       }, [reset, isSubmitSuccessful]);
@@ -66,6 +61,11 @@ export default function SignUpForm(){
         <FormProvider  {...formContext}>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <FormGroup>
+
+                    <FirstNameField />
+                    <LastNameField />
+                    <EmailField />
+                    <PasswordField />
 
                     <Button type="submit" variant="contained" sx={{ my : 2 }}>
                     Create Account
