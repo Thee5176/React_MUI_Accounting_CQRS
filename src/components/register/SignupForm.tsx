@@ -4,10 +4,10 @@ import FormGroup from "@mui/material/FormGroup";
 import { useEffect } from "react";
 import { FormProvider, useForm, type SubmitHandler } from "react-hook-form";
 import { axiosCommandClient } from "../../service/api";
-import EmailField from "../login/EmailField";
-import PasswordField from "../login/PasswordField";
-import FirstNameField from "./FirstNameField";
-import LastNameField from "./LastNameField";
+import SetEmailField from "./REmailField";
+import SetFirstNameField from "./RFirstNameField";
+import SetLastNameField from "./RLastNameField";
+import SetPasswordField from "./RPasswordField";
 
 
 export interface CreateUser{
@@ -31,11 +31,10 @@ export default function SignUpForm(){
       } = formContext;
     
       const postCreateUser = async (data: CreateUser) => {  
-        return await axiosCommandClient.post('/auth/v1/login', data)
+        return await axiosCommandClient.post('/api/auth/v1/register', data)
       };
     
-      const onSubmit: SubmitHandler<CreateUser> = async (data: CreateUser) => {    
-    
+      const onSubmit: SubmitHandler<CreateUser> = async (data: CreateUser) => {
         console.log(data);
         const result = await postCreateUser(data)
         console.log(result);
@@ -61,11 +60,10 @@ export default function SignUpForm(){
         <FormProvider  {...formContext}>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <FormGroup>
-
-                    <FirstNameField />
-                    <LastNameField />
-                    <EmailField />
-                    <PasswordField />
+                    <SetFirstNameField />
+                    <SetLastNameField />
+                    <SetEmailField />
+                    <SetPasswordField />
 
                     <Button type="submit" variant="contained" sx={{ my : 2 }}>
                     Create Account

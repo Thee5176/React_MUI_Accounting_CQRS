@@ -1,15 +1,15 @@
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import FormControl from "@mui/material/FormControl";
 import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
-import InputLabel from "@mui/material/InputLabel";
 import OutlinedInput from "@mui/material/OutlinedInput";
-import React from "react";
+import { useState } from "react";
+import { Controller, useFormContext } from "react-hook-form";
 
-export default function PasswordField() {
-  const [showPassword, setShowPassword] = React.useState(false);
-
+export default function SetPasswordField() {
+  const { control } = useFormContext();
+  const [showPassword, setShowPassword] = useState(false);
+  
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
   const handleMouseDownPassword = (event: React.MouseEvent) => {
@@ -17,15 +17,11 @@ export default function PasswordField() {
   };
 
   return (
-    <FormControl sx={{ my: 2 }} fullWidth variant="outlined">
-      <InputLabel size="small" htmlFor="outlined-adornment-password">
-        Password
-      </InputLabel>
-      <OutlinedInput
-        id="outlined-adornment-password"
-        type={showPassword ? "text" : "password"}
-        name="password"
-        size="small"
+    <Controller
+      name="password"
+      control={control}
+      render={() => (
+        <OutlinedInput
         endAdornment={
           <InputAdornment position="end">
             <IconButton
@@ -45,6 +41,7 @@ export default function PasswordField() {
         }
         label="Password"
       />
-    </FormControl>
+      )}
+    />
   );
 }

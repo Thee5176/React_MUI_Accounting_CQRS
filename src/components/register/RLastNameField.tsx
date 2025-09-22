@@ -1,7 +1,7 @@
 import TextField from "@mui/material/TextField";
 import { Controller, useFormContext } from "react-hook-form";
 
-export default function LastnameField() {
+export default function SetLastNameField() {
   const { control } = useFormContext();
   return (
     <Controller

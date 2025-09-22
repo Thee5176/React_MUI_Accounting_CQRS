@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { axiosCommandClient } from "../../service/api";
 
 export const useLogout = () => {
+    // Remove Authentication Credential
     const [, , removeCookie] = useCookies(['token']);
     const navigate = useNavigate();
     const logout = () => {
@@ -23,13 +24,10 @@ export const useLogin = () => {
 }
 
 export const useAuth = () => {
+    // Retreive Authorization Credential from Cookies and set Request "Authorization" header
     const [cookies] = useCookies(['token']);
-    const navigate = useNavigate();
     if (cookies.token) {
         axiosCommandClient.defaults.headers.common['Authorization'] = `Bearer ${cookies.token}`;
         return true;
-    } else {
-        console.log('access token not found')
-        navigate('/auth/login');
     }
 }

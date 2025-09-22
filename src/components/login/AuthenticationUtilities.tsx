@@ -22,7 +22,7 @@ export function SubmitButton() {
 
 export function SignUpLink() {
   return (
-    <Link href="/" variant="body2">
+    <Link href="/auth/register" variant="body2">
       Sign up
     </Link>
   );
