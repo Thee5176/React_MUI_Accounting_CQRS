@@ -5,7 +5,7 @@ export default function SetEmailField() {
   const { control } = useFormContext();
   return (
     <Controller
-      name="username"
+      name="email"
       control={control}
       render={({ field }) => (
         <TextField {...field} label="Email Address" variant="outlined" />

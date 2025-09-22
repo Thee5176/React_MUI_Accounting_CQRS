@@ -1,18 +1,21 @@
 import type { AxiosError, AxiosResponse } from "axios";
 import { useEffect } from "react";
+import { useCookies } from "react-cookie";
 import { axiosQueryClient } from ".";
 
 //Config Query API Endpoint
 export function AxiosQueryClientProvider({children}: {children: React.ReactNode}) {
+  const [cookies, , ] = useCookies(['token']);
+  
+  
   useEffect (() => {
     //Config Query API Endpoint
     const requestQueryInterceptor = axiosQueryClient.interceptors.request.use((config) => {
         if (config.headers !== undefined) {
-          // ヘッダにアクセストークンを埋める
-          // const accessToken = getAccessToken()
-          // if (accessToken) {
-          //   config.headers.Authorization = `Bearer ${accessToken}`
-          // }
+          const accessToken = cookies.token;
+          if (accessToken) {
+            config.headers.Authorization = `Bearer ${accessToken}`;
+          }
         }
         return config;
     });
@@ -23,12 +26,11 @@ export function AxiosQueryClientProvider({children}: {children: React.ReactNode}
     },
     (error: AxiosError) => {
       switch (error.response?.status) {
-        case 401:
-          // 401の場合はログイン画面にリダイレクト
-          // window.location.href = '/login'
-          break
+        case 403:
+          window.location.href = "/auth/login";
+          break;
         default:
-          break
+          break;
       }
       return Promise.reject(error);
     });
@@ -38,7 +40,7 @@ export function AxiosQueryClientProvider({children}: {children: React.ReactNode}
     axiosQueryClient.interceptors.response.eject(responseQueryInterceptor)
   }
 
-  }, []);
+  }, [cookies.token]);
 
   return(<>{children}</>);
 }
