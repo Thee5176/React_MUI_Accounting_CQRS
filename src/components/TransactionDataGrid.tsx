@@ -1,6 +1,6 @@
 import { DataGrid } from "@mui/x-data-grid/DataGrid";
 import type { GridColDef, GridColumnGroupingModel, GridRowsProp } from "@mui/x-data-grid/models";
-import { useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { axiosQueryClient } from "../service/api";
 
 //instance type of LedgerItemsAggregate
@@ -85,42 +85,42 @@ export default function TransactionDataGrid() {
             ]
         }
     ] 
-    //fetch data with Event hook and put data into row state
-    const [rowData, setRowData] = useState<GridRowsProp>([]);
+  //fetch data with Event hook and put data into row state
+  const [rowData, setRowData] = useState<GridRowsProp>([]);
 
-    //define function to fetch data from the server
-    const fetchRows = async () => {
-        const res = await axiosQueryClient.get('/api/ledgers/all');
-        const data: LedgerResponse[] = await res.data;
+  //define function to fetch data from the server
+  const fetchRows = async () => {
+    try {
+      const res = await axiosQueryClient.get('/api/ledgers/all');
+      const data: LedgerResponse[] = res.data;
 
-        // Flatten ledgerItems for each ledger into rows
-        const dataRows = data.flatMap((ledger, idx) =>
-            ledger.ledgerItems.map((item, idy) => ({
-                id: `${idx}-${idy}`,
-                date: ledger.date,
-                coa: item.coa,
-                description: ledger.description,
-                debit: item.type === 'Debit' ? item.amount : '',
-                credit: item.type === 'Credit' ? item.amount : '',
-                balance: item.type == 'Debit' ? item.amount : -item.amount,
-                transaction_balance: ledger.ledgerItems.map((entry) => (
-                    entry.amount / 2
-                )).reduce((curr, balance) => curr + balance, 0),
-            })
-            // sort ledgeritem by Code of Account
-            ).sort((a,b) => a.coa - b.coa)
-        );
-        setRowData(dataRows);
-    };
-
-    //fetch once every render
-    const hasFetched = useRef<boolean>(false);
-
-    if (! hasFetched.current) {
-      fetchRows()
-      hasFetched.current = true;
-      console.log(`Transaction Data Last Update : ${Date.now}`)
+      // Flatten ledgerItems for each ledger into rows
+      const dataRows = data.flatMap((ledger, idx) =>
+        ledger.ledgerItems.map((item, idy) => ({
+          id: `${idx}-${idy}`,
+          date: ledger.date,
+          coa: item.coa,
+          description: ledger.description,
+          debit: item.type === 'Debit' ? item.amount : '',
+          credit: item.type === 'Credit' ? item.amount : '',
+          balance: item.type == 'Debit' ? item.amount : -item.amount,
+          transaction_balance: ledger.ledgerItems.map((entry) => (
+            entry.amount / 2
+          )).reduce((curr, balance) => curr + balance, 0),
+        })
+        // sort ledgeritem by Code of Account
+        ).sort((a,b) => a.coa - b.coa)
+      );
+      setRowData(dataRows);
+    } catch (err) {
+      console.error('Failed to fetch ledger rows', err);
     }
+  };
+
+  //fetch once after the component mounts (ensures interceptors are registered)
+  useEffect(() => {
+    fetchRows();
+  }, []);
 
     return (
       <DataGrid
