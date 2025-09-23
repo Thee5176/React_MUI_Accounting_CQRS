@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import LoginForm from "../components/login/LoginForm";
 import AuthLayout from "../layout/user";
 
-export default function SlotsSignIn() {
+export default function LoginPage() {
 
   return (
     <AuthLayout >

@@ -2,9 +2,10 @@ import { createBrowserRouter } from "react-router-dom";
 import Layout from "./Layout";
 import GeneralLedgerView from "./pages/GeneralLedgerView";
 import LedgerEntryForm from "./pages/LedgerEntryForm";
-import SlotsSignIn from "./pages/LoginPage";
+import LoginPage from "./pages/LoginPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import SignUpPage from "./pages/SignUpPage";
+import ProtectedRoute from "./service/route/ProtectedRoute";
 // Import required hooks and components for authentication
 export const routes = createBrowserRouter([
   {
@@ -15,16 +16,20 @@ export const routes = createBrowserRouter([
       { 
         path: "/", 
         element: (
-            <GeneralLedgerView />
+            <ProtectedRoute>
+              <GeneralLedgerView />
+            </ProtectedRoute>
         )
       },
       { 
         path: "/form", 
         element: (
+          <ProtectedRoute>
             <LedgerEntryForm />
+          </ProtectedRoute>
         )
       },
-      { path: "/auth/login", element: <SlotsSignIn /> },
+      { path: "/auth/login", element: <LoginPage /> },
       { path: "/auth/register", element: <SignUpPage /> },
     ],
   },
