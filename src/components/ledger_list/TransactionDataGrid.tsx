@@ -1,7 +1,7 @@
 import { DataGrid } from "@mui/x-data-grid/DataGrid";
 import type { GridColDef, GridColumnGroupingModel, GridRowsProp } from "@mui/x-data-grid/models";
-import { useContext, useEffect, useState } from "react";
-import { BaseUrlContext } from "../../hooks/contexts/BaseUrlContext";
+import { useEffect, useState } from "react";
+import { axiosQueryClient } from "../../service/api";
 
 //instance type of LedgerItemsAggregate
 interface LedgerItemsAggregate {
@@ -89,15 +89,10 @@ export default function TransactionDataGrid() {
     const [rowData, setRowData] = useState<GridRowsProp>([]);
 
     //define function to fetch data from the server
-    const endpoint = useContext(BaseUrlContext);
     const fetchRows = async () => {
-        const res = await fetch( `${endpoint.query}/api/ledgers/all`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
-        const data: LedgerResponse[] = await res.json();
+        const response = await axiosQueryClient.get('/api/ledgers/all');
+
+        const data: LedgerResponse[] = response.data;
 
         console.log('Before :' ,data);
 

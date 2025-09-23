@@ -1,7 +1,7 @@
 import { DataGrid } from "@mui/x-data-grid/DataGrid";
 import type { GridColDef, GridColumnGroupingModel, GridRowsProp } from "@mui/x-data-grid/models";
-import { useContext, useRef, useState } from "react";
-import { BaseUrlContext } from "../hooks/contexts/BaseUrlContext";
+import { useRef, useState } from "react";
+import { axiosQueryClient } from "../service/api";
 
 //instance type of LedgerItemsAggregate
 interface LedgerItemsAggregate {
@@ -89,15 +89,9 @@ export default function TransactionDataGrid() {
     const [rowData, setRowData] = useState<GridRowsProp>([]);
 
     //define function to fetch data from the server
-    const endpoint = useContext(BaseUrlContext);
     const fetchRows = async () => {
-        const res = await fetch(`${endpoint.query}/api/ledgers/all`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
-        const data: LedgerResponse[] = await res.json();
+        const res = await axiosQueryClient.get('/api/ledgers/all');
+        const data: LedgerResponse[] = await res.data;
 
         // Flatten ledgerItems for each ledger into rows
         const dataRows = data.flatMap((ledger, idx) =>
@@ -109,7 +103,7 @@ export default function TransactionDataGrid() {
                 debit: item.type === 'Debit' ? item.amount : '',
                 credit: item.type === 'Credit' ? item.amount : '',
                 balance: item.type == 'Debit' ? item.amount : -item.amount,
-                transaction_balance: ledger.ledgerItems.map((entry) => (  //TODO refactor o**n pattern!!
+                transaction_balance: ledger.ledgerItems.map((entry) => (
                     entry.amount / 2
                 )).reduce((curr, balance) => curr + balance, 0),
             })

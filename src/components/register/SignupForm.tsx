@@ -1,15 +1,14 @@
-import { Typography } from "@mui/material";
 import Button from "@mui/material/Button";
 import FormGroup from "@mui/material/FormGroup";
 import { useEffect } from "react";
 import { useCookies } from "react-cookie";
 import { FormProvider, useForm, type SubmitHandler } from "react-hook-form";
 import { axiosQueryClient } from "../../service/api";
-import SetEmailField from "./REmailField";
-import SetFirstNameField from "./RFirstNameField";
-import SetLastNameField from "./RLastNameField";
-import SetPasswordField from "./RPasswordField";
-import SetUserNameField from "./RUserNameField";
+import SetEmailField from "./EmailField";
+import SetFirstNameField from "./FirstNameField";
+import SetLastNameField from "./LastNameField";
+import SetPasswordField from "./PasswordField";
+import SetUserNameField from "./UserNameField";
 
 
 export interface CreateUser{
@@ -56,23 +55,20 @@ export default function SignUpForm(){
       }, [reset, isSubmitSuccessful]);
     
     return (
-        <>
-        <Typography variant="h1">Register Account</Typography>
-        <FormProvider  {...formContext}>
-            <form onSubmit={handleSubmit(onSubmit)}>
-                <FormGroup>
-                    <SetFirstNameField />
-                    <SetLastNameField />
-                    <SetUserNameField />
-                    <SetPasswordField />
-                    <SetEmailField />
+      <FormProvider  {...formContext}>
+          <form onSubmit={handleSubmit(onSubmit)}>
+              <FormGroup>
+                  <SetFirstNameField />
+                  <SetLastNameField />
+                  <SetUserNameField />
+                  <SetPasswordField />
+                  <SetEmailField />
 
-                    <Button type="submit" variant="contained" sx={{ my : 2 }}>
-                    Create Account
-                    </Button>
-                </FormGroup>
-            </form>
-        </FormProvider>
-        </>
+                  <Button type="submit" variant="contained" sx={{ my : 2 }}>
+                  Create Account
+                  </Button>
+              </FormGroup>
+          </form>
+      </FormProvider>
     )
 }

@@ -1,14 +1,18 @@
 import DvrIcon from "@mui/icons-material/Dvr";
 import EditNoteIcon from "@mui/icons-material/EditNote";
+import Button from "@mui/material/Button";
 import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
+import { useCookies } from "react-cookie";
 import { Link } from "react-router-dom";
+import { useProvideAuth } from "../hooks/auth";
 
 export default function NavDrawer({ drawerWidth }: { drawerWidth: number }) {
+  
   type MenuItem = {
     path: string;
     name: string;
@@ -33,6 +37,10 @@ export default function NavDrawer({ drawerWidth }: { drawerWidth: number }) {
     </List>
   );
 
+  const [cookies, , ] = useCookies(['token']);
+  const login_status : boolean = cookies.token;
+  const {login, logout} = useProvideAuth();
+
   return (
     <Drawer
       sx={{
@@ -49,6 +57,11 @@ export default function NavDrawer({ drawerWidth }: { drawerWidth: number }) {
       open
     >
       {drawer}
+      {login_status ? (
+        <Button onClick={logout}>Logout</Button>
+      ) : (
+        <Button onClick={() => login()}>Login</Button>
+      )}
     </Drawer>
   );
 }

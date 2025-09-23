@@ -5,8 +5,7 @@ services:
     develop:
       watch:
         - path: ./src
-          action: sync
-          target: /app/src
+          action: rebuild
         - path: package.json
           action: rebuild
     env_file:

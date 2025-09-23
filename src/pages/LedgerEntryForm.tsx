@@ -1,13 +1,13 @@
 import Button from "@mui/material/Button";
 import FormGroup from "@mui/material/FormGroup";
 import Typography from "@mui/material/Typography";
-import { useContext, useEffect } from "react";
+import { useEffect } from "react";
 import { FormProvider, useForm, type SubmitHandler } from "react-hook-form";
 import ErrorAlert from "../components/ledger_form/ErrorAlert";
 import DateField from "../components/ledger_form/LedgerInputField/DateField";
 import DescriptionField from "../components/ledger_form/LedgerInputField/DescriptionField";
 import LedgerItemsFormTable from "../components/ledger_form/LedgerItemsFormTable/index";
-import { BaseUrlContext } from "../hooks/contexts/BaseUrlContext";
+import { axiosCommandClient } from "../service/api";
 
 export interface LedgerEntry {
   id: string;
@@ -36,17 +36,19 @@ export default function LedgerEntryForm() {
   } = formContext;
 
   // Send Data to Command Service
-  const endpoint = useContext(BaseUrlContext);
   const sendLedgerEntry = async (data: LedgerEntry) => {  
-    const response = await fetch( endpoint.command + "/ledger", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-    return await response.text();
-  };
+    
+    try {
+      const response = await axiosCommandClient.post('/ledger',data);
+      console.log(response.data);
+      console.log(response.status);
+      return response.data;
+      
+    } catch (error) {
+      console.error('Failed to send ledger entry data:', error);
+      throw error;
+    }
+  }
 
   const onSubmit: SubmitHandler<LedgerEntry> = async (data: LedgerEntry) => {
     // Add id and timestamp to the data

@@ -1,33 +1,39 @@
 import { useCookies } from "react-cookie";
-import { useNavigate } from "react-router-dom";
-import { axiosCommandClient } from "../../service/api";
+import type { LoginUser } from "../../components/login/LoginForm";
+import { axiosQueryClient, setAuthToken } from "../../service/api";
 
-export const useLogout = () => {
-    // Remove Authentication Credential
-    const [, , removeCookie] = useCookies(['token']);
-    const navigate = useNavigate();
+export interface AuthData {
+    username: string;
+    password: string;
+}
+
+export interface AuthToken {
+    token: string;
+}
+
+export function useProvideAuth() {
+    // Custom hook to check authentication token and handle redirection
+    const [, SetCookies, removeCookies] = useCookies<'token', AuthToken>(['token']);
+
     const logout = () => {
-        removeCookie('token');
-        navigate('/auth/login');
-    }
-    return logout;
-}
+        // Remove Authentication Credential
+        removeCookies("token", { path: "/" });
+        setAuthToken(null);
+        window.location.href = '/auth/login';
+    };
+    
+    const login = async (data?: LoginUser) => {
+        if (data){
+            const response = await axiosQueryClient.post("/api/v1/auth/login", data);
+            const token = response.data?.token || "";
 
-export const useLogin = () => {
-    const [, setCookie] = useCookies(['token']);
-    const navigate = useNavigate();
-    const login = (token: string) => {
-        setCookie('token', token, { path: '/' });
-        navigate('/');
-    }
-    return login;
-}
+            SetCookies('token', token, {path: "/"});
+            setAuthToken(token);
+            window.location.href = "/";
+        } else {
+            window.location.href = "/auth/login";
+        }
+    };
 
-export const useAuth = () => {
-    // Retreive Authorization Credential from Cookies and set Request "Authorization" header
-    const [cookies] = useCookies(['token']);
-    if (cookies.token) {
-        axiosCommandClient.defaults.headers.common['Authorization'] = `Bearer ${cookies.token}`;
-        return true;
-    }
-}
+    return {logout, login}
+};

@@ -5,15 +5,15 @@ import { axiosCommandClient } from ".";
 
 //Config Command API Endpoint
 export function AxiosCommandClientProvider({children}: {children: React.ReactNode}) {
-  const [cookies, , ] = useCookies(['token']);
+  const [cookies, , resetCookies] = useCookies(['token']);
   
   useEffect(() => {
+    // const accessToken = cookies.token
     const requestInterceptor = axiosCommandClient.interceptors.request.use((config) => {
-      if (config.headers !== undefined) {
-        const accessToken = cookies.token
-        if (accessToken) {
-          config.headers.Authorization = `Bearer ${accessToken}`
-        }
+      const accessToken = cookies.token;
+      if (accessToken) {
+        config.headers.Authorization = `Bearer ${accessToken}`;
+        console.log("Command : Token set to Authorize Header");
       }
       return config;
       }
@@ -25,11 +25,12 @@ export function AxiosCommandClientProvider({children}: {children: React.ReactNod
       },
       (error: AxiosError) => {
         switch (error.response?.status) {
-          case 403:
-            window.location.href = '/auth/login'
-            break;
-          default:
-            break;
+        case 403:
+          resetCookies('token');
+          window.location.href = "/auth/login";
+          break;
+        default:
+          break;
         }
         return Promise.reject(error);
       }
@@ -40,7 +41,7 @@ export function AxiosCommandClientProvider({children}: {children: React.ReactNod
       axiosCommandClient.interceptors.response.eject(responseInterceptor)
     }
 
-  }, [cookies])
+  }, [cookies, resetCookies])
   
   return (<>{children}</>)
 }

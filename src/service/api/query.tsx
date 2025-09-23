@@ -5,17 +5,16 @@ import { axiosQueryClient } from ".";
 
 //Config Query API Endpoint
 export function AxiosQueryClientProvider({children}: {children: React.ReactNode}) {
-  const [cookies, , ] = useCookies(['token']);
   
+  const [cookies, , resetCookies] = useCookies(['token']);
   
   useEffect (() => {
     //Config Query API Endpoint
     const requestQueryInterceptor = axiosQueryClient.interceptors.request.use((config) => {
-        if (config.headers !== undefined) {
-          const accessToken = cookies.token;
-          if (accessToken) {
-            config.headers.Authorization = `Bearer ${accessToken}`;
-          }
+        const accessToken = cookies.token;
+        if (accessToken) {
+          config.headers.Authorization = `Bearer ${accessToken}`;
+          console.log("Query : Token set to Authorize Header");
         }
         return config;
     });
@@ -27,6 +26,7 @@ export function AxiosQueryClientProvider({children}: {children: React.ReactNode}
     (error: AxiosError) => {
       switch (error.response?.status) {
         case 403:
+          resetCookies('token');
           window.location.href = "/auth/login";
           break;
         default:
@@ -40,7 +40,7 @@ export function AxiosQueryClientProvider({children}: {children: React.ReactNode}
     axiosQueryClient.interceptors.response.eject(responseQueryInterceptor)
   }
 
-  }, [cookies.token]);
+  }, [cookies.token, resetCookies]);
 
   return(<>{children}</>);
 }

@@ -1,10 +1,10 @@
 import FormControl from '@mui/material/FormControl';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
-import { useContext, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Controller, useFormContext } from 'react-hook-form';
-import { BaseUrlContext } from '../../../../hooks/contexts/BaseUrlContext';
 import type { LedgerEntry } from '../../../../pages/LedgerEntryForm';
+import { axiosQueryClient } from '../../../../service/api';
 
 interface AvailableCodeOfAccount {
     code: number;
@@ -20,21 +20,16 @@ export default function CoaField({ insertIndex }: { insertIndex: number }) {
     AvailableCodeOfAccount[]
   >([]);
 
-  const endpoint = useContext(BaseUrlContext);
   const fetchCoa = async () => {
-    const res = await fetch(endpoint.query + "/available-coa/json", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    const data: AvailableCodeOfAccount[] = await res.json();
+    const response = await axiosQueryClient.post('/available-coa/json');
+
+    const data: AvailableCodeOfAccount[] = await response.data;
     setCodeOfAccounts(data);
   };
 
   const hasFetched = useRef<boolean>(false); 
 
-  if (! hasFetched.current) {
+  if (!hasFetched.current) {
     fetchCoa();
     hasFetched.current = true;
   };
