@@ -13,9 +13,12 @@ export interface AuthToken {
 
 export function useProvideAuth() {
     // Custom hook to check authentication token and handle redirection
-    const [, SetCookies, removeCookies] = useCookies<'token', AuthToken>(['token']);
+    const [cookies, SetCookies, removeCookies] = useCookies<'token', AuthToken>(['token']);
 
     const logout = () => {
+        if (cookies.token) {
+            window.location.href = "/"
+        }
         // Remove Authentication Credential
         removeCookies("token", { path: "/" });
         setAuthToken(null);
@@ -23,6 +26,9 @@ export function useProvideAuth() {
     };
     
     const login = async (data?: LoginUser) => {
+        if (cookies.token) {
+            window.location.href = "/"
+        }
         if (data){
             const response = await axiosQueryClient.post("/api/v1/auth/login", data);
             const token = response.data?.token || "";
@@ -35,5 +41,14 @@ export function useProvideAuth() {
         }
     };
 
-    return {logout, login}
+    const signup = async (data: AuthData) => {
+        if (cookies.token) {
+            window.location.href = "/"
+        }
+        await axiosQueryClient.post("/api/v1/auth/signup", data);
+        
+        window.location.href = "/auth/login";
+    };
+
+    return {logout, login, signup}
 };

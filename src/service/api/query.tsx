@@ -5,7 +5,6 @@ import { axiosQueryClient } from ".";
 
 //Config Query API Endpoint
 export function AxiosQueryClientProvider({children}: {children: React.ReactNode}) {
-  
   const [cookies, , resetCookies] = useCookies(['token']);
   
   useEffect (() => {

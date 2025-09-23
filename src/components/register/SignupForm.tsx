@@ -1,9 +1,8 @@
 import Button from "@mui/material/Button";
 import FormGroup from "@mui/material/FormGroup";
 import { useEffect } from "react";
-import { useCookies } from "react-cookie";
 import { FormProvider, useForm, type SubmitHandler } from "react-hook-form";
-import { axiosQueryClient } from "../../service/api";
+import { useProvideAuth } from "../../hooks/auth";
 import SetEmailField from "./EmailField";
 import SetFirstNameField from "./FirstNameField";
 import SetLastNameField from "./LastNameField";
@@ -20,23 +19,17 @@ export interface CreateUser{
 };
 
 export default function SignUpForm(){ 
-      const [, SetCookies, ] = useCookies(['token']);
+      const {signup} = useProvideAuth();
       const formContext = useForm<CreateUser>();
-      
+
       const {
         handleSubmit,
         reset,
         formState: { isSubmitSuccessful },
       } = formContext;
     
-      const postCreateUser = async (data: CreateUser) => {  
-        const response = await axiosQueryClient.post('/api/v1/auth/register', data);
-        return response.data;
-      };
-    
       const onSubmit: SubmitHandler<CreateUser> = async (data: CreateUser) => {
-        const result = await postCreateUser(data);
-        SetCookies('token', result.token, { path: '/' });
+        const result = await signup(data);
         console.log(data);
         console.log(result);
       };

@@ -24,9 +24,9 @@ export default function LoginForm() {
     } = formContext;
 
     const onSubmit: SubmitHandler<CreateUser> = async (data: CreateUser) => {
-    const result = await login(data);
-    console.log(data);
-    console.log(result);
+      const result = await login(data);
+      console.log(data);
+      console.log(result);
     };
 
     // Reset form after submission

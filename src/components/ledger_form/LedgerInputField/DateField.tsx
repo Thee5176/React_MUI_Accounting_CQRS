@@ -19,7 +19,7 @@ export default function DateField() {
           required: { value: true, message: "Date is required" },
           validate: (value: string) => {
             const date = new Date(value);
-            return date.getTime() < new Date().getTime() || "Invalid date";
+            return date.getTime() <= new Date().getTime() || "Invalid date";
           },
         }}
         render={({ field }) => (

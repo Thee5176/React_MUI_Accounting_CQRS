@@ -1,8 +1,8 @@
-import { useProvideAuth } from ".";
 import { authContext } from "./context";
+import { useAuth } from "./useAuth";
 
 export default function ProvideAuth({children} : {children: React.ReactElement}){
-    const auth = useProvideAuth();
+    const auth = useAuth();
     return (
         <authContext.Provider value={auth}>
             {children}
