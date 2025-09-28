@@ -1,11 +1,14 @@
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation, type Location } from "react-router-dom";
 import NavDrawer from "./components/NavDrawer";
 
 export default function Layout() {
-    const drawerWidth:number = 240;
-    
+    const path : Location = useLocation();
+    const isAuthPath : boolean = path.pathname.startsWith("/auth");
+
+    const drawerWidth: number = isAuthPath ? 0 : 240;
+
     return (
         <Container sx={{ display: "flex" }}>
             <NavDrawer drawerWidth={drawerWidth}/>

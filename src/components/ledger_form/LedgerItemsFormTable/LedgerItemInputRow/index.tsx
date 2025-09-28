@@ -1,79 +1,69 @@
 import AddCircle from "@mui/icons-material/AddCircle";
+import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import Button from "@mui/material/Button";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
-import { useContext, useEffect, useState } from "react";
-import { useFormContext } from "react-hook-form";
-import { DynamicIndexContext } from "../../../../contexts/DynamicIndexContext";
+import { useFieldArray, useFormContext } from "react-hook-form";
 import type { LedgerEntry } from "../../../../pages/LedgerEntryForm";
 import ErrorAlert from "../../ErrorAlert";
 import AmountField from "./AmountField";
-import BalanceTypeHiddenField from "./BalanceTypeHiddenField";
+import BalanceTypeField from "./BalanceTypeField";
 import CoaField from "./CoaField";
 
-export interface controlIndexProps {
-  insertIndex: number;
-}
-
-export default function LedgerItemInputRow({
-  balanceType,
-}: {
-  balanceType: string;
-}) {
+export default function LedgerItemInputRow() {
   const {
-    formState: { errors, isSubmitSuccessful },
+    control,
+    formState: { errors },
   } = useFormContext<LedgerEntry>();
 
-  const context = useContext(DynamicIndexContext);
-
-  // Use array of indices for dynamic rows
-  const [rowIndices, setRowIndices] = useState<number[]>([0]);
+  // useFieldArray to manage dynamic ledgerItems
+  const { 
+    fields,
+    append,
+    remove,
+  } = useFieldArray({
+    control,
+    name: "ledgerItems",
+  });
 
   // Add new row with unique index
   const insertLedgerItemForm = () => {
-    setRowIndices((prev) => [...prev, prev.length]);
-    context?.addRowSpan();
-  };
-
-  // Reset to 1 row after submission
-  useEffect(() => {
-    setRowIndices([0]);
-  }, [isSubmitSuccessful]);
-
-  // Calculate adjusted index for each row
-  const getAdjustedIndex = (i: number) => {
-    // Debit: 0, 2, 4, ... Credit: 1, 3, 5, ...
-     return balanceType === "Debit" ? i * 2 : i * 2 + 1;
+    append({ coa: "", amount:0, balanceType:"Debit"});
   };
 
   return (
     <>
-      {rowIndices.map((i) => (
-        <TableRow key={`ledgeritems-${getAdjustedIndex(i)}`}>
+      {fields.map((field, index) => (
+        <TableRow key={field.id}>
           <TableCell>
-            <CoaField insertIndex={getAdjustedIndex(i)} />
-            <ErrorAlert
-              message={errors.ledgerItems?.[getAdjustedIndex(i)]?.coa?.message}
-            />
+            <Button
+              onClick={() => {
+                remove(index);
+              }}
+              disabled={fields.length === 1}
+            >
+              <RemoveCircleOutlineIcon color="error" />
+            </Button>
           </TableCell>
           <TableCell>
-            <AmountField insertIndex={getAdjustedIndex(i)} />
-            <ErrorAlert
-              message={errors.ledgerItems?.[getAdjustedIndex(i)]?.amount?.message}
-            />
+            <CoaField insertIndex={index} />
+            <ErrorAlert message={errors.ledgerItems?.[index]?.coa?.message} />
           </TableCell>
-          <TableCell sx={{ display: "none" }}>
-            <BalanceTypeHiddenField
-              balanceType={balanceType}
-              insertIndex={getAdjustedIndex(i)}
+          <TableCell>
+            <AmountField insertIndex={index} />
+            <ErrorAlert message={errors.ledgerItems?.[index]?.amount?.message} />
+          </TableCell>
+          <TableCell>
+            <BalanceTypeField
+              insertIndex={index}
             />
           </TableCell>
         </TableRow>
       ))}
       <TableRow>
-        <TableCell colSpan={2} align="center">
+        <TableCell colSpan={4} align="center">
           <Button onClick={insertLedgerItemForm}>
-            <AddCircle />
+            <AddCircle color="primary"/>
           </Button>
         </TableCell>
       </TableRow>

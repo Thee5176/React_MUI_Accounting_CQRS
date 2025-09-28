@@ -1,14 +1,22 @@
 import Container from '@mui/material/Container';
 import { RouterProvider } from 'react-router-dom';
-import { routes } from './routes';
+import ProvideAuth from './hooks/auth/provider';
+import { routes } from './Routes';
+import { AxiosCommandClientProvider } from './service/api/command';
+import { AxiosQueryClientProvider } from './service/api/query';
 
-function App() {
-
+function App() : React.ReactElement {
   return (
       <Container sx={{height:'100vh'}}>
-        <RouterProvider router={routes}/>
+          <AxiosCommandClientProvider>
+          <AxiosQueryClientProvider>
+            <ProvideAuth>
+              <RouterProvider router={routes}/>
+            </ProvideAuth>
+          </AxiosQueryClientProvider>
+          </AxiosCommandClientProvider>
       </Container>
-  ) 
+  );
 }
 
 export default App

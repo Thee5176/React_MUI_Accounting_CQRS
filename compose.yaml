@@ -2,5 +2,13 @@ services:
   test_frontend_service:
     build: .
     container_name: test_react_mui_cqrs
+    develop:
+      watch:
+        - path: ./src
+          action: rebuild
+        - path: package.json
+          action: rebuild
+    env_file:
+      - ../env.properties
     ports:
-    - "8185:5173"
+    - "80:3000"
