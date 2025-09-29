@@ -13,4 +13,4 @@ EXPOSE 3000
 
 COPY --from=builder /build/dist ./dist
 
-CMD ["npx", "serve", "-s", "dist"]
+CMD ["npx", "serve", "-s", "dist","-l","3000"]
