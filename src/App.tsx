@@ -11,7 +11,7 @@ function App() : React.ReactElement {
           <AxiosCommandClientProvider>
           <AxiosQueryClientProvider>
             <ProvideAuth>
-              <RouterProvider router={routes}/>
+              <RouterProvider router={routes} />
             </ProvideAuth>
           </AxiosQueryClientProvider>
           </AxiosCommandClientProvider>

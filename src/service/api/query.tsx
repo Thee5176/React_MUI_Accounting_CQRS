@@ -24,10 +24,12 @@ export function AxiosQueryClientProvider({children}: {children: React.ReactNode}
     },
     (error: AxiosError) => {
       switch (error.response?.status) {
-        case 403:
+        case 403: //Error Page: manage by backend
           resetCookies('token');
+          console.log("Forbidden Error");
           window.location.href = "/auth/login";
           break;
+        
         default:
           break;
       }

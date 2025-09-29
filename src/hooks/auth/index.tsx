@@ -16,9 +16,6 @@ export function useProvideAuth() {
     const [cookies, SetCookies, removeCookies] = useCookies<'token', AuthToken>(['token']);
 
     const logout = () => {
-        if (cookies.token) {
-            window.location.href = "/"
-        }
         // Remove Authentication Credential
         removeCookies("token", { path: "/" });
         setAuthToken(null);
