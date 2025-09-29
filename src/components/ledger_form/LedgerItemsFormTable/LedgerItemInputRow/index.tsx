@@ -61,7 +61,7 @@ export default function LedgerItemInputRow() {
         </TableRow>
       ))}
       <TableRow>
-        <TableCell colSpan={5} align="center">
+        <TableCell colSpan={4} align="center">
           <Button onClick={insertLedgerItemForm}>
             <AddCircle color="primary"/>
           </Button>
