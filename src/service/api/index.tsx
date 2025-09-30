@@ -1,6 +1,14 @@
 import axios from "axios";
 
-const host = import.meta.env.VITE_HOST_IP;
+// Type for runtime config
+interface RuntimeConfig {
+  REACT_APP_HOST_IP?: string;
+  REACT_APP_COMMAND_PORT?: string;
+  REACT_APP_QUERY_PORT?: string;
+}
+
+// Fallback to window object for runtime config or use build-time env
+const host = import.meta.env.VITE_HOST_IP || (window as RuntimeConfig).REACT_APP_HOST_IP || 'localhost';
 
 const COMMAND_PATH: string = `http://${host}:8181`;
 const QUERY_PATH: string = `http://${host}:8182`;

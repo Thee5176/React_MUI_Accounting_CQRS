@@ -1,6 +1,11 @@
 services:
   test_frontend_service:
-    build: .
+    build: 
+      context: .
+      args:
+        - VITE_HOST_IP=${VITE_HOST_IP}
+        - VITE_COMMAND_PORT=${VITE_COMMAND_PORT}
+        - VITE_QUERY_PORT=${VITE_QUERY_PORT}
     container_name: test_react_mui_cqrs
     develop:
       watch:
