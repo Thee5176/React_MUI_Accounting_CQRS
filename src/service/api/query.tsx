@@ -11,13 +11,12 @@ export function AxiosQueryClientProvider({children}: {children: React.ReactNode}
     //Config Query API Endpoint
     const requestQueryInterceptor = axiosQueryClient.interceptors.request.use((config) => {
         const accessToken = cookies.token;
-        console.log("Query Request - Token available:", !!accessToken);
-        console.log("Query Request - URL:", config.url);
+        // Reduce console logging to prevent spam
+        if (config.url?.includes('/api/ledgers/all')) {
+          console.log("Query Request - Ledgers API - Token available:", !!accessToken);
+        }
         if (accessToken) {
           config.headers.Authorization = `Bearer ${accessToken}`;
-          console.log("Query : Token set to Authorize Header", config.headers.Authorization?.substring(0, 20) + "...");
-        } else {
-          console.log("Query : No token available for authorization");
         }
         return config;
     });

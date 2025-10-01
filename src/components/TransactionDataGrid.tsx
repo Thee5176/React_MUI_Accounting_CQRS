@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
 import { DataGrid } from "@mui/x-data-grid/DataGrid";
 import type { GridColDef, GridColumnGroupingModel, GridRowsProp } from "@mui/x-data-grid/models";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { axiosQueryClient } from "../service/api";
 
 //instance type of LedgerItemsAggregate
@@ -92,15 +92,31 @@ export default function TransactionDataGrid() {
   const [rowData, setRowData] = useState<GridRowsProp>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [hasInitialLoad, setHasInitialLoad] = useState(false);
+  const fetchingRef = useRef(false);
+  const mountedRef = useRef(true);
 
   //define function to fetch data from the server
-  const fetchRows = async () => {
+  const fetchRows = useCallback(async () => {
+    // Prevent multiple simultaneous requests
+    if (fetchingRef.current) {
+      console.log("Already fetching, skipping request");
+      return;
+    }
+
+    fetchingRef.current = true;
 
     try {
-      setLoading(true);
-      setError(null);
+      if (mountedRef.current) {
+        setLoading(true);
+        setError(null);
+      }
+      
+      console.log("Making API request to /api/ledgers/all");
       const res = await axiosQueryClient.get('/api/ledgers/all');
       const data: LedgerResponse[] = res.data;
+
+      console.log("Before :", data);
 
       // Flatten ledgerItems for each ledger into rows
       const dataRows = data.flatMap((ledger, idx) =>
@@ -119,25 +135,46 @@ export default function TransactionDataGrid() {
         // sort ledgeritem by Code of Account
         ).sort((a,b) => a.coa - b.coa)
       );
-      setRowData(dataRows);
+      
+      console.log("After :", dataRows);
+      
+      if (mountedRef.current) {
+        setRowData(dataRows);
+        setHasInitialLoad(true);
+      }
     } catch (err: unknown) {
       console.error('Failed to fetch ledger rows', err);
-      const errorMessage = err instanceof Error 
-        ? err.message 
-        : (err as { response?: { data?: { message?: string }; status?: number } })?.response?.status === 401
-        ? "Authentication required. Please login again."
-        : (err as { response?: { data?: { message?: string } } })?.response?.data?.message
-        || "Failed to load transaction data. Please try again.";
-      setError(errorMessage);
+      if (mountedRef.current) {
+        const errorMessage = err instanceof Error 
+          ? err.message 
+          : (err as { response?: { data?: { message?: string }; status?: number } })?.response?.status === 401
+          ? "Authentication required. Please login again."
+          : (err as { response?: { data?: { message?: string } } })?.response?.data?.message
+          || "Failed to load transaction data. Please try again.";
+        setError(errorMessage);
+      }
     } finally {
-      setLoading(false);
+      fetchingRef.current = false;
+      if (mountedRef.current) {
+        setLoading(false);
+      }
     }
-  };
+  }, []);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
 
   //fetch once after the component mounts (ensures interceptors are registered)
   useEffect(() => {
-    fetchRows();
-  }, []); // Re-fetch when authentication status changes
+    if (!hasInitialLoad) {
+      console.log("Initial data fetch triggered");
+      fetchRows();
+    }
+  }, [fetchRows, hasInitialLoad]);
 
     if (loading) {
       return (
