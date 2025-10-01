@@ -26,7 +26,7 @@ export function useProvideAuth() {
         if (cookies.token) {
             window.location.href = "/"
         }
-        if (data){
+        if (data) {
             const response = await axiosQueryClient.post("/api/v1/auth/login", data);
             const token = response.data?.token || "";
 
