@@ -24,4 +24,13 @@ EXPOSE 3000
 
 COPY --from=builder /build/dist ./dist
 
+# Copy runtime entrypoint script
+COPY docker/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# Default env fallbacks (optional)
+ENV VITE_COMMAND_PORT=8181 \
+	VITE_QUERY_PORT=8182
+
+ENTRYPOINT ["/entrypoint.sh"]
 CMD ["npx", "serve", "-s", "dist","-l","3000"]
