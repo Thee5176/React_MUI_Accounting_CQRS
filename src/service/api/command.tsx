@@ -49,7 +49,7 @@ export function AxiosCommandClientProvider({children}: {children: React.ReactNod
       axiosCommandClient.interceptors.response.eject(responseInterceptor)
     }
 
-  }, [cookies.token, resetCookies])
+  }, [cookies, resetCookies])
   
   return (<>{children}</>)
 }

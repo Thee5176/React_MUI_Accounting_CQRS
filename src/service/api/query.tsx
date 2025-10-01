@@ -48,7 +48,7 @@ export function AxiosQueryClientProvider({children}: {children: React.ReactNode}
     axiosQueryClient.interceptors.response.eject(responseQueryInterceptor)
   }
 
-  }, [cookies.token, resetCookies]);
+  }, [cookies, resetCookies]);
 
   return(<>{children}</>);
 }
