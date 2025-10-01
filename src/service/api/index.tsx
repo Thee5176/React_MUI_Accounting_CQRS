@@ -11,7 +11,7 @@ interface RuntimeConfig {
 const host =
   import.meta.env.VITE_HOST_IP ||
   (window as RuntimeConfig).VITE_HOST_IP ||
-  "13.114.254.5";
+  "13.112.10.169";
 
 const COMMAND_PATH: string = `http://${host}:8181`;
 const QUERY_PATH: string = `http://${host}:8182`;
