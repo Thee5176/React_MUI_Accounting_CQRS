@@ -4,7 +4,6 @@ import { useEffect } from "react";
 import { FormProvider, type SubmitHandler, useForm } from "react-hook-form";
 import { useProvideAuth } from "../../hooks/auth";
 import SetPasswordField from "../register/PasswordField";
-import type { CreateUser } from "../register/SignupForm";
 import SetUserNameField from "../register/UserNameField";
 import RememberMeCheckbox from "./RememberMeCheckbox";
 
@@ -15,7 +14,7 @@ export interface LoginUser {
 
 export default function LoginForm() {
     const {login} = useProvideAuth();
-    const formContext = useForm<CreateUser>();
+    const formContext = useForm<LoginUser>();
     
     const {
         handleSubmit,
@@ -23,7 +22,7 @@ export default function LoginForm() {
         formState: { isSubmitSuccessful },
     } = formContext;
 
-    const onSubmit: SubmitHandler<CreateUser> = async (data: CreateUser) => {
+    const onSubmit: SubmitHandler<LoginUser> = async (data: LoginUser) => {
       const result = await login(data);
       console.log(data);
       console.log(result);
@@ -33,11 +32,8 @@ export default function LoginForm() {
     useEffect(() => {
     if (isSubmitSuccessful) {
         reset({
-        firstname: "",
-        lastname: "",
         username: "",
-        password: "",
-        email: ""
+        password: ""
         });
     }
     }, [reset, isSubmitSuccessful]);
