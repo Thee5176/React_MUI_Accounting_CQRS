@@ -11,9 +11,12 @@ export function AxiosCommandClientProvider({children}: {children: React.ReactNod
     // const accessToken = cookies.token
     const requestInterceptor = axiosCommandClient.interceptors.request.use((config) => {
       const accessToken = cookies.token;
+      console.log("Command Request - Token available:", !!accessToken);
       if (accessToken) {
         config.headers.Authorization = `Bearer ${accessToken}`;
-        console.log("Command : Token set to Authorize Header");
+        console.log("Command : Token set to Authorize Header", config.headers.Authorization?.substring(0, 20) + "...");
+      } else {
+        console.log("Command : No token available for authorization");
       }
       return config;
       }
@@ -25,7 +28,13 @@ export function AxiosCommandClientProvider({children}: {children: React.ReactNod
       },
       (error: AxiosError) => {
           switch (error.response?.status) {
+          case 401:
+            console.log("Unauthorized: Token invalid or expired");
+            resetCookies('token');
+            window.location.href = '/auth/login';
+            break;
           case 403:
+            console.log("Forbidden: Access denied");
             resetCookies('token');
             break;
           default:
@@ -40,7 +49,7 @@ export function AxiosCommandClientProvider({children}: {children: React.ReactNod
       axiosCommandClient.interceptors.response.eject(responseInterceptor)
     }
 
-  }, [cookies, resetCookies])
+  }, [cookies.token, resetCookies])
   
   return (<>{children}</>)
 }

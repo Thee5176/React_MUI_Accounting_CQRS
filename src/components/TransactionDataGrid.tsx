@@ -1,3 +1,6 @@
+import Alert from "@mui/material/Alert";
+import Box from "@mui/material/Box";
+import CircularProgress from "@mui/material/CircularProgress";
 import { DataGrid } from "@mui/x-data-grid/DataGrid";
 import type { GridColDef, GridColumnGroupingModel, GridRowsProp } from "@mui/x-data-grid/models";
 import { useEffect, useState } from "react";
@@ -87,10 +90,15 @@ export default function TransactionDataGrid() {
     ] 
   //fetch data with Event hook and put data into row state
   const [rowData, setRowData] = useState<GridRowsProp>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   //define function to fetch data from the server
   const fetchRows = async () => {
+
     try {
+      setLoading(true);
+      setError(null);
       const res = await axiosQueryClient.get('/api/ledgers/all');
       const data: LedgerResponse[] = res.data;
 
@@ -112,15 +120,56 @@ export default function TransactionDataGrid() {
         ).sort((a,b) => a.coa - b.coa)
       );
       setRowData(dataRows);
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Failed to fetch ledger rows', err);
+      const errorMessage = err instanceof Error 
+        ? err.message 
+        : (err as { response?: { data?: { message?: string }; status?: number } })?.response?.status === 401
+        ? "Authentication required. Please login again."
+        : (err as { response?: { data?: { message?: string } } })?.response?.data?.message
+        || "Failed to load transaction data. Please try again.";
+      setError(errorMessage);
+    } finally {
+      setLoading(false);
     }
   };
 
   //fetch once after the component mounts (ensures interceptors are registered)
   useEffect(() => {
     fetchRows();
-  }, []);
+  }, []); // Re-fetch when authentication status changes
+
+    if (loading) {
+      return (
+        <Box 
+          sx={{ 
+            display: 'flex', 
+            justifyContent: 'center', 
+            alignItems: 'center', 
+            height: 400,
+            width: '100%' 
+          }}
+        >
+          <CircularProgress size={60} />
+        </Box>
+      );
+    }
+
+    if (error) {
+      return (
+        <Alert 
+          severity="error" 
+          sx={{ width: '100%', mb: 2 }}
+          action={
+            <button onClick={fetchRows} style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', textDecoration: 'underline' }}>
+              Retry
+            </button>
+          }
+        >
+          {error}
+        </Alert>
+      );
+    }
 
     return (
       <DataGrid

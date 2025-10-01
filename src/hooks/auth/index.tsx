@@ -50,7 +50,7 @@ export function useProvideAuth() {
                     SetCookies('token', token, {path: "/"});
                     setAuthToken(token);
                     setAuthState({ isLoading: false, error: null, success: "Login successful! Redirecting..." });
-                    setTimeout(() => window.location.href = "/", 1000);
+                    setTimeout(() => window.location.href = "/form", 1000);
                 } else {
                     setAuthState({ isLoading: false, error: "Login failed: No token received", success: null });
                 }
@@ -76,7 +76,7 @@ export function useProvideAuth() {
         try {
             await axiosCommandClient.post("/api/v1/auth/register", data);
             setAuthState({ isLoading: false, error: null, success: "Account created successfully! Redirecting to login..." });
-            setTimeout(() => window.location.href = "/auth/login", 2000);
+            setTimeout(() => window.location.href = "/auth/login", 1000);
         } catch (error: unknown) {
             const errorMessage = error instanceof Error 
                 ? error.message 

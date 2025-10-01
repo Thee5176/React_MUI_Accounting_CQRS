@@ -11,9 +11,13 @@ export function AxiosQueryClientProvider({children}: {children: React.ReactNode}
     //Config Query API Endpoint
     const requestQueryInterceptor = axiosQueryClient.interceptors.request.use((config) => {
         const accessToken = cookies.token;
+        console.log("Query Request - Token available:", !!accessToken);
+        console.log("Query Request - URL:", config.url);
         if (accessToken) {
           config.headers.Authorization = `Bearer ${accessToken}`;
-          console.log("Query : Token set to Authorize Header");
+          console.log("Query : Token set to Authorize Header", config.headers.Authorization?.substring(0, 20) + "...");
+        } else {
+          console.log("Query : No token available for authorization");
         }
         return config;
     });
@@ -24,9 +28,14 @@ export function AxiosQueryClientProvider({children}: {children: React.ReactNode}
     },
     (error: AxiosError) => {
       switch (error.response?.status) {
-        case 403: //Error Page: manage by backend
+        case 401:
+          console.log("Unauthorized: Token invalid or expired");
           resetCookies('token');
-          console.log("Forbidden Error");
+          window.location.href = '/auth/login';
+          break;
+        case 403: //Error Page: manage by backend
+          console.log("Forbidden: Access denied");
+          resetCookies('token');
           break;
         
         default:
