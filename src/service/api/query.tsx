@@ -27,7 +27,6 @@ export function AxiosQueryClientProvider({children}: {children: React.ReactNode}
         case 403: //Error Page: manage by backend
           resetCookies('token');
           console.log("Forbidden Error");
-          window.location.href = "/auth/login";
           break;
         
         default:

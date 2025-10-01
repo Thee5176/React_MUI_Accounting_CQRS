@@ -1,6 +1,6 @@
 import { useCookies } from "react-cookie";
 import type { LoginUser } from "../../components/login/LoginForm";
-import { axiosQueryClient, setAuthToken } from "../../service/api";
+import { axiosCommandClient, setAuthToken } from "../../service/api";
 
 export interface AuthData {
     username: string;
@@ -26,13 +26,19 @@ export function useProvideAuth() {
         if (cookies.token) {
             window.location.href = "/"
         }
+        console.log("Login attempt with data:", data);
         if (data) {
-            const response = await axiosQueryClient.post("/api/v1/auth/login", data);
-            const token = response.data?.token || "";
+            try {
+                const response = await axiosCommandClient.post("/api/v1/auth/login", data);
+                const token = response.data?.token || "";
 
-            SetCookies('token', token, {path: "/"});
-            setAuthToken(token);
-            window.location.href = "/";
+                SetCookies('token', token, {path: "/"});
+                setAuthToken(token);
+                console.log("Login successful, redirecting...");
+            } catch (error) {
+                console.error("Login failed:", error);
+                // Handle login error (show message to user)
+            }
         } else {
             window.location.href = "/auth/login";
         }
@@ -42,9 +48,14 @@ export function useProvideAuth() {
         if (cookies.token) {
             window.location.href = "/"
         }
-        await axiosQueryClient.post("/api/v1/auth/signup", data);
-        
-        window.location.href = "/auth/login";
+        console.log("Signup attempt with data:", data);
+        try {
+            await axiosCommandClient.post("/api/v1/auth/register", data);
+            console.log("Signup successful, redirecting to login...");
+        } catch (error) {
+            console.error("Signup failed:", error);
+            // Handle signup error (show message to user)
+        }
     };
 
     return {logout, login, signup}

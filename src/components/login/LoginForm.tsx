@@ -23,14 +23,13 @@ export default function LoginForm() {
     } = formContext;
 
     const onSubmit: SubmitHandler<LoginUser> = async (data: LoginUser) => {
-      const result = await login(data);
-      console.log(data);
-      console.log(result);
+      console.log("submited");
+      await login(data);
     };
 
     // Reset form after submission
     useEffect(() => {
-    if (isSubmitSuccessful) {
+      if (isSubmitSuccessful) {
         reset({
         username: "",
         password: ""

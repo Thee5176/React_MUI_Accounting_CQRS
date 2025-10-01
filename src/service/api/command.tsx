@@ -24,13 +24,12 @@ export function AxiosCommandClientProvider({children}: {children: React.ReactNod
         return response;
       },
       (error: AxiosError) => {
-        switch (error.response?.status) {
-        case 403:
-          resetCookies('token');
-          window.location.href = "/auth/login";
-          break;
-        default:
-          break;
+          switch (error.response?.status) {
+          case 403:
+            resetCookies('token');
+            break;
+          default:
+            break;
         }
         return Promise.reject(error);
       }
