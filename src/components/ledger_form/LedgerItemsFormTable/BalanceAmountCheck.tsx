@@ -79,7 +79,6 @@ export default function BalanceCheckRow() {
   );
 
   const [expanded, setExpanded] = useState(false);
-
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
@@ -99,18 +98,14 @@ export default function BalanceCheckRow() {
             </ExpandMore>
           </span>
         </TableCell>
-        <TableCell colSpan={1} sx={{ textAlign: "center" }}>
+        <TableCell sx={{ textAlign: "center" }}>
           <Typography variant="h6">Total Balance</Typography>
         </TableCell>
-        <TableCell colSpan={3} sx={{ textAlign: "end" }}>
+        <TableCell colSpan={2} sx={{ textAlign: "end" }}>
           <Typography variant="h6">
             <span id="total-balance">
               $ {checkBalance()[0] ? `${calculateBalance()}` : `--`}
             </span>
-          </Typography>
-        </TableCell>
-        <TableCell>
-          <Typography variant="subtitle1">
             <span id="balance-status">
               {checkBalance()[0] ? (
                 <BalanceCheckPassing />
@@ -126,7 +121,9 @@ export default function BalanceCheckRow() {
           <Collapse in={expanded} timeout="auto" unmountOnExit>
             <List>
               <ListItem>
-                <ListItemText primary={`Debit: ${checkBalance("Debit")[1]}`} />
+                <ListItemText 
+                  primary={`Debit: ${checkBalance("Debit")[1]}`} 
+                />
               </ListItem>
               <ListItem>
                 <ListItemText

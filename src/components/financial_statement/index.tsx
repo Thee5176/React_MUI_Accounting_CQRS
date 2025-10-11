@@ -10,17 +10,9 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 import { useState } from 'react';
+import type { formatType } from './CollapsibleTable';
 
-type CoaItem = { code: number; balance: number };
-export type StatementRow = {
-  name: string;
-  count: number;
-  balance: number;
-  coa_list: CoaItem[];
-};
-
-export function Row(props: { row: StatementRow }) {
-  const { row } = props;
+export function Row({ row }: { row: formatType }) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -56,12 +48,12 @@ export function Row(props: { row: StatementRow }) {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {row.coa_list.map((item) => (
-                    <TableRow key={item.code}>
+                  {[...row.coa_list].map(([coa, balance]) => (
+                    <TableRow key={coa}>
                       <TableCell component="th" scope="row">
-                        {item.code}
+                        {coa}
                       </TableCell>
-                      <TableCell align="right">{item.balance}</TableCell>
+                      <TableCell align="right">{balance}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

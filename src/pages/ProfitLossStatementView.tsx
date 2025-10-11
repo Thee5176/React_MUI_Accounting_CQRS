@@ -1,5 +1,5 @@
 import Typography from "@mui/material/Typography";
-import CollapsibleTable from "../components/profitloss/CollapsibleTable";
+import CollapsibleTable from "../components/financial_statement/CollapsibleTable";
 
 export default function GeneralLedgerView() {
     return (
