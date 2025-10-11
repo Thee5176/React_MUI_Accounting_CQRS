@@ -6,10 +6,9 @@ import { axiosCommandClient } from ".";
 //Config Command API Endpoint
 export function AxiosCommandClientProvider({children}: {children: React.ReactNode}) {
   const [cookies, , resetCookies] = useCookies(['token']);
-  
+
   useEffect(() => {
-    // const accessToken = cookies.token
-    const requestInterceptor = axiosCommandClient.interceptors.request.use((config) => {
+    const requestCommandInterceptor = axiosCommandClient.interceptors.request.use((config) => {
       const accessToken = cookies.token;
       console.log("Command Request - Token available:", !!accessToken);
       if (accessToken) {
@@ -22,7 +21,7 @@ export function AxiosCommandClientProvider({children}: {children: React.ReactNod
       }
     )
 
-    const responseInterceptor = axiosCommandClient.interceptors.response.use(
+    const responseCommandInterceptor = axiosCommandClient.interceptors.response.use(
       (response: AxiosResponse) => {
         return response;
       },
@@ -37,6 +36,7 @@ export function AxiosCommandClientProvider({children}: {children: React.ReactNod
             console.log("Forbidden: Access denied");
             resetCookies('token');
             break;
+
           default:
             break;
         }
@@ -45,8 +45,8 @@ export function AxiosCommandClientProvider({children}: {children: React.ReactNod
     )
 
     return () => {
-      axiosCommandClient.interceptors.request.eject(requestInterceptor)
-      axiosCommandClient.interceptors.response.eject(responseInterceptor)
+      axiosCommandClient.interceptors.request.eject(requestCommandInterceptor)
+      axiosCommandClient.interceptors.response.eject(responseCommandInterceptor)
     }
 
   }, [cookies, resetCookies])

@@ -7,19 +7,19 @@ import { axiosQueryClient } from ".";
 export function AxiosQueryClientProvider({children}: {children: React.ReactNode}) {
   const [cookies, , resetCookies] = useCookies(['token']);
   
-  useEffect (() => {
-    //Config Query API Endpoint
-    const requestQueryInterceptor = axiosQueryClient.interceptors.request.use((config) => {
+  useEffect(() => {
+      const requestQueryInterceptor = axiosQueryClient.interceptors.request.use((config) => {
         const accessToken = cookies.token;
-        // Reduce console logging to prevent spam
-        if (config.url?.includes('/api/ledgers/all')) {
-          console.log("Query Request - Ledgers API - Token available:", !!accessToken);
-        }
+        console.log("Query Request - Token available:", !!accessToken);
         if (accessToken) {
           config.headers.Authorization = `Bearer ${accessToken}`;
+          console.log("Query : Token set to Authorize Header", config.headers.Authorization?.substring(0, 20) + "...");
+        } else {
+          console.log("Query : No token available for authorization");
         }
         return config;
-    });
+        }
+      )
 
     const responseQueryInterceptor = axiosQueryClient.interceptors.response.use(
       (response: AxiosResponse) => {

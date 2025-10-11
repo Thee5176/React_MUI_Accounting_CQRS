@@ -1,5 +1,6 @@
 import DvrIcon from "@mui/icons-material/Dvr";
 import EditNoteIcon from "@mui/icons-material/EditNote";
+import SummarizeIcon from '@mui/icons-material/Summarize';
 import Button from "@mui/material/Button";
 import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
@@ -22,6 +23,7 @@ export default function NavDrawer({ drawerWidth }: { drawerWidth: number }) {
   const menuItems: MenuItem[] = [
     { path: "/", name: "General Ledger", icon: DvrIcon },
     { path: "/form", name: "Record Transaction", icon: EditNoteIcon },
+    { path: "/statement/1", name: "Profit and Loss Statement", icon: SummarizeIcon },
   ];
 
   const drawer = (

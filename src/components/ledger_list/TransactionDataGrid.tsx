@@ -1,6 +1,6 @@
 import { DataGrid } from "@mui/x-data-grid/DataGrid";
 import type { GridColDef, GridColumnGroupingModel, GridRowsProp } from "@mui/x-data-grid/models";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { axiosQueryClient } from "../../service/api";
 
 //instance type of LedgerItemsAggregate
@@ -86,13 +86,24 @@ export default function TransactionDataGrid() {
         }
     ] 
     //fetch data with Event hook and put data into row state
-    const [rowData, setRowData] = useState<GridRowsProp>([]);
+    const [rows, setRows] = useState<GridRowsProp>([]);
+    const didFetchRef = useRef(false);
 
     //define function to fetch data from the server
     const fetchRows = async () => {
-        const response = await axiosQueryClient.get('/api/ledgers/all');
-
-        const data: LedgerResponse[] = response.data;
+        const data = await axiosQueryClient
+            .get<LedgerResponse[]>('/api/ledgers/all')
+            .then((res) => res?.data ?? null)
+            .catch(() => null);
+      
+        if (data == null) {
+          console.warn(
+            "ProfitLoss API returned null/invalid payload; rows cleared."
+          );
+        
+      setRows([]);
+      return;
+    }
 
         console.log('Before :' ,data);
 
@@ -119,20 +130,24 @@ export default function TransactionDataGrid() {
             // sort ledgeritem by Code of Account
             ).sort((a,b) => a.coa - b.coa)
         );
-        setRowData(dataRows);
+        setRows(dataRows);
         
         console.log("After :", dataRows);
     };
 
     //fetch data on mount
     useEffect(() => {
-        fetchRows()
+      if (didFetchRef.current) return;
+
+      didFetchRef.current = true;  
+      
+      fetchRows()
     })
 
     return (
       <DataGrid
         sx={{ width: '100%' }}
-        rows={rowData}
+        rows={rows}
         columns={cols}
         initialState={{
         // sort ledger by Date
