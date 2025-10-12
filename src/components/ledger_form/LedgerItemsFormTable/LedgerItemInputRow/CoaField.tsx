@@ -1,35 +1,16 @@
 import FormControl from '@mui/material/FormControl';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
+import useProvideCoa from '../../../../hooks/coa';
 import type { LedgerEntry } from '../../../../pages/LedgerEntryForm';
-import { axiosQueryClient } from '../../../../service/api';
-
-interface AvailableCodeOfAccount {
-    code: number;
-    title: string;
-    type: string;
-}
 
 export default function CoaField({ insertIndex }: { insertIndex: number }) {
   const { control } = useFormContext<LedgerEntry>();
+  const { codeOfAccounts, fetchCoa } = useProvideCoa();
 
-  // fetch list of available COA from Query Service
-  const [codeOfAccounts, setCodeOfAccounts] = useState<
-    AvailableCodeOfAccount[]
-  >([]);
-
-  const fetchCoa = async () => {
-    try {
-      const response = await axiosQueryClient.post('/available-coa/json');
-      const data: AvailableCodeOfAccount[] = response.data;
-      setCodeOfAccounts(data);
-    } catch (err) {
-      console.error('Failed to fetch COA', err);
-    }
-  };
-
+  // Fetch COA every component mounts for latest data
   const hasFetched = useRef<boolean>(false);
 
   useEffect(() => {

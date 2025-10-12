@@ -39,19 +39,19 @@ function toNumericMap(input: unknown): Map<number, number> {
   return new Map();
 }
 
-export default function CollapsibleTable({ reportId }: { reportId?: string }) {
+export default function CollapsibleTable({ reportId, lastRow }: { reportId?: string, lastRow?: React.ReactNode }) {
   const [rows, setRows] = useState<formatType[]>([]);
   const didFetchRef = useRef(false);
     const apiPathBySheet: Record<number, string> = {
     1: "/api/balance-sheet-statement",
     2: "/api/profit-loss-statement",
-    // TODO 3: "/api/cash-flow-statement",
+    // TODO 3: "/api/cashflow-statement",
   };
   const endpoint = apiPathBySheet[Number(reportId)] ?? apiPathBySheet[1];
 
   const fetchRow = async () => {
     const data = await axiosQueryClient
-      .get(endpoint) //TODO : Variable 1
+      .get(endpoint)
       .then((res) => res.data);
 
     if (data == null) {
@@ -108,6 +108,9 @@ export default function CollapsibleTable({ reportId }: { reportId?: string }) {
           {rows.map((row) => (
             <Row key={row.name} row={row} />
           ))}
+
+          {/* Customized Last Row for each report type */}
+          {lastRow}
         </TableBody>
       </Table>
     </TableContainer>

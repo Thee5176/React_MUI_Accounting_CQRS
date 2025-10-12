@@ -1,6 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import Layout from "./Layout";
-import FinancialSheetPage from "./pages/FinancialSheetPage";
+import FinancialReportPage from "./pages/FinancialReportPage";
 import GeneralLedgerView from "./pages/GeneralLedgerView";
 import LedgerEntryForm from "./pages/LedgerEntryForm";
 import LoginPage from "./pages/LoginPage";
@@ -31,10 +31,10 @@ export const routes = createBrowserRouter([
         ),
       },
       {
-        path: "/statement/:reportId",
+        path: "/report",
         element: (
           <ProtectedRoute>
-            <FinancialSheetPage />
+            <FinancialReportPage />
           </ProtectedRoute>
         ),
       },

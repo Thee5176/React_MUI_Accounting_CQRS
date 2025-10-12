@@ -1,4 +1,4 @@
-// TypeScript types for ProfitLossStatementDTO response from /api/profit-loss-statement
+// TypeScript types for ProfitLossDTO response from /api/profit-loss-statement
 // Normalized to use an array of objects instead of Record maps
 
 export interface StatementDTO {
