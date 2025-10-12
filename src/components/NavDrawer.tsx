@@ -23,7 +23,7 @@ export default function NavDrawer({ drawerWidth }: { drawerWidth: number }) {
   const menuItems: MenuItem[] = [
     { path: "/", name: "General Ledger", icon: DvrIcon },
     { path: "/form", name: "Record Transaction", icon: EditNoteIcon },
-    { path: "/statement/1", name: "Profit and Loss Statement", icon: SummarizeIcon },
+    { path: "/statement/1", name: "Financial Statement", icon: SummarizeIcon },
   ];
 
   const drawer = (

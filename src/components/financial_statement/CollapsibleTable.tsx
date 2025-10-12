@@ -7,7 +7,6 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import { useEffect, useRef, useState } from "react";
 import { axiosQueryClient } from "../../service/api";
-import type { ProfitLossWithNetIncome } from "../../types/profitLoss";
 import { Row } from "./index";
 
 export type formatType = ReturnType<typeof formatData>;
@@ -40,38 +39,46 @@ function toNumericMap(input: unknown): Map<number, number> {
   return new Map();
 }
 
-export default function CollapsibleTable() {
+export default function CollapsibleTable({ reportId }: { reportId?: string }) {
   const [rows, setRows] = useState<formatType[]>([]);
   const didFetchRef = useRef(false);
+    const apiPathBySheet: Record<number, string> = {
+    1: "/api/balance-sheet-statement",
+    2: "/api/profit-loss-statement",
+    // TODO 3: "/api/cash-flow-statement",
+  };
+  const endpoint = apiPathBySheet[Number(reportId)] ?? apiPathBySheet[1];
 
   const fetchRow = async () => {
     const data = await axiosQueryClient
-      .get<ProfitLossWithNetIncome>("/api/profit-loss-statement")
+      .get(endpoint) //TODO : Variable 1
       .then((res) => res.data);
 
     if (data == null) {
       console.warn(
-        "ProfitLoss API returned null/invalid payload; rows cleared."
+        "API returned null/invalid payload; rows cleared."
       );
       return;
     }
 
-    console.log("Fetch Profit/Loss Data: ", data);
+    console.log("Fetch Financial Data: ", data);
 
     try {
-      // Build rows from known array properties
-      const rowsData: formatType[] = [
-        { name: 'revenue', raw: data.revenue },
-        { name: 'expenses', raw: data.expenses }
-        ]
-        .map(({ name, raw }) => {
-          const mapped =  toNumericMap(raw);
-
+      // Build rows by iterating over all top-level object keys dynamically
+      const entries = Object.entries(data as unknown as Record<string, unknown>);
+      const rowsData: formatType[] = entries
+        // keep only map of account balance
+        .filter(([, val]) => val != null && typeof val === "object" && !Array.isArray(val))
+        
+        .map(([name, section]) => {
+          // parse object to map
+          const mapped = toNumericMap(section);
+          
           let total = 0;
           mapped.forEach((v) => { total += v; });
           return formatData(name, mapped.size, total, mapped);
-      });
-      console.log("Format Profit/Loss Data:", rowsData);
+        });
+      console.log("Format al Data:", rowsData);
       setRows(rowsData);
 
     } catch (e) {
