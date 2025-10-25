@@ -21,7 +21,8 @@ const axiosClient = ( endpoint:string) => axios.create({
     timeout: 3000,
     headers: {
         'Content-Type': 'application/json'
-    }
+    },
+    withCredentials: true
 });
 
 export function setAuthToken(token?: string | null) {

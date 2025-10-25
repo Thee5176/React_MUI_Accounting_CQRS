@@ -11,6 +11,11 @@ import DetailedRow from './DetailedRow';
 export function Row({ row }: { row: formatType }) {
   const [open, setOpen] = useState(false);
 
+  const checkDebit = (title: string) => {
+    const debitKeywords = ['asset', 'expense'];
+    return debitKeywords.some(keyword => title.toLowerCase().includes(keyword));
+  };
+
   return (
     <>
       <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
@@ -27,7 +32,7 @@ export function Row({ row }: { row: formatType }) {
           <Typography sx={{ textTransform: 'capitalize' }} variant="h6">{row.name}</Typography>
         </TableCell>
         <TableCell align="right">{row.count}</TableCell>
-        <TableCell align="right">{row.balance}</TableCell>
+        <TableCell align={checkDebit(row.name) ? "left" : "right"}>{row.balance}</TableCell>
       </TableRow>
 
       <DetailedRow row={row} open={open} />
