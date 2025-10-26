@@ -5,9 +5,11 @@ import type { LedgerEntry } from "../../../pages/LedgerEntryForm";
 export default function DateField() {
   const { control } = useFormContext<LedgerEntry>();
 
-  // Uncontrolled autofill in react-hook-form means setting a default value via the form's defaultValues prop, not directly in the input.
-  // Example:
-  const currentDate: string = new Date().toISOString().substring(0, 10);
+  const currentDate: string = new Date(
+    Date.now() - new Date().getTimezoneOffset() * 60000
+  )
+    .toISOString()
+    .slice(0, 10);
 
   return (
     <FormControl sx={{ py: 3 }}>
@@ -18,8 +20,14 @@ export default function DateField() {
         rules={{
           required: { value: true, message: "Date is required" },
           validate: (value: string) => {
-            const date = new Date(value);
-            return date.getTime() <= new Date().getTime() || "Invalid date";
+            if (!value) return "Date is required";
+            // Parse as local midnight to avoid UTC parsing quirks
+            const [y, m, d] = value.split("-").map(Number);
+            const selected = new Date(y, m - 1, d);
+            const today = new Date();
+            selected.setHours(0, 0, 0, 0);
+            today.setHours(0, 0, 0, 0);
+            return selected.getTime() <= today.getTime() || "Invalid date";
           },
         }}
         render={({ field }) => (
@@ -27,6 +35,7 @@ export default function DateField() {
             {...field}
             type="date"
             value={field.value ?? currentDate}
+            inputProps={{ max: currentDate }}
           />
         )}
       />

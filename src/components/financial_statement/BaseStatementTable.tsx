@@ -6,18 +6,20 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import { useEffect, useRef, useState } from "react";
+import { ProfitLossSummary } from "./CustomRowElement";
+import { fetchRow, type formatType } from "./FetchUtil";
 import { Row } from "./index";
-import { fetchRow, type formatType } from "./RequestFunction";
 
-export default function BaseStatementTable({reportId}: { reportId: number }) {
+export default function BaseStatementTable({reportId}: { readonly reportId: number }) {
   const [rows, setRows] = useState<formatType[]>([]);
+  const [netIncome, setNetIncome] = useState<number>(0);
   const didFetchRef = useRef(false);
 
   useEffect(() => {
     if (didFetchRef.current) return;
     didFetchRef.current = true;
 
-    fetchRow(reportId, setRows).catch(console.error);
+    fetchRow(reportId, setRows, setNetIncome).catch(console.error);
   }, []);
 
   return (
@@ -28,7 +30,8 @@ export default function BaseStatementTable({reportId}: { reportId: number }) {
             <TableCell sx={{ maxWidth: "15%" }}/>
             <TableCell>Accounting Element</TableCell>
             <TableCell align="right">Count</TableCell>
-            <TableCell align="center">Balance</TableCell>
+            <TableCell align="right">Debit</TableCell>
+            <TableCell align="right">Credit</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -36,7 +39,9 @@ export default function BaseStatementTable({reportId}: { reportId: number }) {
             <Row key={row.name} row={row} />
           ))}
 
-          {/* TODO: Customized Last Row for each report type */}
+          {reportId === 2 ? (
+            <ProfitLossSummary netIncome={netIncome} />
+          ) : null}
         </TableBody>
       </Table>
     </TableContainer>

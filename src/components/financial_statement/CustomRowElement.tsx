@@ -2,27 +2,14 @@ import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
 
-export function BalanceSheetSummary() {
-  return (
-    <TableRow>
-      <TableCell sx={{ mt: 3 }} colSpan={6}>
-        <Typography variant="h5">Summary</Typography>
-        <Typography variant="body1">Total Assets: ¥10,000,000</Typography>
-        <Typography variant="body1">Total Liabilities: ¥4,000,000</Typography>
-        <Typography variant="body1">Total Equity: ¥6,000,000</Typography>
-      </TableCell>
-    </TableRow>
-  );
-}
-
-export function ProfitLossSummary({ netProfit }: { netProfit: Readonly<number> }) {
+export function ProfitLossSummary({ netIncome }: { readonly netIncome: number }) {
   return (
     <TableRow>
       <TableCell sx={{ mt: 3 }} colSpan={3}>
-        <Typography variant="h5">Net Profit</Typography>
+        <Typography variant="h5">Net Income</Typography>
       </TableCell>
       <TableCell sx={{ mt: 3 }} colSpan={2}>
-        <Typography variant="body1">${netProfit}</Typography>
+        <Typography variant="body1">${netIncome}</Typography>
       </TableCell>
     </TableRow>
   );

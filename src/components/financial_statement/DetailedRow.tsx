@@ -7,19 +7,19 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 import useProvideCoa from '../../hooks/coa';
-import type { formatType } from './CollapsibleTable';
+import type { formatType } from './FetchUtil';
 
 export default function DetailedRow({ row, open }: { row: formatType; open: boolean }) {
     return (
-        <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-          <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box sx={{ margin: 1 }}>
-              { row.count === 0 ? <NullRow /> : <ContentRow row={row} /> }
-            </Box>
-          </Collapse>
-        </TableCell>
-      </TableRow>
+    <TableRow>
+    <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+        <Collapse in={open} timeout="auto" unmountOnExit>
+        <Box sx={{ margin: 1 }}>
+            { row.count === 0 ? <NullRow /> : <ContentRow row={row} /> }
+        </Box>
+        </Collapse>
+    </TableCell>
+    </TableRow>
     )
 }
 
@@ -31,7 +31,7 @@ function NullRow() {
     );
 }
 
-function ContentRow({ row }: { row: formatType }) {
+function ContentRow({ row }: { readonly row: formatType }) {
     const { codeOfAccounts } = useProvideCoa();
     const coaMap: Record<number, string> = {};
     codeOfAccounts.forEach(coa => {

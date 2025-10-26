@@ -28,7 +28,7 @@ export default function LedgerItemInputRow() {
 
   // Add new row with unique index
   const insertLedgerItemForm = () => {
-    append({ coa: "", amount:0, balanceType:"Debit"});
+    append({ coa: "", amount:0, balanceType:""});
   };
 
   return (
@@ -40,9 +40,9 @@ export default function LedgerItemInputRow() {
               onClick={() => {
                 remove(index);
               }}
-              disabled={fields.length === 1}
+              disabled={fields.length <= 2}
             >
-              <RemoveCircleOutlineIcon color="error" />
+              <RemoveCircleOutlineIcon color={fields.length <= 2 ? "disabled" : "error"} />
             </Button>
           </TableCell>
           <TableCell>

@@ -5,8 +5,8 @@ import IconButton from '@mui/material/IconButton';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 import { useState } from 'react';
-import type { formatType } from './CollapsibleTable';
 import DetailedRow from './DetailedRow';
+import type { formatType } from './FetchUtil';
 
 export function Row({ row }: { row: formatType }) {
   const [open, setOpen] = useState(false);
@@ -31,8 +31,9 @@ export function Row({ row }: { row: formatType }) {
         <TableCell component="th" scope="row">
           <Typography sx={{ textTransform: 'capitalize' }} variant="h6">{row.name}</Typography>
         </TableCell>
-        <TableCell align="right">{row.count}</TableCell>
-        <TableCell align={checkDebit(row.name) ? "left" : "right"}>{row.balance}</TableCell>
+        <TableCell align="right">{row.count == 0 ? "-" : row.count}</TableCell>
+        <TableCell align="right">{checkDebit(row.name) ? row.balance : 0}</TableCell>
+        <TableCell align="right">{checkDebit(row.name) ? 0 : row.balance}</TableCell>
       </TableRow>
 
       <DetailedRow row={row} open={open} />

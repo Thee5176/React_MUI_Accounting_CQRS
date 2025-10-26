@@ -36,7 +36,11 @@ const apiPathBySheet: string[] = [
     // TODO "/api/cashflow-statement"
   ];
 
-export const fetchRow = async (reportId: number, setRows: React.Dispatch<React.SetStateAction<formatType[]>>) => {
+export const fetchRow = async (
+  reportId: number, 
+  setRows: React.Dispatch<React.SetStateAction<formatType[]>>,
+  setNetIncome: React.Dispatch<React.SetStateAction<number>>
+) => {
     const data = await axiosQueryClient
       .get(apiPathBySheet[reportId])
       .then((res) => res.data);
@@ -54,7 +58,7 @@ export const fetchRow = async (reportId: number, setRows: React.Dispatch<React.S
       // Build rows by parsing json into maps
       const entries = Object.entries(data as unknown as Record<string, unknown>);
       const rowsData: formatType[] = entries
-        // keep only map of account balance {account code => balance}
+        // check for list of json object to be parsed into map
         .filter(([, val]) => val != null && typeof val === "object" && !Array.isArray(val))
         
         .map(([name, section]) => {
@@ -68,8 +72,12 @@ export const fetchRow = async (reportId: number, setRows: React.Dispatch<React.S
 
           return formatData(name, mapped.size, total, mapped);
         });
-      console.log("Format all Data:", rowsData);
       setRows(rowsData);
+
+      // set net income for profit-loss statement
+      if (reportId === 2 ) {
+        setNetIncome(data["netIncome"] ?? 0);
+      }
 
     } catch (e) {
       console.error("Transform Data Failed", e);

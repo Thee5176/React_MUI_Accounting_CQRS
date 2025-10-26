@@ -1,3 +1,4 @@
+import Box from "@mui/material/Box";
 import { DataGrid } from "@mui/x-data-grid/DataGrid";
 import type { GridColumnGroupingModel, GridRowsProp } from "@mui/x-data-grid/models";
 import { useEffect, useRef, useState } from "react";
@@ -18,6 +19,7 @@ export default function TransactionDataGrid() {
     ] 
     //fetch data with Event hook and put data into row state
     const [rows, setRows] = useState<GridRowsProp>([]);
+    const [loading, setLoading] = useState(false);
     const didFetchRef = useRef(false);
 
     //fetch data on mount
@@ -25,16 +27,15 @@ export default function TransactionDataGrid() {
       if (didFetchRef.current) return;
 
       didFetchRef.current = true;  
-      
-      fetchRows(setRows)
-    })
+      fetchRows(setRows, setLoading);
+    }, []);
 
     return (
-      <DataGrid
-        sx={{ width: '100%' }}
-        rows={rows}
-        columns={cols}
-        initialState={{
+      <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+        <DataGrid
+          rows={rows}
+          columns={cols}
+          initialState={{
         // sort ledger by Date
         sorting: {
             sortModel: [{ field: "date", sort: "desc" }],
@@ -42,13 +43,15 @@ export default function TransactionDataGrid() {
           pagination: {
             paginationModel: { pageSize: 20, page: 0 },
           },
-        }}
-        showCellVerticalBorder
-        showColumnVerticalBorder
-        disableRowSelectionOnClick
-        rowSpanning
-        columnGroupingModel={columnGroupingModel}
-        pageSizeOptions={[20, 50, 100]}
-      />
+          }}
+          showCellVerticalBorder
+          showColumnVerticalBorder
+          disableRowSelectionOnClick
+          rowSpanning
+          columnGroupingModel={columnGroupingModel}
+          pageSizeOptions={[20, 50, 100]}
+          loading={loading}
+        />
+      </Box>
     );
 }

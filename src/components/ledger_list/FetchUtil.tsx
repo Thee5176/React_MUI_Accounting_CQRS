@@ -5,8 +5,11 @@ import type { LedgerResponse } from "./type";
 
 // define function to fetch data from the server
 export const fetchRows = async (
-    setRows: Dispatch<SetStateAction<GridRowsProp>>
+    setRows: Dispatch<SetStateAction<GridRowsProp>>,
+    setLoading: Dispatch<SetStateAction<boolean>>
 ) => {
+    setLoading(true);
+
     const data = await axiosQueryClient
         .get<LedgerResponse[]>('/api/ledgers/all')
         .then((res) => res?.data ?? null)
@@ -17,6 +20,7 @@ export const fetchRows = async (
         "API returned null/invalid payload; rows cleared."
     );
     setRows([]);
+    setLoading(false);
     return;
     }
 
@@ -46,7 +50,8 @@ export const fetchRows = async (
         // sort ledgeritem by Code of Account
         ).sort((a,b) => a.coa - b.coa)
     );
-    setRows(dataRows);
-    
     console.log("After :", dataRows);
+    
+    setRows(dataRows);
+    setLoading(false);
 };

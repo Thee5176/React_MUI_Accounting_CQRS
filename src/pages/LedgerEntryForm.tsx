@@ -25,7 +25,18 @@ export interface LedgerItem {
 
 export default function LedgerEntryForm() {
   // declare FormHook into Context
-  const formContext = useForm<LedgerEntry>();
+  const formContext = useForm<LedgerEntry>({
+        defaultValues: {
+          id: "",
+        date: "",
+        description: "",
+        ledgerItems: [
+          { coa: "", amount: 0, balanceType: "Debit" },
+          { coa: "", amount: 0, balanceType: "Credit" },
+        ],
+        timestamp: "",
+        },
+      });
   
   // get FormHook from Context
   const {

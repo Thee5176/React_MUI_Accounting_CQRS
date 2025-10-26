@@ -37,6 +37,7 @@ export default function BalanceCheckRow() {
   }
 
   function checkBalance(inputType?: string): [boolean, number] {
+    // [Balance_Status, Balance]
     const ledgerItems = getValues("ledgerItems") || [];
     const totalDebit = ledgerItems
       .filter((item) => item.balanceType === "Debit")
@@ -49,34 +50,14 @@ export default function BalanceCheckRow() {
     switch (inputType) {
       case "Debit":
         return [true, totalDebit];
-        break;
+
       case "Credit":
         return [true, totalCredit];
-        break;
       default:
         return [totalDebit === totalCredit, totalDebit - totalCredit];
     }
 
   }
-
-  const BalanceCheckPassing = () => (
-    <Tooltip title="Balanced Check Passing — totals match" arrow>
-      <IconButton aria-label="balanced" size="large">
-        <VerifiedIcon color="success" />
-      </IconButton>
-    </Tooltip>
-  );
-
-  const BalanceCheckFailed = () => (
-    <Tooltip
-      title={`Unbalanced — totals do not match by ${checkBalance()[1]}`}
-      arrow
-    >
-      <IconButton aria-label="unbalanced" size="large">
-        <ErrorOutlineIcon color="error" />
-      </IconButton>
-    </Tooltip>
-  );
 
   const [expanded, setExpanded] = useState(false);
   const handleExpandClick = () => {
@@ -110,7 +91,7 @@ export default function BalanceCheckRow() {
               {checkBalance()[0] ? (
                 <BalanceCheckPassing />
               ) : (
-                <BalanceCheckFailed />
+                <BalanceCheckFailed checkBalance={checkBalance} />
               )}
             </span>
           </Typography>
@@ -137,3 +118,22 @@ export default function BalanceCheckRow() {
     </>
   );
 }
+
+const BalanceCheckPassing = () => (
+    <Tooltip title="Balanced Check Passing — totals match" arrow>
+      <IconButton aria-label="balanced" size="large">
+        <VerifiedIcon color="success" />
+      </IconButton>
+    </Tooltip>
+  );
+
+const BalanceCheckFailed = ({ checkBalance }: { checkBalance: () => [boolean, number] }) => (
+  <Tooltip
+    title={`Unbalanced — totals do not match by ${checkBalance()[1]}`}
+    arrow
+  >
+    <IconButton aria-label="unbalanced" size="large">
+      <ErrorOutlineIcon color="error" />
+    </IconButton>
+  </Tooltip>
+);

@@ -21,9 +21,6 @@ export default function LedgerItemsFormTable() {
                 Code of Account
               </TableCell>
               <TableCell sx={{ width: "30%" }} variant="head">
-                Title
-              </TableCell>
-              <TableCell sx={{ width: "30%" }} variant="head">
                 Amount
               </TableCell>
               <TableCell sx={{ width: "30%" }} variant="head">
