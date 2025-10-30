@@ -6,7 +6,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import { useEffect, useRef, useState } from "react";
-import { ProfitLossSummary } from "./CustomRowElement";
+import { BalanceSheetSummary, ProfitLossSummary } from "./CustomRowElement";
 import { fetchRow, type formatType } from "./FetchUtil";
 import { Row } from "./index";
 
@@ -20,14 +20,14 @@ export default function BaseStatementTable({reportId}: { readonly reportId: numb
     didFetchRef.current = true;
 
     fetchRow(reportId, setRows, setNetIncome).catch(console.error);
-  }, []);
+  }, [reportId]);
 
   return (
     <TableContainer component={Paper}>
       <Table aria-label="collapsible table">
         <TableHead>
           <TableRow>
-            <TableCell sx={{ maxWidth: "15%" }}/>
+            <TableCell sx={{ maxWidth: "15%" }} />
             <TableCell>Accounting Element</TableCell>
             <TableCell align="right">Count</TableCell>
             <TableCell align="right">Debit</TableCell>
@@ -38,10 +38,9 @@ export default function BaseStatementTable({reportId}: { readonly reportId: numb
           {rows.map((row) => (
             <Row key={row.name} row={row} />
           ))}
+          {reportId === 1 ? <BalanceSheetSummary /> : null}
 
-          {reportId === 2 ? (
-            <ProfitLossSummary netIncome={netIncome} />
-          ) : null}
+          {reportId === 2 ? <ProfitLossSummary netIncome={netIncome} /> : null}
         </TableBody>
       </Table>
     </TableContainer>

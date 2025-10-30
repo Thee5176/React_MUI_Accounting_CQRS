@@ -32,11 +32,7 @@ function NullRow() {
 }
 
 function ContentRow({ row }: { readonly row: formatType }) {
-    const { codeOfAccounts } = useProvideCoa();
-    const coaMap: Record<number, string> = {};
-    codeOfAccounts.forEach(coa => {
-        coaMap[coa.code] = coa.title;
-    });
+    const { coaMap } = useProvideCoa();
 
     return (
         <Table size="small" aria-label="purchases">

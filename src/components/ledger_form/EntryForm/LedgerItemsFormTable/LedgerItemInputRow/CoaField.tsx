@@ -3,8 +3,8 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import { useEffect, useRef } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
-import useProvideCoa from '../../../../hooks/coa';
-import type { LedgerEntry } from '../../../../pages/LedgerEntryForm';
+import useProvideCoa from '../../../../../hooks/coa';
+import type { LedgerEntry } from '../../FormUtils';
 
 export default function CoaField({ insertIndex }: { insertIndex: number }) {
   const { control } = useFormContext<LedgerEntry>();
@@ -20,7 +20,7 @@ export default function CoaField({ insertIndex }: { insertIndex: number }) {
   }, []);
 
   return (
-    <FormControl sx={{ py: 3, width: "60%", minWidth: "171px" }}>
+    <FormControl sx={{ width: "60%", minWidth: "171px" }}>
       <Controller
         control={control}
         name={`ledgerItems.${insertIndex}.coa`}

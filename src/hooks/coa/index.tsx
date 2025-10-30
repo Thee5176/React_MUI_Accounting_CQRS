@@ -32,7 +32,12 @@ export default function useProvideCoa() {
     } else {
       setCodeOfAccounts(coaCached);
     }
-  }, []);
+  }, [fetchCoa]);
 
-  return { codeOfAccounts, fetchCoa, removeCoaCached };
+  const coaMap: Record<number, string> = {};
+  codeOfAccounts.forEach((coa) => {
+    coaMap[coa.code] = coa.title;
+  });
+
+  return { coaMap, codeOfAccounts, fetchCoa, removeCoaCached };
 }

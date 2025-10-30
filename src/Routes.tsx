@@ -1,8 +1,8 @@
 import { createBrowserRouter } from "react-router-dom";
 import Layout from "./Layout";
 import FinancialReportPage from "./pages/FinancialReportPage";
-import GeneralLedgerView from "./pages/GeneralLedgerView";
 import LedgerEntryForm from "./pages/LedgerEntryForm";
+import GeneralLedgerView from "./pages/LedgerReportView";
 import LoginPage from "./pages/LoginPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import SignUpPage from "./pages/SignUpPage";

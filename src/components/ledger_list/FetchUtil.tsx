@@ -5,35 +5,38 @@ import type { LedgerResponse } from "./type";
 
 // define function to fetch data from the server
 export const fetchRows = async (
-    setRows: Dispatch<SetStateAction<GridRowsProp>>,
-    setLoading: Dispatch<SetStateAction<boolean>>
+  setRows: Dispatch<SetStateAction<GridRowsProp>>,
+  setLoading: Dispatch<SetStateAction<boolean>>,
+  setAccounts: Dispatch<SetStateAction<number[]>>
 ) => {
-    setLoading(true);
+  setLoading(true);
 
-    const data = await axiosQueryClient
-        .get<LedgerResponse[]>('/api/ledgers/all')
-        .then((res) => res?.data ?? null)
-        .catch(() => null);
+  const data = await axiosQueryClient
+    .get<LedgerResponse[]>("/api/ledgers/all")
+    .then((res) => res?.data ?? null)
+    .catch(() => null);
 
-    if (data == null) {
-    console.warn(
-        "API returned null/invalid payload; rows cleared."
-    );
+  // Null Case
+  if (data == null) {
+    console.warn("API returned null/invalid payload; rows cleared.");
     setRows([]);
     setLoading(false);
     return;
-    }
+  }
 
-    console.log('Before :' ,data);
+  console.log("Before :", data);
 
-    // Flatten ledgerItems for each ledger into rows
-    const dataRows = data
-    .flatMap((ledger, idx) =>
-        ledger.ledgerItems.map((item, idy) => {
-        const isDebit = item.type == 'Debit';
-        const isCredit = item.type == 'Credit';
+  // Flatten ledgerItems for each ledger into rows
+  const dataRows = data.flatMap((ledger, idx) =>
+    ledger.ledgerItems
+      .map(
+        (item, idy) => {
+          const isDebit = item.type == "Debit";
+          const isCredit = item.type == "Credit";
 
-        return {
+          setAccounts((prev) => [...prev, item.coa]);
+
+          return {
             id: `${idx}-${idy}`,
             date: ledger.date,
             coa: item.coa,
@@ -42,16 +45,17 @@ export const fetchRows = async (
             credit: isCredit ? item.amount : 0,
             balance: isDebit ? item.amount : -item.amount,
             // calculate the balance of transaction
-            transaction_balance: ledger.ledgerItems.map((entry) => (
-                entry.amount / 2
-            )).reduce((sum, balance) => sum + balance, 0)
-            }
+            transaction_balance: ledger.ledgerItems
+              .map((entry) => entry.amount / 2)
+              .reduce((sum, balance) => sum + balance, 0),
+          };
         }
         // sort ledgeritem by Code of Account
-        ).sort((a,b) => a.coa - b.coa)
-    );
-    console.log("After :", dataRows);
-    
-    setRows(dataRows);
-    setLoading(false);
+      )
+      .sort((a, b) => a.coa - b.coa)
+  );
+  console.log("After :", dataRows);
+
+  setRows(dataRows);
+  setLoading(false);
 };

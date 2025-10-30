@@ -6,7 +6,7 @@ import Collapse from "@mui/material/Collapse";
 import IconButton, { type IconButtonProps } from '@mui/material/IconButton';
 import { useState } from "react";
 import { useFormContext } from "react-hook-form";
-import type { LedgerEntry } from "../../../pages/LedgerEntryForm";
+import type { LedgerEntry } from "../../../../pages/LedgerEntryForm";
 
 interface ExpandMoreProps extends IconButtonProps {
   expand: boolean;

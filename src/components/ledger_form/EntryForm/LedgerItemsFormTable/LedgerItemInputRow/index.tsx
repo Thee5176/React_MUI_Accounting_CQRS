@@ -4,8 +4,8 @@ import Button from "@mui/material/Button";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import { useFieldArray, useFormContext } from "react-hook-form";
-import type { LedgerEntry } from "../../../../pages/LedgerEntryForm";
 import ErrorAlert from "../../ErrorAlert";
+import type { LedgerEntry } from "../../FormUtils";
 import AmountField from "./AmountField";
 import BalanceTypeField from "./BalanceTypeField";
 import CoaField from "./CoaField";
@@ -42,7 +42,9 @@ export default function LedgerItemInputRow() {
               }}
               disabled={fields.length <= 2}
             >
-              <RemoveCircleOutlineIcon color={fields.length <= 2 ? "disabled" : "error"} />
+              <RemoveCircleOutlineIcon
+                color={fields.length <= 2 ? "disabled" : "error"}
+              />
             </Button>
           </TableCell>
           <TableCell>
@@ -51,19 +53,21 @@ export default function LedgerItemInputRow() {
           </TableCell>
           <TableCell>
             <AmountField insertIndex={index} />
-            <ErrorAlert message={errors.ledgerItems?.[index]?.amount?.message} />
+            <ErrorAlert
+              message={errors.ledgerItems?.[index]?.amount?.message}
+            />
           </TableCell>
           <TableCell>
-            <BalanceTypeField
-              insertIndex={index}
-            />
+            <BalanceTypeField insertIndex={index} />
+              <ErrorAlert message={errors.ledgerItems ? "Double Check the Dr/Cr" : ""}
+              />
           </TableCell>
         </TableRow>
       ))}
       <TableRow>
         <TableCell colSpan={4} align="center">
           <Button onClick={insertLedgerItemForm}>
-            <AddCircle color="primary"/>
+            <AddCircle color="primary" />
           </Button>
         </TableCell>
       </TableRow>

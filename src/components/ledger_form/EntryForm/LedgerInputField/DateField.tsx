@@ -1,6 +1,6 @@
 import { FormControl, InputLabel, OutlinedInput } from "@mui/material";
 import { Controller, useFormContext } from "react-hook-form";
-import type { LedgerEntry } from "../../../pages/LedgerEntryForm";
+import type { LedgerEntry } from "../FormUtils";
 
 export default function DateField() {
   const { control } = useFormContext<LedgerEntry>();
@@ -12,7 +12,7 @@ export default function DateField() {
     .slice(0, 10);
 
   return (
-    <FormControl sx={{ py: 3 }}>
+    <FormControl >
       <InputLabel htmlFor="date">Date</InputLabel>
       <Controller
         control={control}
@@ -27,7 +27,7 @@ export default function DateField() {
             const today = new Date();
             selected.setHours(0, 0, 0, 0);
             today.setHours(0, 0, 0, 0);
-            return selected.getTime() <= today.getTime() || "Invalid date";
+            return selected.getTime() <= today.getTime() || "Date is Invalid";
           },
         }}
         render={({ field }) => (
