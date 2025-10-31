@@ -1,21 +1,18 @@
 import type { AxiosError, AxiosResponse } from "axios";
 import { useEffect } from "react";
-import { useCookies } from "react-cookie";
 import { axiosCommandClient } from ".";
+import { useAuth } from "../../hooks/auth/useAuth";
 
 //Config Command API Endpoint
 export function AxiosCommandClientProvider({children}: {children: React.ReactNode}) {
-  const [cookies, , resetCookies] = useCookies(['token']);
+  const { isAuthenticated, token, logout } = useAuth();
 
   useEffect(() => {
     const requestCommandInterceptor = axiosCommandClient.interceptors.request.use((config) => {
-      const accessToken = cookies.token;
-      console.log("Command Request - Token available:", !!accessToken);
-      if (accessToken) {
-        config.headers.Authorization = `Bearer ${accessToken}`;
-        console.log("Command : Token set to Authorize Header", config.headers.Authorization?.substring(0, 20) + "...");
+      if (isAuthenticated) {
+        config.headers.Authorization = `Bearer ${token}`;
       } else {
-        console.log("Command : No token available for authorization");
+        console.log("Command : No token available for authorization"); //Message
       }
       return config;
       }
@@ -27,19 +24,18 @@ export function AxiosCommandClientProvider({children}: {children: React.ReactNod
       },
       (error: AxiosError) => {
           switch (error.response?.status) {
-          case 401:
-            console.log("Unauthorized: Token invalid or expired");
-            resetCookies('token');
-            window.location.href = '/auth/login';
-            break;
-          case 403:
-            console.log("Forbidden: Access denied");
-            resetCookies('token');
-            break;
+            case 401:
+              console.log("Unauthorized: Token invalid or expired"); //Message
+              logout();
+              break;
+            case 403:
+              console.log("Forbidden: Access denied"); //Message
+              logout();
+              break;
 
-          default:
-            break;
-        }
+            default:
+              break;
+          }
         return Promise.reject(error);
       }
     )
@@ -49,7 +45,7 @@ export function AxiosCommandClientProvider({children}: {children: React.ReactNod
       axiosCommandClient.interceptors.response.eject(responseCommandInterceptor)
     }
 
-  }, [cookies, resetCookies])
+  }, [isAuthenticated, token, logout])
   
   return (<>{children}</>)
 }

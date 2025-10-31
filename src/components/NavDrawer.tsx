@@ -8,7 +8,6 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import { useCookies } from "react-cookie";
 import { Link } from "react-router-dom";
 import { useAuth } from "../hooks/auth/useAuth";
 
@@ -39,8 +38,7 @@ export default function NavDrawer({ drawerWidth }: { drawerWidth: number }) {
     </List>
   );
 
-  const [cookies] = useCookies(["token"]);
-  const login_status = Boolean(cookies.token);
+  const { isAuthenticated } = useAuth();
   const { login, logout } = useAuth();
 
   return (
@@ -59,7 +57,7 @@ export default function NavDrawer({ drawerWidth }: { drawerWidth: number }) {
       open
     >
       {drawer}
-      {login_status ? (
+      {isAuthenticated ? (
         <Button onClick={logout}>Logout</Button>
       ) : (
         <Button onClick={() => login()}>Login</Button>

@@ -37,7 +37,7 @@ export function useProvideAuth() {
     };
     
     const login = async (data?: LoginUser) => {
-        if (cookies.token) {
+        if (isAuthenticated) {
             window.location.href = "/"
             return;
         }
@@ -52,7 +52,7 @@ export function useProvideAuth() {
                     SetCookies('token', token, {path: "/"});
                     setAuthToken(token);
                     setAuthState({ isLoading: false, error: null, success: "Login successful! Redirecting..." });
-                    setTimeout(() => window.location.href = "/form", 1000);
+                    setTimeout(() => window.location.href = "/", 1000);
                 } else {
                     setAuthState({ isLoading: false, error: "Login failed: No token received", success: null });
                 }
@@ -69,7 +69,7 @@ export function useProvideAuth() {
     };
 
     const signup = async (data: AuthData) => {
-        if (cookies.token) {
+        if (isAuthenticated) {
             window.location.href = "/"
             return;
         }

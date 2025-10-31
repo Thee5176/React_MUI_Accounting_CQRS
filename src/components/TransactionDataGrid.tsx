@@ -116,7 +116,7 @@ export default function TransactionDataGrid() {
       const res = await axiosQueryClient.get('/api/ledgers/all');
       const data: LedgerResponse[] = res.data;
 
-      console.log("Before :", data);
+      // console.log("Before :", data);
 
       // Flatten ledgerItems for each ledger into rows
       const dataRows = data.flatMap((ledger, idx) =>
@@ -136,7 +136,7 @@ export default function TransactionDataGrid() {
         ).sort((a,b) => a.coa - b.coa)
       );
       
-      console.log("After :", dataRows);
+      // console.log("After :", dataRows);
       
       if (mountedRef.current) {
         setRowData(dataRows);

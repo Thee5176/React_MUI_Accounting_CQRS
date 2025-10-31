@@ -8,17 +8,17 @@ import { AxiosQueryClientProvider } from './service/api/query';
 
 function App() : React.ReactElement {
   return (
-      <Container sx={{height:'100vh'}}>
-          <AxiosCommandClientProvider>
+    <Container sx={{ height: '100vh' }}>
+      <ProvideAuth>
+        <AxiosCommandClientProvider>
           <AxiosQueryClientProvider>
-            <ProvideAuth>
             <ProvideCoa>
               <RouterProvider router={routes} />
             </ProvideCoa>
-            </ProvideAuth>
           </AxiosQueryClientProvider>
-          </AxiosCommandClientProvider>
-      </Container>
+        </AxiosCommandClientProvider>
+      </ProvideAuth>
+    </Container>
   );
 }
 

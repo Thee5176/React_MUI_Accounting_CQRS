@@ -26,16 +26,10 @@ const axiosClient = ( endpoint:string) => axios.create({
 });
 
 export function setAuthToken(token?: string | null) {
-  if (token) {
     const header = `Bearer ${token}`;
     axios.defaults.headers.common["Authorization"] = header;
     axiosCommandClient.defaults.headers.common["Authorization"] = header;
     axiosQueryClient.defaults.headers.common["Authorization"] = header;
-  } else {
-    delete axios.defaults.headers.common["Authorization"];
-    delete axiosCommandClient.defaults.headers.common["Authorization"];
-    delete axiosQueryClient.defaults.headers.common["Authorization"];
-  }
 }
 
 export const axiosCommandClient = axiosClient("command");
