@@ -10,6 +10,7 @@ import Typography from "@mui/material/Typography"
 import { useEffect, useState } from "react"
 import { useFormContext } from "react-hook-form"
 import { useCoa } from "../../../hooks/coa/useCoa"
+import useStepper from "../../../hooks/stepper/useStepper"
 import type { LedgerItem } from "../EntryForm/FormUtils"
 
 function createData(
@@ -21,14 +22,11 @@ function createData(
   return { coa, name, balance, updated };
 }
 
-type BalanceReviewProps = {
-  setActiveStep: React.Dispatch<React.SetStateAction<number>>;
-};
-
-export default function BalanceReview({ setActiveStep }: BalanceReviewProps) {
+export default function BalanceReview() {
   
   const { getValues } = useFormContext();
   const { getAccountName, getBalanceType } = useCoa();
+  const { back } = useStepper();
   
   const [rowData, setRowData] = useState<ReturnType<typeof createData>[] | []>([]);
 
@@ -64,7 +62,7 @@ export default function BalanceReview({ setActiveStep }: BalanceReviewProps) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rowData.map(( row : ReturnType<typeof createData>) => (
+            {rowData.map((row: ReturnType<typeof createData>) => (
               <TableRow
                 key={row.coa}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
@@ -74,9 +72,7 @@ export default function BalanceReview({ setActiveStep }: BalanceReviewProps) {
                 </TableCell>
                 <TableCell align="right">{row.coa}</TableCell>
                 <TableCell align="right">{row.balance}</TableCell>
-                <TableCell
-                  align="right"
-                >
+                <TableCell align="right">
                   <Typography color={row.updated >= 0 ? "success" : "error"}>
                     {row.updated}
                   </Typography>
@@ -86,16 +82,15 @@ export default function BalanceReview({ setActiveStep }: BalanceReviewProps) {
           </TableBody>
         </Table>
       </TableContainer>
-
+      <Button onClick={() => back()} variant="contained" sx={{ mt: 2 }}>
+        Previous
+      </Button>
       <Button
-        onClick={() => setActiveStep(0)}
         color="secondary"
+        type="submit"
         variant="contained"
         sx={{ mt: 2 }}
       >
-        Previous
-      </Button>
-      <Button type="submit" variant="contained" sx={{ mt: 2 }}>
         Submit
       </Button>
     </>

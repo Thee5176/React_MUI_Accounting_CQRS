@@ -5,7 +5,6 @@ import { axiosCommandClient } from "../../../service/api";
 const sendLedgerEntry = async (data: LedgerEntry) => {
   try {
     const response = await axiosCommandClient.post("/ledger", data);
-    console.log(response.data);
     console.log(response.status);
     return response.data;
   } catch (error) {
@@ -28,7 +27,6 @@ export const onSubmit: SubmitHandler<LedgerEntry> = async (
       id: idx + 1,
     }));
 
-  console.log(data);
   const result = await sendLedgerEntry(data);
   console.log(result);
 };
@@ -36,6 +34,7 @@ export const onSubmit: SubmitHandler<LedgerEntry> = async (
 export const formInitialValue = {
   id: "",
   date: new Date().toISOString().slice(0, 10),
+  description: "",
   ledgerItems: [
     { coa: 0, amount: 0, balanceType: "Debit" },
     { coa: 0, amount: 0, balanceType: "Credit" },

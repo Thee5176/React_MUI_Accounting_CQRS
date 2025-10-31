@@ -2,7 +2,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { DataGrid } from "@mui/x-data-grid/DataGrid";
 import type { GridColumnGroupingModel, GridRowsProp } from "@mui/x-data-grid/models";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useCoa } from "../../hooks/coa/useCoa";
 import { fetchOutstanding } from "../financial_statement/FetchUtil";
 import { fetchRows } from "./FetchUtil";
@@ -35,25 +35,42 @@ export default function LedgerDataGrid({ isSubsidiary } : { isSubsidiary : boole
       if (didFetchRef.current) return;
 
       didFetchRef.current = true;
+      let isMounted = true;
       setLoading(true);
-      // fetch GL data
-
-      // fetch and process SL data in background
+      
       (async () => {
         try {
-          const listOfCoa = await fetchRows(setRows);
-
-          const data = await fetchOutstanding(listOfCoa as number[]); // Promise result retrieval
+          // fetch GL data and get the associated coa
+          const listOfCoaRaw = (await fetchRows(setRows)) as number[];
+          // de-duplicate and sort once to minimize payload and server work
+          const listOfCoa = Array.from(new Set(listOfCoaRaw)).sort((a, b) => a - b);
+          
+          // fetch and process SL data
+          const data = await fetchOutstanding(listOfCoa);
+          if (!isMounted) return;
           // Expecting Map<number, number>; ensure state gets a new Map instance
           setOutstandingData(new Map(data));
         } catch (e) {
           console.error("fetchOutstanding failed", e);
-          setOutstandingData(new Map());
+          if (isMounted) setOutstandingData(new Map());
+        } finally {
+          if (isMounted) setLoading(false);
         }
       })();
-      setLoading(false);
 
-    }, [setRows, outstandingData]);
+      return () => { isMounted = false; };
+    }, []);
+
+    // Group rows by COA once to avoid repeated O(n*m) filters on every render
+    const rowsByCoa = useMemo(() => {
+      const m = new Map<number, GridRowsProp>();
+      for (const row of rows) {
+        const key = Number((row as unknown as { coa: number | string }).coa);
+        const bucket = m.get(key);
+        m.set(key, bucket ? [...bucket, row] : [row]);
+      }
+      return m;
+    }, [rows]);
 
     return (
       <>
@@ -64,6 +81,7 @@ export default function LedgerDataGrid({ isSubsidiary } : { isSubsidiary : boole
             columnGroupingModel={columnGroupingModel}
             loading={loading}
             outstanding={outstandingData}
+            groupedRows={rowsByCoa}
           />
         ) : (
           <GeneralLedgerGrid
@@ -76,7 +94,7 @@ export default function LedgerDataGrid({ isSubsidiary } : { isSubsidiary : boole
     );
 }
 
-function GeneralLedgerGrid({ rows, columnGroupingModel, loading}: LedgerGridProps) {
+function GeneralLedgerGrid({ rows, columnGroupingModel, loading }: LedgerGridProps) {
   return (
     <Box sx={{ display: "flex", flexDirection: "column", my: 3 }}>
       <DataGrid
@@ -107,12 +125,12 @@ function GeneralLedgerGrid({ rows, columnGroupingModel, loading}: LedgerGridProp
 }
 
 function SubsidiaryLedgerGrid({
-  rows,
   getAccountName,
   columnGroupingModel,
   loading,
   outstanding,
-}: SubsidiaryProps & {outstanding: Map<number,number>}) {
+  groupedRows,
+}: SubsidiaryProps & {outstanding: Map<number,number>; groupedRows: Map<number, GridRowsProp>}) {
   return (
     <Box>
       {Array.from(outstanding.entries()).map(([coa, balance]) => (
@@ -127,17 +145,17 @@ function SubsidiaryLedgerGrid({
             sx={{ mb: 1 }}
             variant="h5"
           >{`Name: ${getAccountName[coa]} ${coa}`}</Typography>
-          <Typography>{`Account Balance: ${balance.toLocaleString()?? 0}`}</Typography>
+          <Typography>{`Account Balance: ${balance.toLocaleString() ?? 0}`}</Typography>
 
           <DataGrid
-            rows={rows.filter((row) => Number(row.coa) == coa)}
+            rows={groupedRows.get(coa) ?? []}
             columns={cols}
             initialState={{
               columns: {
                 columnVisibilityModel: { coa: false },
               },
               sorting: {
-                sortModel: [{ field: "date", sort: "desc" }],
+                sortModel: [{ field: "date", sort: "asc" }],
               },
               pagination: {
                 paginationModel: { pageSize: 20, page: 0 },
@@ -150,6 +168,7 @@ function SubsidiaryLedgerGrid({
             columnGroupingModel={columnGroupingModel}
             pageSizeOptions={[20, 50, 100]}
             loading={loading}
+            hideFooter
           />
         </Box>
       ))}

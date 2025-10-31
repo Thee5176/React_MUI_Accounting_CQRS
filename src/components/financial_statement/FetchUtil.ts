@@ -91,8 +91,8 @@ export async function fetchOutstanding(
     .post("/balance/json", listOfCoa)
     .then((res) => res.data);
 
-  console.log("fetch param: ", listOfCoa)
-  console.log("Account Balance Data: ", data);
+  // console.log("fetch param: ", listOfCoa);
+  // console.log("Account Balance Data: ", data);
 
   const map = new Map<number, number>();
   if (Array.isArray(data)) {
@@ -101,6 +101,12 @@ export async function fetchOutstanding(
     }
   }
 
-  console.log("Fetch Account Outstanding (map): ", map);
-  return map;
+  // Build ordered result map
+  const result = new Map<number, number>();
+  for (const k of listOfCoa) {
+    result.set(k, map.get(k) ?? 0);
+  }
+
+  // console.log("Fetch Account Outstanding (map): ", result);
+  return result;
 }

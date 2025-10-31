@@ -19,7 +19,7 @@ export const fetchRows = async (
     return;
   }
 
-  console.log("Before :", data);
+  // console.log("Before Transaform :", data);
 
   // Collect unique COA codes while flattening rows
   const coaSet = new Set<number>();
@@ -52,7 +52,7 @@ export const fetchRows = async (
       )
       .sort((a, b) => b.balance - a.balance)
   );
-  console.log("After :", dataRows);
+  // console.log("After Transaform:", dataRows);
 
   setRows(dataRows);
 

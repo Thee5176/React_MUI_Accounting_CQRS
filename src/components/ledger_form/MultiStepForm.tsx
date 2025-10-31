@@ -4,7 +4,7 @@ import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
 import Stepper from "@mui/material/Stepper";
 import Typography from "@mui/material/Typography";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import ProvideBalance from "../../hooks/balance/provider";
 import useStepper from "../../hooks/stepper/useStepper";
@@ -19,21 +19,29 @@ export default function MutiStepForm() {
     //stepper
     const { activeStep, setActiveStep } = useStepper();
     const [openModal, setOpenModal] = useState<boolean>(false);
-
-    const handleSteps = (step: number) => {
-      switch (step) {
-        case 0:
-          return <EntryForm />;
-        case 1:
-          return <BalanceReview setActiveStep={setActiveStep} />;
-        default:
-          throw new Error("Unknown step");
+    const defaultValues = useMemo<LedgerEntry>(() => {
+      try {
+        const savedData = localStorage.getItem("myFormState");
+        if (savedData) {
+          const parsed = JSON.parse(savedData) as Partial<LedgerEntry>;
+          
+          return {
+            id: parsed.id ?? formInitialValue.id,
+            date: parsed.date ?? formInitialValue.date,
+            description: parsed.description ?? "",
+            ledgerItems: parsed.ledgerItems ?? formInitialValue.ledgerItems,
+            timestamp: parsed.timestamp ?? formInitialValue.timestamp,
+          } as LedgerEntry;
+        }
+        return { ...formInitialValue} as LedgerEntry;
+      } catch {
+        return { ...formInitialValue} as LedgerEntry;
       }
-    };
+    }, []);
 
     //form
     const formContext = useForm<LedgerEntry>({
-      defaultValues: formInitialValue,
+      defaultValues,
     });
 
     const {
@@ -42,13 +50,37 @@ export default function MutiStepForm() {
         formState: { isSubmitSuccessful },
     } = formContext;
 
+    const handleSteps = (step: number) => {
+      switch (step) {
+        case 0:
+          return <EntryForm />;
+        case 1:
+          return <BalanceReview />;
+        default:
+          throw new Error("Unknown step");
+      }
+    };
+
     // Reset form after submission
     useEffect(() => {
         if (isSubmitSuccessful) {
           reset(formInitialValue);
           setOpenModal(true);
+          localStorage.removeItem("myFormState");
         }
     }, [reset, isSubmitSuccessful]);
+
+    // Persist form changes to localStorage without triggering re-renders
+    useEffect(() => {
+      const subscription = formContext.watch((value) => {
+        try {
+          localStorage.setItem("myFormState", JSON.stringify(value));
+        } catch {
+          // ignore quota/serialization errors
+        }
+      });
+      return () => subscription.unsubscribe();
+    }, [formContext]);
 
     return (
       <>
