@@ -6,6 +6,7 @@ import TableCell from "@mui/material/TableCell"
 import TableContainer from "@mui/material/TableContainer"
 import TableHead from "@mui/material/TableHead"
 import TableRow from "@mui/material/TableRow"
+import Typography from "@mui/material/Typography"
 import { useEffect, useState } from "react"
 import { useFormContext } from "react-hook-form"
 import { useCoa } from "../../../hooks/coa/useCoa"
@@ -75,9 +76,10 @@ export default function BalanceReview({ setActiveStep }: BalanceReviewProps) {
                 <TableCell align="right">{row.balance}</TableCell>
                 <TableCell
                   align="right"
-                  color={row.balance < 0 ? "alert" : "primary"}
                 >
-                  {row.updated}
+                  <Typography color={row.updated >= 0 ? "success" : "error"}>
+                    {row.updated}
+                  </Typography>
                 </TableCell>
               </TableRow>
             ))}
