@@ -10,7 +10,7 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import { useCookies } from "react-cookie";
 import { Link } from "react-router-dom";
-import { useProvideAuth } from "../hooks/auth";
+import { useAuth } from "../hooks/auth/useAuth";
 
 export default function NavDrawer({ drawerWidth }: { drawerWidth: number }) {
   
@@ -39,9 +39,9 @@ export default function NavDrawer({ drawerWidth }: { drawerWidth: number }) {
     </List>
   );
 
-  const [cookies, , ] = useCookies(['token']);
-  const login_status : boolean = cookies.token;
-  const {login, logout} = useProvideAuth();
+  const [cookies] = useCookies(["token"]);
+  const login_status = Boolean(cookies.token);
+  const { login, logout } = useAuth();
 
   return (
     <Drawer

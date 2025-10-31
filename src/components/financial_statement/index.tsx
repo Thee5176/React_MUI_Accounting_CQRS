@@ -18,7 +18,7 @@ export function Row({ row }: { row: formatType }) {
 
   return (
     <>
-      <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
+      <TableRow sx={{ "& td, & th": { borderBottom: "none" } }}>
         <TableCell>
           <IconButton
             aria-label="expand row"
@@ -29,11 +29,17 @@ export function Row({ row }: { row: formatType }) {
           </IconButton>
         </TableCell>
         <TableCell component="th" scope="row">
-          <Typography sx={{ textTransform: 'capitalize' }} variant="h6">{row.name}</Typography>
+          <Typography sx={{ textTransform: "capitalize" }} variant="h6">
+            {row.name}
+          </Typography>
         </TableCell>
         <TableCell align="right">{row.count == 0 ? "-" : row.count}</TableCell>
-        <TableCell align="right">{checkDebit(row.name) ? row.balance : 0}</TableCell>
-        <TableCell align="right">{checkDebit(row.name) ? 0 : row.balance}</TableCell>
+        <TableCell align="right">
+          {checkDebit(row.name) ? row.balance : 0}
+        </TableCell>
+        <TableCell align="right">
+          {checkDebit(row.name) ? 0 : row.balance}
+        </TableCell>
       </TableRow>
 
       <DetailedRow row={row} open={open} />

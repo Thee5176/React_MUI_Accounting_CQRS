@@ -1,7 +1,7 @@
 import { OutlinedInput } from '@mui/material';
 import FormControl from '@mui/material/FormControl';
 import { Controller, useFormContext } from 'react-hook-form';
-import type { LedgerEntry } from '../../../../../pages/LedgerEntryForm';
+import type { LedgerEntry } from '../FormUtils';
 
 export default function AmountField({ insertIndex }: { readonly insertIndex: number }) {
   const { control } = useFormContext<LedgerEntry>();

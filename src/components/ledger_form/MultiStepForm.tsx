@@ -6,6 +6,8 @@ import Stepper from "@mui/material/Stepper";
 import Typography from "@mui/material/Typography";
 import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
+import ProvideBalance from "../../hooks/balance/provider";
+import useStepper from "../../hooks/stepper/useStepper";
 import BalanceReview from "./BalanceReview";
 import EntryForm from "./EntryForm";
 import { formInitialValue, onSubmit, type LedgerEntry } from "./EntryForm/FormUtils";
@@ -14,15 +16,14 @@ import FormModal from "./FormModal";
 const labels = ["Entry Form", "Balance Review"];
 
 export default function MutiStepForm() {
-    
     //stepper
-    const [activeStep, setActiveStep] = useState<number>(0);
+    const { activeStep, setActiveStep } = useStepper();
     const [openModal, setOpenModal] = useState<boolean>(false);
 
     const handleSteps = (step: number) => {
       switch (step) {
         case 0:
-          return <EntryForm setActiveStep={setActiveStep} />;
+          return <EntryForm />;
         case 1:
           return <BalanceReview setActiveStep={setActiveStep} />;
         default:
@@ -67,11 +68,13 @@ export default function MutiStepForm() {
           ))}
         </Stepper>
         <FormProvider {...formContext}>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <FormGroup>
-              {handleSteps(activeStep)}
-            </FormGroup>
-          </form>
+          <ProvideBalance>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <FormGroup>
+                {handleSteps(activeStep)}
+              </FormGroup>
+            </form>
+          </ProvideBalance>
         </FormProvider>
       </>
     );

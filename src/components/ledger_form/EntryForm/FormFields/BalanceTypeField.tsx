@@ -2,7 +2,7 @@ import FormControl from '@mui/material/FormControl';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import { Controller, useFormContext } from 'react-hook-form';
-import type { LedgerEntry } from '../../../../../pages/LedgerEntryForm';
+import type { LedgerEntry } from '../FormUtils';
 
 export default function BalanceTypeField( {insertIndex} : {insertIndex : number} ) {
     const {control} = useFormContext<LedgerEntry>();

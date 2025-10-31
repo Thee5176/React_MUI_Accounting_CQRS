@@ -23,7 +23,8 @@ export default function GeneralLedgerView() {
               onChange={handleChange}
             />
             <Typography>SL</Typography>
-          </Box>        </Box>
+          </Box>
+        </Box>
         <LedgerDataGrid isSubsidiary={Toggled} />
       </>
     );

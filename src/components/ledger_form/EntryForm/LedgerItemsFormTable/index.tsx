@@ -5,7 +5,7 @@ import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import TableRow from '@mui/material/TableRow'
 import BalanceCheckRow from './BalanceAmountCheck'
-import LedgerItemInputRow from './LedgerItemInputRow'
+import InputRow from './InputRow'
 
 export default function LedgerItemsFormTable() {    
 
@@ -27,7 +27,9 @@ export default function LedgerItemsFormTable() {
                 Balance Type
               </TableCell>
             </TableRow>
-            <LedgerItemInputRow />
+
+            <InputRow />
+
             <BalanceCheckRow />
           </TableBody>
         </Table>

@@ -3,7 +3,7 @@ import Typography from "@mui/material/Typography";
 import { DataGrid } from "@mui/x-data-grid/DataGrid";
 import type { GridColumnGroupingModel, GridRowsProp } from "@mui/x-data-grid/models";
 import { useEffect, useRef, useState } from "react";
-import useProvideCoa from "../../hooks/coa";
+import { useCoa } from "../../hooks/coa/useCoa";
 import { fetchRows } from "./FetchUtil";
 import { cols } from "./GridColDef";
 
@@ -24,7 +24,7 @@ export default function LedgerDataGrid({ isSubsidiary } : { isSubsidiary : boole
     const [accounts, setAccounts] = useState<number[]>([]);
     const [loading, setLoading] = useState(false);
     const didFetchRef = useRef(false);
-    const { getAccountName } = useProvideCoa();
+    const { getAccountName } = useCoa();
 
     //fetch data on mount
     useEffect(() => {

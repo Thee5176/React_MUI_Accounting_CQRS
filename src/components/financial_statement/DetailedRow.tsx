@@ -6,7 +6,7 @@ import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
-import useProvideCoa from '../../hooks/coa';
+import { useCoa } from '../../hooks/coa/useCoa';
 import type { formatType } from './FetchUtil';
 
 export default function DetailedRow({ row, open }: { row: formatType; open: boolean }) {
@@ -32,7 +32,7 @@ function NullRow() {
 }
 
 function ContentRow({ row }: { readonly row: formatType }) {
-    const { getAccountName } = useProvideCoa();
+    const { getAccountName } = useCoa();
 
     return (
         <Table size="small" aria-label="purchases">

@@ -1,8 +1,11 @@
 import { useContext } from "react";
-import { Ctx } from "./context";
+import { StepperContext } from "./context";
 
-export function useStepper() {
-  const ctx = useContext(Ctx);
-  if (!ctx) throw new Error("useStepper must be used within StepperProvider");
-  return ctx;
+// TODO: to be implemented
+
+export default function useStepper() {
+  const stepper = useContext(StepperContext);
+  if (!stepper) throw new Error("useStepper must be used within StepperProvider");
+
+  return stepper;
 }

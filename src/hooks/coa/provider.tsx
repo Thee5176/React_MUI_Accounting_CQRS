@@ -1,11 +1,8 @@
+import type { ReactNode } from "react";
+import useProvideCoa from ".";
 import { CoaContext } from "./context";
-import { useCoa } from "./useCoa";
 
-export default function ProvideCoa({children} : {children: React.ReactElement}){
-    const coa = useCoa();
-    return (
-        <CoaContext.Provider value={coa}>
-            {children}
-        </CoaContext.Provider>
-    )
-};
+export default function ProvideCoa({ children }: { children: ReactNode }) {
+  const coa = useProvideCoa();
+  return <CoaContext.Provider value={coa}>{children}</CoaContext.Provider>;
+}

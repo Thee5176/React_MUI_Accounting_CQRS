@@ -5,7 +5,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import FormGroup from "@mui/material/FormGroup";
 import { useEffect } from "react";
 import { FormProvider, useForm, type SubmitHandler } from "react-hook-form";
-import { useProvideAuth } from "../../hooks/auth";
+import { useAuth } from "../../hooks/auth/useAuth";
 import SetEmailField from "./EmailField";
 import SetFirstNameField from "./FirstNameField";
 import SetLastNameField from "./LastNameField";
@@ -22,7 +22,7 @@ export interface CreateUser{
 };
 
 export default function SignUpForm(){ 
-      const {signup, authState, clearMessages} = useProvideAuth();
+      const {signup, authState, clearMessages} = useAuth();
       const formContext = useForm<CreateUser>();
 
       const {

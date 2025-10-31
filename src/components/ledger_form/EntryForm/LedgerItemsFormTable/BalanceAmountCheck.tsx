@@ -1,12 +1,20 @@
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import VerifiedIcon from "@mui/icons-material/Verified";
-import { List, ListItem, ListItemText, styled, TableCell, TableRow, Tooltip, Typography } from "@mui/material";
+import {
+  List,
+  ListItem,
+  ListItemText,
+  styled,
+  TableCell,
+  TableRow,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import Collapse from "@mui/material/Collapse";
-import IconButton, { type IconButtonProps } from '@mui/material/IconButton';
+import IconButton, { type IconButtonProps } from "@mui/material/IconButton";
 import { useState } from "react";
-import { useFormContext } from "react-hook-form";
-import type { LedgerEntry } from "../../../../pages/LedgerEntryForm";
+import { useBalance } from "../../../../hooks/balance/useBalance";
 
 interface ExpandMoreProps extends IconButtonProps {
   expand: boolean;
@@ -14,50 +22,23 @@ interface ExpandMoreProps extends IconButtonProps {
 // Expand Icon Animation
 const ExpandMore = styled((props: ExpandMoreProps) => {
   const { expand, ...other } = props;
-  return <IconButton style={{
-    transform: expand ? 'rotate(180deg)' : 'rotate(0deg)'
-  }} {...other} />;
+  return (
+    <IconButton
+      style={{
+        transform: expand ? "rotate(180deg)" : "rotate(0deg)",
+      }}
+      {...other}
+    />
+  );
 })(({ theme }) => ({
-  marginLeft: 'auto',
-  transition: theme.transitions.create('transform', {
+  marginLeft: "auto",
+  transition: theme.transitions.create("transform", {
     duration: theme.transitions.duration.shortest,
-  })
+  }),
 }));
 
 export default function BalanceCheckRow() {
-  const { getValues } = useFormContext<LedgerEntry>();
-
-  // calculate total row count based on balance types
-  function calculateBalance(): number {
-    const ledgerItems = getValues("ledgerItems") || [];
-
-    return ledgerItems
-      .filter((item) => item.balanceType === "Debit")
-      .reduce((acc, item) => acc + (item.amount || 0), 0);
-  }
-
-  function checkBalance(inputType?: string): [boolean, number] {
-    // [Balance_Status, Balance]
-    const ledgerItems = getValues("ledgerItems") || [];
-    const totalDebit = ledgerItems
-      .filter((item) => item.balanceType === "Debit")
-      .reduce((acc, item) => acc + (item.amount || 0), 0);
-
-    const totalCredit = ledgerItems
-      .filter((item) => item.balanceType === "Credit")
-      .reduce((acc, item) => acc + (item.amount || 0), 0);
-
-    switch (inputType) {
-      case "Debit":
-        return [true, totalDebit];
-
-      case "Credit":
-        return [true, totalCredit];
-      default:
-        return [totalDebit === totalCredit, totalDebit - totalCredit];
-    }
-
-  }
+  const { debitTotal, creditTotal, isBalanced, diff } = useBalance();
 
   const [expanded, setExpanded] = useState(false);
   const handleExpandClick = () => {
@@ -84,14 +65,12 @@ export default function BalanceCheckRow() {
         </TableCell>
         <TableCell colSpan={2} sx={{ textAlign: "end" }}>
           <Typography variant="h6">
-            <span id="total-balance">
-              $ {checkBalance()[0] ? `${calculateBalance()}` : `--`}
-            </span>
+            <span id="total-balance">$ {isBalanced ? debitTotal.toLocaleString() : formatNumberWithSign(diff) }</span>
             <span id="balance-status">
-              {checkBalance()[0] ? (
+              {isBalanced ? (
                 <BalanceCheckPassing />
               ) : (
-                <BalanceCheckFailed checkBalance={checkBalance} />
+                <BalanceCheckFailed diff={diff} />
               )}
             </span>
           </Typography>
@@ -102,13 +81,13 @@ export default function BalanceCheckRow() {
           <Collapse in={expanded} timeout="auto" unmountOnExit>
             <List>
               <ListItem>
-                <ListItemText 
-                  primary={`Debit: ${checkBalance("Debit")[1]}`} 
+                <ListItemText
+                  primary={`Debit: ${debitTotal.toLocaleString()}`}
                 />
               </ListItem>
               <ListItem>
                 <ListItemText
-                  primary={`Credit: ${checkBalance("Credit")[1]}`}
+                  primary={`Credit: ${creditTotal.toLocaleString()}`}
                 />
               </ListItem>
             </List>
@@ -120,16 +99,16 @@ export default function BalanceCheckRow() {
 }
 
 const BalanceCheckPassing = () => (
-    <Tooltip title="Balanced Check Passing — totals match" arrow>
-      <IconButton aria-label="balanced" size="large">
-        <VerifiedIcon color="success" />
-      </IconButton>
-    </Tooltip>
-  );
+  <Tooltip title="Balanced Check Passing — totals match" arrow>
+    <IconButton aria-label="balanced" size="large">
+      <VerifiedIcon color="success" />
+    </IconButton>
+  </Tooltip>
+);
 
-const BalanceCheckFailed = ({ checkBalance }: { checkBalance: () => [boolean, number] }) => (
+const BalanceCheckFailed = ({ diff }: { readonly diff: number }) => (
   <Tooltip
-    title={`Unbalanced — totals do not match by ${checkBalance()[1]}`}
+    title={`Unbalanced — totals do not match by ${formatNumberWithSign(diff)}`}
     arrow
   >
     <IconButton aria-label="unbalanced" size="large">
@@ -137,3 +116,13 @@ const BalanceCheckFailed = ({ checkBalance }: { checkBalance: () => [boolean, nu
     </IconButton>
   </Tooltip>
 );
+
+function formatNumberWithSign(num: number): string {
+  if (num > 0) {
+    return `+${num.toLocaleString()}`; // Prepend '+' for positive numbers
+  } else if (num < 0) {
+    return `${num.toLocaleString()}`; // Negative numbers already have a '-'
+  } else {
+    return "0"; // Handle zero specifically, or you could return '+0' or '-0' if preferred
+  }
+}

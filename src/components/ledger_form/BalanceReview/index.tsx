@@ -8,7 +8,7 @@ import TableHead from "@mui/material/TableHead"
 import TableRow from "@mui/material/TableRow"
 import { useEffect, useState } from "react"
 import { useFormContext } from "react-hook-form"
-import { default as useProvideCoa } from "../../../hooks/coa"
+import { useCoa } from "../../../hooks/coa/useCoa"
 import type { LedgerItem } from "../EntryForm/FormUtils"
 
 function createData(
@@ -27,7 +27,7 @@ type BalanceReviewProps = {
 export default function BalanceReview({ setActiveStep }: BalanceReviewProps) {
   
   const { getValues } = useFormContext();
-  const { getAccountName, getBalanceType } = useProvideCoa();
+  const { getAccountName, getBalanceType } = useCoa();
   
   const [rowData, setRowData] = useState<ReturnType<typeof createData>[] | []>([]);
 

@@ -27,6 +27,8 @@ export function useProvideAuth() {
         success: null
     });
 
+    const isAuthenticated = Boolean(cookies.token);
+
     const logout = () => {
         // Remove Authentication Credential
         removeCookies("token", { path: "/" });
@@ -90,5 +92,5 @@ export function useProvideAuth() {
         setAuthState(prev => ({ ...prev, error: null, success: null }));
     };
 
-    return { logout, login, signup, authState, clearMessages };
+    return { logout, login, signup, authState, clearMessages, isAuthenticated, token: cookies.token };
 };

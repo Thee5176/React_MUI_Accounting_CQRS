@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
 import { useLocalStorage } from 'usehooks-ts';
 import { axiosQueryClient } from '../../service/api';
+import { useAuth } from "../auth/useAuth";
 
 export interface CodeOfAccount {
     code: number;
@@ -9,51 +10,46 @@ export interface CodeOfAccount {
     balance: number;
 }
 
-// fetch list of available COA from Query Service
+// fetch list of available COA along with associated information
 export default function useProvideCoa() {
-  const [codeOfAccounts, setCodeOfAccounts] = useState<CodeOfAccount[]>([]);
+  const { isAuthenticated } = useAuth();
   const [coaCached, setCoaCached, removeCoaCached] = useLocalStorage<
     CodeOfAccount[]
   >("coa", []);
 
   const fetchCoa = useCallback(async () => {
+    if (!isAuthenticated) return;
+
     try {
       const response = await axiosQueryClient.post("/available-coa/json");
       const data: CodeOfAccount[] = response.data;
-      setCodeOfAccounts(data);
       setCoaCached(data);
     } catch (err) {
       console.error("Failed to fetch COA", err);
     }
-  }, [setCoaCached]);
-
-  useEffect(() => {
-    if (!coaCached || coaCached.length === 0) {
-      // No cache – fetch from server
-      fetchCoa();
-    } else {
-      // Hydrate from cache immediately
-      setCodeOfAccounts(coaCached);
-      // Optional: background revalidate
-      // void fetchCoa();
-    }
-  }, [fetchCoa, coaCached]);
+  }, [setCoaCached, isAuthenticated]);
 
   const getAccountName: Record<number, string> = useMemo(() => {
     const map: Record<number, string> = {};
-    codeOfAccounts.forEach((account) => {
+    coaCached.forEach((account) => {
       map[account.code] = account.title;
     });
     return map;
-  }, [codeOfAccounts]);
+  }, [coaCached]);
 
   const getBalanceType: Record<number, string> = useMemo(() => {
     const map: Record<number, string> = {};
-    codeOfAccounts.forEach((account) => {
+    coaCached.forEach((account) => {
       map[account.code] = account.type;
     });
     return map;
-  }, [codeOfAccounts]);
+  }, [coaCached]);
 
-  return { getAccountName, getBalanceType, codeOfAccounts, fetchCoa, removeCoaCached };
+  return {
+    codeOfAccounts: coaCached,
+    getAccountName,
+    getBalanceType,
+    fetchCoa,
+    removeCoaCached,
+  };
 }

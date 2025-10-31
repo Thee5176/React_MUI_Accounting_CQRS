@@ -5,7 +5,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import FormGroup from "@mui/material/FormGroup";
 import { useEffect } from "react";
 import { FormProvider, type SubmitHandler, useForm } from "react-hook-form";
-import { useProvideAuth } from "../../hooks/auth";
+import { useAuth } from "../../hooks/auth/useAuth";
 import SetPasswordField from "../register/PasswordField";
 import SetUserNameField from "../register/UserNameField";
 import RememberMeCheckbox from "./RememberMeCheckbox";
@@ -16,7 +16,7 @@ export interface LoginUser {
 }
 
 export default function LoginForm() {
-    const {login, authState, clearMessages} = useProvideAuth();
+    const {login, authState, clearMessages} = useAuth();
     const formContext = useForm<LoginUser>();
     
     const {

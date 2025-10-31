@@ -1,12 +1,4 @@
 import { createContext } from "react";
+import type useProvideStepper from ".";
 
-type StepperCtx = {
-  activeStep: number;
-  setActiveStep: React.Dispatch<React.SetStateAction<number>>;
-  next: () => void;
-  back: () => void;
-  reset: () => void;
-  total: number;
-};
-
-export const Ctx = createContext<StepperCtx | null>(null);
+export const StepperContext = createContext<ReturnType<typeof useProvideStepper> | null>(null);

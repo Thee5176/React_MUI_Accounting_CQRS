@@ -1,11 +1,8 @@
+import type { ReactNode } from "react";
 import { authContext } from "./context";
-import { useAuth } from "./useAuth";
+import { useProvideAuth } from ".";
 
-export default function ProvideAuth({children} : {children: React.ReactElement}){
-    const auth = useAuth();
-    return (
-        <authContext.Provider value={auth}>
-            {children}
-        </authContext.Provider>
-    )
-};
+export default function ProvideAuth({ children }: { children: ReactNode }) {
+  const auth = useProvideAuth();
+  return <authContext.Provider value={auth}>{children}</authContext.Provider>;
+}

@@ -11,11 +11,11 @@ function App() : React.ReactElement {
       <Container sx={{height:'100vh'}}>
           <AxiosCommandClientProvider>
           <AxiosQueryClientProvider>
-            <ProvideCoa>
             <ProvideAuth>
+            <ProvideCoa>
               <RouterProvider router={routes} />
-            </ProvideAuth>
             </ProvideCoa>
+            </ProvideAuth>
           </AxiosQueryClientProvider>
           </AxiosCommandClientProvider>
       </Container>

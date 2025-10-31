@@ -3,12 +3,12 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import { useEffect, useRef } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
-import useProvideCoa from '../../../../../hooks/coa';
-import type { LedgerEntry } from '../../FormUtils';
+import useCoa from '../../../../hooks/coa';
+import type { LedgerEntry } from '../FormUtils';
 
 export default function CoaField({ insertIndex }: { insertIndex: number }) {
   const { control } = useFormContext<LedgerEntry>();
-  const { codeOfAccounts, fetchCoa } = useProvideCoa();
+  const { codeOfAccounts, fetchCoa } = useCoa();
 
   // Fetch COA every component mounts for latest data
   const hasFetched = useRef<boolean>(false);

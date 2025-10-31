@@ -4,13 +4,13 @@ import Button from "@mui/material/Button";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import { useFieldArray, useFormContext } from "react-hook-form";
-import ErrorAlert from "../../ErrorAlert";
-import type { LedgerEntry } from "../../FormUtils";
-import AmountField from "./AmountField";
-import BalanceTypeField from "./BalanceTypeField";
-import CoaField from "./CoaField";
+import ErrorAlert from "../ErrorAlert";
+import AmountField from "../FormFields/AmountField";
+import BalanceTypeField from "../FormFields/BalanceTypeField";
+import CoaField from "../FormFields/CoaField";
+import type { LedgerEntry } from "../FormUtils";
 
-export default function LedgerItemInputRow() {
+export default function InputRow() {
   const {
     control,
     formState: { errors },
