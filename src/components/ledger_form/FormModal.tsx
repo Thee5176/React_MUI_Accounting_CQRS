@@ -26,7 +26,10 @@ const style = {
 
 export default function FormModal({ modalHook, setActiveStep }: ModalProps) {
   const [openModal, setOpenModal] = modalHook;
-  const handleClose = () => setOpenModal(false);
+  const handleClose = () => {
+    setOpenModal(false);
+    setActiveStep(0);
+  };
 
   const handleClick = () => {
     setOpenModal(false);
@@ -43,12 +46,11 @@ export default function FormModal({ modalHook, setActiveStep }: ModalProps) {
       >
         <Box sx={style}>
           <CheckCircleOutlineIcon />
-          <Typography id="modal-modal-title" variant="h6" component="h2">
+
+          <Typography id="modal-modal-title" sx={{my: 3}} variant="h6" component="h2">
             Form Submitted Successfully
           </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            Close to check ledger page.
-          </Typography>
+
           <Button onClick={handleClick}>
             Record Next Transaction{/*TODO : record another transaction*/}
           </Button>

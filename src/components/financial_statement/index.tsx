@@ -33,12 +33,12 @@ export function Row({ row }: { row: formatType }) {
             {row.name}
           </Typography>
         </TableCell>
-        <TableCell align="right">{row.count == 0 ? "-" : row.count}</TableCell>
+        <TableCell align="right">{row.count == 0 ? "-" : row.count.toLocaleString()}</TableCell>
         <TableCell align="right">
-          {checkDebit(row.name) ? row.balance : 0}
+          {checkDebit(row.name) ? row.balance.toLocaleString() : 0}
         </TableCell>
         <TableCell align="right">
-          {checkDebit(row.name) ? 0 : row.balance}
+          {checkDebit(row.name) ? 0 : row.balance.toLocaleString()}
         </TableCell>
       </TableRow>
 

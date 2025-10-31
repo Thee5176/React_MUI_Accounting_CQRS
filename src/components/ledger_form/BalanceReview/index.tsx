@@ -94,7 +94,7 @@ export default function BalanceReview({ setActiveStep }: BalanceReviewProps) {
         Previous
       </Button>
       <Button type="submit" variant="contained" sx={{ mt: 2 }}>
-        Record
+        Submit
       </Button>
     </>
   );

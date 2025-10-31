@@ -65,7 +65,7 @@ export default function BalanceCheckRow() {
         </TableCell>
         <TableCell colSpan={2} sx={{ textAlign: "end" }}>
           <Typography variant="h6">
-            <span id="total-balance">$ {isBalanced ? debitTotal.toLocaleString() : formatNumberWithSign(diff) }</span>
+            <span id="total-balance">{isBalanced ? debitTotal.toLocaleString() : formatNumberWithSign(diff) }</span>
             <span id="balance-status">
               {isBalanced ? (
                 <BalanceCheckPassing />

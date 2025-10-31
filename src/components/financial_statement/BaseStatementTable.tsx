@@ -10,7 +10,7 @@ import { BalanceSheetSummary, ProfitLossSummary } from "./CustomRowElement";
 import { fetchRow, type formatType } from "./FetchUtil";
 import { Row } from "./index";
 
-export default function BaseStatementTable({reportId}: { readonly reportId: number }) {
+export default function BaseStatementTable( {reportId}: { readonly reportId: number }) {
   const [rows, setRows] = useState<formatType[]>([]);
   const [netIncome, setNetIncome] = useState<number>(0);
   const didFetchRef = useRef(false);

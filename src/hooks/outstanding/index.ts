@@ -1,17 +1,21 @@
 import { useMemo } from "react";
 import type { LedgerItem } from "../../components/ledger_form/EntryForm/FormUtils";
 
-export type BalanceCheck = {
+export type OutstandingReport = {
   debitTotal: number;
   creditTotal: number;
-  diff: number;
-  isBalanced: boolean;
 };
 
-export default function checkBalance(
+export interface AccountOutstanding {
+  code: number;
+  debit: string;
+  credit: string;
+}
+
+export default function reportOutstanding(
   items: readonly LedgerItem[] | undefined
-): BalanceCheck {
-  //Calculate the balance for Transation Form
+): OutstandingReport {
+  //Calculate Account Outstanding from transaction data
   const safeItems = items ?? [];
 
   const debit = safeItems
@@ -22,18 +26,16 @@ export default function checkBalance(
     .filter((item) => item.balanceType === "Credit")
     .reduce((acc, item) => acc + (item.amount || 0), 0);
 
-  const diff = debit - credit;
+  // return dictionary that take coa as param return the credit, debit for the coa
 
   return {
     debitTotal: debit,
     creditTotal: credit,
-    diff,
-    isBalanced: diff === 0,
   };
 }
 
-export function useProvideBalance(
+export function useProvideOutstanding(
   items: readonly LedgerItem[] | undefined
-): BalanceCheck {
-  return useMemo(() => checkBalance(items), [items]);
+): OutstandingReport {
+  return useMemo(() => reportOutstanding(items), [items]);
 }

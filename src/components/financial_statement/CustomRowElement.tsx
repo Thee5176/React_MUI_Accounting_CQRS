@@ -31,7 +31,7 @@ export function ProfitLossSummary({ netIncome }: { readonly netIncome: number })
         <Typography variant="h6">Net Profit</Typography>
       </TableCell>
       <TableCell sx={{ mt: 3 }} colSpan={1}>
-        <Typography variant="h6">$ {netIncome.toLocaleString()}</Typography>
+        <Typography variant="h6">{netIncome.toLocaleString()}</Typography>
       </TableCell>
     </TableRow>
   );

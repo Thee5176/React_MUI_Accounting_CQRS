@@ -48,7 +48,7 @@ function ContentRow({ row }: { readonly row: formatType }) {
                 <TableRow key={coa}>
                     <TableCell component="th" scope="row">{coa}</TableCell>
                     <TableCell>{getAccountName[coa]}</TableCell>
-                    <TableCell align="right">{balance}</TableCell>
+                    <TableCell align="right">{balance.toLocaleString()}</TableCell>
                 </TableRow>
                 ))}
             </TableBody>

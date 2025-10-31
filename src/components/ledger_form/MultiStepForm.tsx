@@ -76,6 +76,7 @@ export default function MutiStepForm() {
             </form>
           </ProvideBalance>
         </FormProvider>
+        {/* <Button onClick={() => {setOpenModal((prev:boolean) => !prev)}}>Test Modal</Button> */}
       </>
     );
 }
