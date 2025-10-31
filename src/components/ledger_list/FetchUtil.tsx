@@ -5,8 +5,7 @@ import type { LedgerResponse } from "./type";
 
 // define function to fetch data from the server
 export const fetchRows = async (
-  setRows: Dispatch<SetStateAction<GridRowsProp>>,
-  setAccounts: Dispatch<SetStateAction<number[]>>
+  setRows: Dispatch<SetStateAction<GridRowsProp>>
 ) => {
   const data = await axiosQueryClient
     .get<LedgerResponse[]>("/api/ledgers/all")
@@ -22,6 +21,9 @@ export const fetchRows = async (
 
   console.log("Before :", data);
 
+  // Collect unique COA codes while flattening rows
+  const coaSet = new Set<number>();
+
   // Flatten ledgerItems for each ledger into rows
   const dataRows = data.flatMap((ledger, idx) =>
     ledger.ledgerItems
@@ -30,7 +32,7 @@ export const fetchRows = async (
           const isDebit = item.type == "Debit";
           const isCredit = item.type == "Credit";
 
-          setAccounts((prev) => [...prev, item.coa]);
+          coaSet.add(item.coa);
 
           return {
             id: `${idx}-${idy}`,
@@ -53,4 +55,6 @@ export const fetchRows = async (
   console.log("After :", dataRows);
 
   setRows(dataRows);
+
+  return Array.from(coaSet) as number[];
 };

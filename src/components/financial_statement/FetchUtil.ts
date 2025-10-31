@@ -37,49 +37,70 @@ const apiPathBySheet: string[] = [
   ];
 
 export const fetchRow = async (
-  reportId: number, 
+  reportId: number,
   setRows: React.Dispatch<React.SetStateAction<formatType[]>>,
   setNetIncome: React.Dispatch<React.SetStateAction<number>>
 ) => {
-    const data = await axiosQueryClient
-      .get(apiPathBySheet[reportId])
-      .then((res) => res.data);
+  const data = await axiosQueryClient
+    .get(apiPathBySheet[reportId])
+    .then((res) => res.data);
 
-    if (data == null) {
-      console.warn(
-        "API returned null/invalid payload; rows cleared."
-      );
-      return;
-    }
+  if (data == null) {
+    console.warn(
+      "API returned null/invalid payload; rows cleared."
+    );
+    return;
+  }
 
-    console.log("Fetch Financial Data: ", data);
+  // console.log("Fetch Financial Data: ", data);
 
-    try {
-      // Build rows by parsing json into maps
-      const entries = Object.entries(data as unknown as Record<string, unknown>);
-      const rowsData: formatType[] = entries
-        // check for list of json object to be parsed into map
-        .filter(([, val]) => val != null && typeof val === "object" && !Array.isArray(val))
+  try {
+    // Build rows by parsing json into maps
+    const entries = Object.entries(data as unknown as Record<string, unknown>);
+    const rowsData: formatType[] = entries
+      // check for list of json object to be parsed into map
+      .filter(([, val]) => val != null && typeof val === "object" && !Array.isArray(val))
+      
+      .map(([name, section]) => {
+        // parse object to map
+        const mapped = toNumericMap(section);
         
-        .map(([name, section]) => {
-          // parse object to map
-          const mapped = toNumericMap(section);
-          
-          let total = 0;
-          for (const v of mapped.values()) {
-            total += v;
-          }
+        let total = 0;
+        for (const v of mapped.values()) {
+          total += v;
+        }
 
-          return formatData(name, mapped.size, total, mapped);
-        });
-      setRows(rowsData);
+        return formatData(name, mapped.size, total, mapped);
+      });
+    setRows(rowsData);
 
-      // set net income for profit-loss statement
-      if (reportId === 2 ) {
-        setNetIncome(data["netIncome"] ?? 0);
-      }
-
-    } catch (e) {
-      console.error("Transform Data Failed", e);
+    // set net income for profit-loss statement
+    if (reportId === 2 ) {
+      setNetIncome(data["netIncome"] ?? 0);
     }
-  };
+
+  } catch (e) {
+    console.error("Transform Data Failed", e);
+  }
+};
+
+export async function fetchOutstanding(
+ listOfCoa: readonly number[]
+) {
+  const data = await axiosQueryClient
+    .post("/balance/json", listOfCoa)
+    .then((res) => res.data);
+
+  console.log("fetch param: ", listOfCoa)
+  console.log("Account Balance Data: ", data);
+
+  const map = new Map<number, number>();
+  if (Array.isArray(data)) {
+    for (const { coa, balance } of data) {
+      map.set(Number(coa), Number(balance));
+    }
+  }
+
+  console.log("Fetch Account Outstanding (map): ", map);
+  return map;
+}

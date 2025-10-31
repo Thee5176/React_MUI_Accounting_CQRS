@@ -27,6 +27,6 @@ export type LedgerGridProps = {
 
 
 export type SubsidiaryProps = LedgerGridProps & {
-  accounts: number[];
+  outstanding: Map<number, number>;
   getAccountName: Record<number, string>;
 };
