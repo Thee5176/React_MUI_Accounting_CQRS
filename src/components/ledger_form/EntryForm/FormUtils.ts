@@ -37,8 +37,8 @@ export const formInitialValue = {
   id: "",
   date: new Date().toISOString().slice(0, 10),
   ledgerItems: [
-    { coa: "", amount: 0, balanceType: "Debit" },
-    { coa: "", amount: 0, balanceType: "Credit" },
+    { coa: 0, amount: 0, balanceType: "Debit" },
+    { coa: 0, amount: 0, balanceType: "Credit" },
   ],
   timestamp: "",
 };
@@ -51,7 +51,7 @@ export interface LedgerEntry {
 }
 
 export interface LedgerItem {
-  coa: string;
+  coa: number;
   amount: number;
   balanceType: string;
 }

@@ -28,7 +28,7 @@ export default function LedgerItemInputRow() {
 
   // Add new row with unique index
   const insertLedgerItemForm = () => {
-    append({ coa: "", amount:0, balanceType:""});
+    append({ coa: 0, amount:0, balanceType:""});
   };
 
   return (

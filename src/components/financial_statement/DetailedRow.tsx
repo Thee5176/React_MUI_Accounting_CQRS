@@ -32,7 +32,7 @@ function NullRow() {
 }
 
 function ContentRow({ row }: { readonly row: formatType }) {
-    const { coaMap } = useProvideCoa();
+    const { getAccountName } = useProvideCoa();
 
     return (
         <Table size="small" aria-label="purchases">
@@ -47,7 +47,7 @@ function ContentRow({ row }: { readonly row: formatType }) {
                 {[...row.coa_list].map(([coa, balance]) => (
                 <TableRow key={coa}>
                     <TableCell component="th" scope="row">{coa}</TableCell>
-                    <TableCell>{coaMap[coa]}</TableCell>
+                    <TableCell>{getAccountName[coa]}</TableCell>
                     <TableCell align="right">{balance}</TableCell>
                 </TableRow>
                 ))}

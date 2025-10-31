@@ -17,26 +17,27 @@ export default function CoaField({ insertIndex }: { insertIndex: number }) {
     if (hasFetched.current) return;
     hasFetched.current = true;
     fetchCoa();
-  }, []);
+  }, [fetchCoa]);
 
   return (
     <FormControl sx={{ width: "60%", minWidth: "171px" }}>
       <Controller
         control={control}
         name={`ledgerItems.${insertIndex}.coa`}
-        defaultValue=""
+        defaultValue={0}
         rules={{
           required: { value: true, message: "COA is required" },
-        }}
+          validate: (value) => (Number(value) !== 0) || "please select account",
+        }}  
         render={({ field }) => (
           <Select
-            value={field.value ?? ""}
+            value={field.value ?? 0}
             onChange={field.onChange}
             onBlur={field.onBlur}
             inputRef={field.ref}
             displayEmpty
           >
-            <MenuItem value="">
+            <MenuItem value={0}>
               <em> -Select COA- </em>
             </MenuItem>
             {codeOfAccounts.map((coa, idx) => (

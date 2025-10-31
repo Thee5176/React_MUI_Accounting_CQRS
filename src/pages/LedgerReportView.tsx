@@ -15,12 +15,15 @@ export default function GeneralLedgerView() {
           <Typography variant="h2">
             {Toggled ? "Subsidiary Ledger" : "General Ledger"}
           </Typography>
-          <Switch
-            value={Toggled ? "Subsidiary Ledger" : "General Ledger"}
-            checked={Toggled}
-            onChange={handleChange}
-          />
-        </Box>
+          <Box display="flex" alignItems="center">
+            <Typography>GL</Typography>
+            <Switch
+              value={Toggled ? "Subsidiary Ledger" : "General Ledger"}
+              checked={Toggled}
+              onChange={handleChange}
+            />
+            <Typography>SL</Typography>
+          </Box>        </Box>
         <LedgerDataGrid isSubsidiary={Toggled} />
       </>
     );

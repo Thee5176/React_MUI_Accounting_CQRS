@@ -15,6 +15,7 @@ export default function EntryForm({ setActiveStep }: EntryFormProps) {
   const {
     formState: { errors },
     trigger,
+    watch
   } = useFormContext<LedgerEntry>();
 
 
@@ -26,6 +27,9 @@ export default function EntryForm({ setActiveStep }: EntryFormProps) {
     }
   };
 
+  console.log( watch() );
+
+
   return (
     <>
       <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
@@ -36,6 +40,7 @@ export default function EntryForm({ setActiveStep }: EntryFormProps) {
       </Box>
 
       <LedgerItemsFormTable />
+      
       <Button
         type="button"
         onClick={handleNext}

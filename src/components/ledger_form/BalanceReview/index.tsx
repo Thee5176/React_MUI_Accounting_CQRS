@@ -6,31 +6,49 @@ import TableCell from "@mui/material/TableCell"
 import TableContainer from "@mui/material/TableContainer"
 import TableHead from "@mui/material/TableHead"
 import TableRow from "@mui/material/TableRow"
-import useProvideCoa from "../../../hooks/coa"
+import { useEffect, useState } from "react"
+import { useFormContext } from "react-hook-form"
+import { default as useProvideCoa } from "../../../hooks/coa"
+import type { LedgerItem } from "../EntryForm/FormUtils"
 
 function createData(
   coa: number,
-  // name
+  name: string,
   balance: number,
-  // trial balance
+  updated: number
 ) {
-  return { coa, name, balance };
+  return { coa, name, balance, updated };
 }
-
-// TODO: useFetch() for  account balance
-const rows = [
-  createData(1101, 159),
-  createData(1201, 237)
-];
 
 type BalanceReviewProps = {
   setActiveStep: React.Dispatch<React.SetStateAction<number>>;
 };
 
 export default function BalanceReview({ setActiveStep }: BalanceReviewProps) {
-  const { coaMap } = useProvideCoa();
+  
+  const { getValues } = useFormContext();
+  const { getAccountName, getBalanceType } = useProvideCoa();
+  
+  const [rowData, setRowData] = useState<ReturnType<typeof createData>[] | []>([]);
 
-  const entryAmount = 20;
+  useEffect(() => {
+    // Merge data source: new entry amount + existing (cached) balances
+    const formEntry = getValues("ledgerItems");
+
+    // Fix: Use map to create all rows at once instead of forEach
+    const newRows = formEntry.map((entry: LedgerItem) => {
+      const { coa, amount, balanceType } = entry;
+
+      const name = getAccountName[coa];
+      const balance = 0;  // Query the balance by coa
+      const updated = balanceType === getBalanceType[coa] ? amount : -amount;
+      
+      // console.log(getAccountBalance[coa]);
+      return createData(coa, name, balance, balance + updated);
+    });
+
+    setRowData(newRows);
+  }, [getAccountName, getBalanceType, getValues]);
 
   return (
     <>
@@ -45,17 +63,22 @@ export default function BalanceReview({ setActiveStep }: BalanceReviewProps) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row) => (
+            {rowData.map(( row : ReturnType<typeof createData>) => (
               <TableRow
                 key={row.coa}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
                 <TableCell component="th" scope="row">
-                  {coaMap[row.coa]}
+                  {row.name}
                 </TableCell>
                 <TableCell align="right">{row.coa}</TableCell>
                 <TableCell align="right">{row.balance}</TableCell>
-                <TableCell align="right">{row.balance + entryAmount}</TableCell>
+                <TableCell
+                  align="right"
+                  color={row.balance < 0 ? "alert" : "primary"}
+                >
+                  {row.updated}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -64,12 +87,13 @@ export default function BalanceReview({ setActiveStep }: BalanceReviewProps) {
 
       <Button
         onClick={() => setActiveStep(0)}
+        color="secondary"
         variant="contained"
-        sx={{ my: 3 }}
+        sx={{ mt: 2 }}
       >
         Previous
       </Button>
-      <Button type="submit" variant="contained" sx={{ my: 2 }}>
+      <Button type="submit" variant="contained" sx={{ mt: 2 }}>
         Record
       </Button>
     </>

@@ -5,7 +5,7 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { BalanceSheetSummary, ProfitLossSummary } from "./CustomRowElement";
 import { fetchRow, type formatType } from "./FetchUtil";
 import { Row } from "./index";
@@ -21,6 +21,18 @@ export default function BaseStatementTable({reportId}: { readonly reportId: numb
 
     fetchRow(reportId, setRows, setNetIncome).catch(console.error);
   }, [reportId]);
+
+  // Compute totals for Balance Sheet footer using same rule as Row: assets/expenses are debit
+  const { debitTotal, creditTotal } = useMemo(() => {
+    const debitKeywords = ["asset", "expense"];
+    let dr = 0;
+    let cr = 0;
+    for (const r of rows) {
+      const isDebit = debitKeywords.some((k) => r.name.toLowerCase().includes(k));
+      if (isDebit) dr += r.balance; else cr += r.balance;
+    }
+    return { debitTotal: dr, creditTotal: cr };
+  }, [rows]);
 
   return (
     <TableContainer component={Paper}>
@@ -38,7 +50,9 @@ export default function BaseStatementTable({reportId}: { readonly reportId: numb
           {rows.map((row) => (
             <Row key={row.name} row={row} />
           ))}
-          {reportId === 1 ? <BalanceSheetSummary /> : null}
+          {reportId === 1 ? (
+            <BalanceSheetSummary debitTotal={debitTotal} creditTotal={creditTotal} />
+          ) : null}
 
           {reportId === 2 ? <ProfitLossSummary netIncome={netIncome} /> : null}
         </TableBody>

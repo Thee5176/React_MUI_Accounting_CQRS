@@ -6,10 +6,10 @@ import Stepper from "@mui/material/Stepper";
 import Typography from "@mui/material/Typography";
 import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { redirect } from "react-router-dom";
 import BalanceReview from "./BalanceReview";
 import EntryForm from "./EntryForm";
 import { formInitialValue, onSubmit, type LedgerEntry } from "./EntryForm/FormUtils";
+import FormModal from "./FormModal";
 
 const labels = ["Entry Form", "Balance Review"];
 
@@ -17,6 +17,7 @@ export default function MutiStepForm() {
     
     //stepper
     const [activeStep, setActiveStep] = useState<number>(0);
+    const [openModal, setOpenModal] = useState<boolean>(false);
 
     const handleSteps = (step: number) => {
       switch (step) {
@@ -44,17 +45,14 @@ export default function MutiStepForm() {
     useEffect(() => {
         if (isSubmitSuccessful) {
           reset(formInitialValue);
+          setOpenModal(true);
         }
     }, [reset, isSubmitSuccessful]);
 
-    if (activeStep === labels.length) {
-        redirect("/");
-        return null;
-    }
-
     return (
       <>
-        <Box sx={{ my: 5 }}>
+        <FormModal modalHook={[openModal, setOpenModal]} setActiveStep={setActiveStep} />
+        <Box sx={{ mt: 5 }}>
           <Typography variant="h4" align="center">
             Record New Transaction
           </Typography>

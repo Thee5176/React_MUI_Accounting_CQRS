@@ -24,22 +24,19 @@ export default function LedgerDataGrid({ isSubsidiary } : { isSubsidiary : boole
     const [accounts, setAccounts] = useState<number[]>([]);
     const [loading, setLoading] = useState(false);
     const didFetchRef = useRef(false);
-    const { coaMap } = useProvideCoa();
+    const { getAccountName } = useProvideCoa();
 
     //fetch data on mount
     useEffect(() => {
       if (didFetchRef.current) return;
-
-      didFetchRef.current = true;  
+      didFetchRef.current = true;
       fetchRows(setRows, setLoading, setAccounts);
-      console.log(accounts);
+    }, []);
 
-    }, [accounts, rows]);
-
-    return isSubsidiary ? (
+    return isSubsidiary && accounts.length > 0 ? (
       accounts.map((coa) => (
         <Box key={coa} sx={{ display: "flex", flexDirection: "column", my: 3 }}>
-          <Typography>{`Account: ${coaMap[coa]} ${coa}`}</Typography>
+          <Typography>{`Account: ${getAccountName[coa]} ${coa}`}</Typography>
           <DataGrid
             key={coa}
             rows={rows.filter((row) => Number(row.coa) == coa)}
