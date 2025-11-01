@@ -3,6 +3,7 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
 import FormGroup from "@mui/material/FormGroup";
+import Typography from "@mui/material/Typography";
 import { useEffect } from "react";
 import { FormProvider, type SubmitHandler, useForm } from "react-hook-form";
 import { useAuth } from "../../hooks/auth/useAuth";
@@ -57,6 +58,9 @@ export default function LoginForm() {
             
             <SetUserNameField />
             <SetPasswordField />
+            <Typography variant="body1">
+              (Testing Purpose) username: user, password: Password
+            </Typography>
 
             <RememberMeCheckbox/>
 
