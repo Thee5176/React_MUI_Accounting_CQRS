@@ -7,11 +7,12 @@ import TableContainer from "@mui/material/TableContainer"
 import TableHead from "@mui/material/TableHead"
 import TableRow from "@mui/material/TableRow"
 import Typography from "@mui/material/Typography"
-import { useEffect, useState } from "react"
-import { useFormContext } from "react-hook-form"
+import { useEffect, useMemo, useState } from "react"
+import { useWatch } from "react-hook-form"
 import { useCoa } from "../../../hooks/coa/useCoa"
 import useStepper from "../../../hooks/stepper/useStepper"
-import type { LedgerItem } from "../EntryForm/FormUtils"
+import { fetchOutstanding } from "../../financial_statement/FetchUtil"
+import type { LedgerEntry } from "../EntryForm/FormUtils"
 
 function createData(
   coa: number,
@@ -23,31 +24,51 @@ function createData(
 }
 
 export default function BalanceReview() {
-  
-  const { getValues } = useFormContext();
   const { getAccountName, getBalanceType } = useCoa();
   const { back } = useStepper();
-  
-  const [rowData, setRowData] = useState<ReturnType<typeof createData>[] | []>([]);
+  const [rowData, setRowData] = useState<ReturnType<typeof createData>[] | []>(
+    []
+  );
 
+  // Reactively watch ledgerItems; memoize a non-null array for stable deps
+  const watchedLedgerItems = useWatch<LedgerEntry, "ledgerItems">({ name: "ledgerItems" });
+  const formEntry = useMemo(() => watchedLedgerItems ?? [], [watchedLedgerItems]);
+
+  // Merge data source: new entry amount + existing balances
   useEffect(() => {
-    // Merge data source: new entry amount + existing (cached) balances
-    const formEntry = getValues("ledgerItems");
+    let isMounted = true;
+    const handle = setTimeout(async () => {
+      try {
+        // Unique + sorted COAs to minimize request and ensure stable order
+        const listOfCoa = Array.from(new Set(formEntry.map((e) => e.coa))).sort(
+          (a, b) => a - b
+        );
 
-    // Fix: Use map to create all rows at once instead of forEach
-    const newRows = formEntry.map((entry: LedgerItem) => {
-      const { coa, amount, balanceType } = entry;
+        // Await the Promise and type the result explicitly
+        const balanceMap: Map<number, number> = await fetchOutstanding(listOfCoa);
+        if (!isMounted) return;
 
-      const name = getAccountName[coa];
-      const balance = 0;  // Query the balance by coa
-      const updated = balanceType === getBalanceType[coa] ? amount : -amount;
-      
-      // console.log(getAccountBalance[coa]);
-      return createData(coa, name, balance, balance + updated);
-    });
+        // Build all rows in one pass
+        const newRows = formEntry.map((entry) => {
+          const { coa, amount, balanceType } = entry;
+          const name = getAccountName[coa];
+          const balance = balanceMap.get(coa) ?? 0;
+          const updated = balanceType === getBalanceType[coa] ? amount : -amount;
+          return createData(coa, name, balance, balance + updated);
+        });
 
-    setRowData(newRows);
-  }, [getAccountName, getBalanceType, getValues]);
+        setRowData(newRows);
+      } catch (err) {
+        if (isMounted) setRowData([]);
+        console.error("BalanceReview: failed to load balances", err);
+      }
+    }, 200); // small debounce to avoid network spam while typing
+
+    return () => {
+      isMounted = false;
+      clearTimeout(handle);
+    };
+  }, [formEntry, getAccountName, getBalanceType]);
 
   return (
     <>

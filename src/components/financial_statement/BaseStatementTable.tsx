@@ -54,7 +54,9 @@ export default function BaseStatementTable( {reportId}: { readonly reportId: num
             <BalanceSheetSummary debitTotal={debitTotal} creditTotal={creditTotal} />
           ) : null}
 
-          {reportId === 2 ? <ProfitLossSummary netIncome={netIncome} /> : null}
+          {reportId === 2 ? (
+            <ProfitLossSummary netIncome={netIncome} />
+           ) : null}
         </TableBody>
       </Table>
     </TableContainer>

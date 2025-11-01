@@ -101,12 +101,6 @@ export async function fetchOutstanding(
     }
   }
 
-  // Build ordered result map
-  const result = new Map<number, number>();
-  for (const k of listOfCoa) {
-    result.set(k, map.get(k) ?? 0);
-  }
-
   // console.log("Fetch Account Outstanding (map): ", result);
-  return result;
+  return map;
 }

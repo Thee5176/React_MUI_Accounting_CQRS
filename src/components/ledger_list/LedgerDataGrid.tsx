@@ -45,21 +45,21 @@ export default function LedgerDataGrid({ isSubsidiary } : { isSubsidiary : boole
           // de-duplicate and sort once to minimize payload and server work
           const listOfCoa = Array.from(new Set(listOfCoaRaw)).sort((a, b) => a - b);
           
+          if(!isMounted) return;
           // fetch and process SL data
           const data = await fetchOutstanding(listOfCoa);
-          if (!isMounted) return;
           // Expecting Map<number, number>; ensure state gets a new Map instance
           setOutstandingData(new Map(data));
         } catch (e) {
           console.error("fetchOutstanding failed", e);
-          if (isMounted) setOutstandingData(new Map());
+          setOutstandingData(new Map());
         } finally {
-          if (isMounted) setLoading(false);
+          setLoading(false);
         }
-      })();
 
-      return () => { isMounted = false; };
-    }, []);
+        return isMounted = false;
+      })();
+    });
 
     // Group rows by COA once to avoid repeated O(n*m) filters on every render
     const rowsByCoa = useMemo(() => {
