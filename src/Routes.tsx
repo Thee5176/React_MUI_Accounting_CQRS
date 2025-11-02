@@ -1,6 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import Layout from "./Layout";
-import FinancialReportPage from "./pages/FinancialReportPage";
+import FinancialStatementPage from "./pages/FinancialStatementPage";
 import LedgerEntryForm from "./pages/LedgerEntryForm";
 import GeneralLedgerView from "./pages/LedgerReportView";
 import LoginPage from "./pages/LoginPage";
@@ -34,7 +34,7 @@ export const routes = createBrowserRouter([
         path: "/report",
         element: (
           <ProtectedRoute>
-            <FinancialReportPage />
+            <FinancialStatementPage />
           </ProtectedRoute>
         ),
       },

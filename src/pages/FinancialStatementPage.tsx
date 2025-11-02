@@ -18,7 +18,7 @@ export default function FinancialSheetPage() {
   return (
     <>
       <Typography sx={{ py: 3 }} variant="h2">
-        Financial Report
+        Financial Statement
       </Typography>
       <TabContext value={value as unknown as string}>
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
