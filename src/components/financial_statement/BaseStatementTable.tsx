@@ -8,7 +8,7 @@ import TableRow from "@mui/material/TableRow";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { BalanceSheetSummary, ProfitLossSummary } from "./CustomRowElement";
 import { fetchRow, type formatType } from "./FetchUtil";
-import { Row } from "./index";
+import { Row } from "./Row";
 
 export default function BaseStatementTable( {reportId}: { readonly reportId: number }) {
   const [rows, setRows] = useState<formatType[]>([]);

@@ -83,24 +83,3 @@ export const fetchRow = async (
     console.error("Transform Data Failed", e);
   }
 };
-
-export async function fetchOutstanding(
- listOfCoa: number[]
-) {
-  const data = await axiosQueryClient
-    .post("/balance/json", listOfCoa)
-    .then((res) => res.data);
-
-  // console.log("fetch param: ", listOfCoa);
-  // console.log("Account Balance Data: ", data);
-
-  const map = new Map<number, number>();
-  if (Array.isArray(data)) {
-    for (const { coa, balance } of data) {
-      map.set(Number(coa), Number(balance));
-    }
-  }
-
-  // console.log("Fetch Account Outstanding (map): ", result);
-  return map;
-}

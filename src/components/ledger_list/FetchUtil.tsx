@@ -58,3 +58,23 @@ export const fetchTransactions = async (
 
   return Array.from(coaSet) as number[];
 };
+
+export async function fetchOutstanding(listOfCoa: number[]) {
+  const data = (
+    await axiosQueryClient
+      .post("/balance/json", listOfCoa)
+      .then((res) => res.data ?? null)
+     .catch(() => null)  
+    ) as Map<number, number>;
+
+  console.log("fetch param: ", listOfCoa);
+  console.log("Account Balance Data: ", data);
+
+  const result = new Map<number, number>();
+  for (const coa of listOfCoa) {
+    result.set(coa, data.get(coa) ?? 0);
+  }
+
+  console.log("Fetch Account Outstanding : ", result);
+  return result;
+}

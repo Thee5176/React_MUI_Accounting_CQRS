@@ -4,8 +4,7 @@ import { DataGrid } from "@mui/x-data-grid/DataGrid";
 import type { GridColumnGroupingModel, GridRowsProp } from "@mui/x-data-grid/models";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useCoa } from "../../hooks/coa/useCoa";
-import { fetchOutstanding } from "../financial_statement/FetchUtil";
-import { fetchTransactions } from "./FetchUtil";
+import { fetchOutstanding, fetchTransactions } from "./FetchUtil";
 import { cols } from "./GridColDef";
 import type { LedgerGridProps, SubsidiaryProps } from "./type";
 
@@ -43,10 +42,10 @@ export default function LedgerDataGrid({ isSubsidiary } : { isSubsidiary : boole
           const getAssociateCoa = (await fetchTransactions(
             setTransactionData
           )) as number[];
-          setListOfCoa(getAssociateCoa);
+          setListOfCoa(getAssociateCoa ?? []);
 
           
-          if(!isMounted) return;
+          if (listOfCoa.length === 0 || !isMounted) return;
           // fetch and process SL data
           const data = await fetchOutstanding(listOfCoa);
           // Expecting Map<number, number>; ensure state gets a new Map instance
@@ -136,22 +135,16 @@ function SubsidiaryLedgerGrid({
 }: SubsidiaryProps & {listOfCoa: number[]; outstanding: Map<number,number>; groupedRows: Map<number, GridRowsProp>}) {
   return (
     <Box>
-      {listOfCoa.map((coa) => (
-        <Box
-          key={`${coa}`}
-          sx={{
-            flexDirection: "column",
-            my: 3,
-          }}
-        >
+      {listOfCoa.length === 0 ? (
+        <Box>
           <Typography
             sx={{ mb: 1 }}
             variant="h5"
-          >{`Name: ${getAccountName[coa]} ${coa}`}</Typography>
-          <Typography>{`Account Balance: ${outstanding.get(coa) ?? 0}`}</Typography>
+          >{`Name: No Data`}</Typography>
+          <Typography>{`Account Balance: 0`}</Typography>
 
           <DataGrid
-            rows={groupedRows.get(coa) ?? []}
+            rows={[]}
             columns={cols}
             initialState={{
               columns: {
@@ -174,7 +167,47 @@ function SubsidiaryLedgerGrid({
             hideFooter
           />
         </Box>
-      ))}
+      ) : (
+        listOfCoa.map((coa) => (
+          <Box
+            key={coa}
+            sx={{
+              flexDirection: "column",
+              my: 3,
+            }}
+          >
+            <Typography
+              sx={{ mb: 1 }}
+              variant="h5"
+            >{`Name: ${getAccountName[coa]} ${coa}`}</Typography>
+            <Typography>{`Account Balance: ${outstanding.get(coa) ?? 0}`}</Typography>
+
+            <DataGrid
+              rows={groupedRows.get(coa) ?? []}
+              columns={cols}
+              initialState={{
+                columns: {
+                  columnVisibilityModel: { coa: false },
+                },
+                sorting: {
+                  sortModel: [{ field: "date", sort: "asc" }],
+                },
+                pagination: {
+                  paginationModel: { pageSize: 20, page: 0 },
+                },
+              }}
+              showCellVerticalBorder
+              showColumnVerticalBorder
+              disableRowSelectionOnClick
+              rowSpanning
+              columnGroupingModel={columnGroupingModel}
+              pageSizeOptions={[20, 50, 100]}
+              loading={loading}
+              hideFooter
+            />
+          </Box>
+        ))
+      )}
     </Box>
   );
 }

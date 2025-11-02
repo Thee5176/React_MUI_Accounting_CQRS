@@ -12,7 +12,7 @@ import { useEffect, useMemo, useState } from "react"
 import { useWatch } from "react-hook-form"
 import { useCoa } from "../../../hooks/coa/useCoa"
 import useStepper from "../../../hooks/stepper/useStepper"
-import { fetchOutstanding } from "../../financial_statement/FetchUtil"
+import { fetchOutstanding } from "../../ledger_list/FetchUtil"
 import type { LedgerEntry } from "../EntryForm/FormUtils"
 
 function createData(
@@ -42,9 +42,7 @@ export default function BalanceReview() {
       async () => {
         try {
           // Unique + sorted COAs to minimize request and ensure stable order
-          const listOfCoa = Array.from(new Set(formEntry.map((e) => e.coa))).sort(
-            (a, b) => a - b
-          );
+          const listOfCoa = Array.from(new Set(formEntry.map((e) => e.coa)));
 
           // Await the Promise and type the result explicitly
           const balanceMap: Map<number, number> = await fetchOutstanding(listOfCoa);

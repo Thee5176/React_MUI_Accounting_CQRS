@@ -26,7 +26,7 @@ export default function DetailedRow({ row, open }: { row: formatType; open: bool
 function NullRow() {
     return (
         <Typography variant="body1" color="textSecondary">
-            No data available
+            No transaction data
         </Typography>
     );
 }
