@@ -26,9 +26,8 @@ function createData(
 export default function BalanceReview() {
   const { getAccountName, getBalanceType } = useCoa();
   const { back } = useStepper();
-  const [rowData, setRowData] = useState<ReturnType<typeof createData>[] | []>(
-    []
-  );
+  const [rowData, setRowData] = useState<ReturnType<typeof createData>[]>([]);
+  const [isLoading, setLoading] = useState<boolean>(false);
 
   // Reactively watch ledgerItems; memoize a non-null array for stable deps
   const watchedLedgerItems = useWatch<LedgerEntry, "ledgerItems">({ name: "ledgerItems" });
@@ -37,32 +36,35 @@ export default function BalanceReview() {
   // Merge data source: new entry amount + existing balances
   useEffect(() => {
     let isMounted = true;
-    const handle = setTimeout(async () => {
-      try {
-        // Unique + sorted COAs to minimize request and ensure stable order
-        const listOfCoa = Array.from(new Set(formEntry.map((e) => e.coa))).sort(
-          (a, b) => a - b
-        );
+    setLoading(true);
+    const handle = setTimeout(
+      async () => {
+        try {
+          // Unique + sorted COAs to minimize request and ensure stable order
+          const listOfCoa = Array.from(new Set(formEntry.map((e) => e.coa))).sort(
+            (a, b) => a - b
+          );
 
-        // Await the Promise and type the result explicitly
-        const balanceMap: Map<number, number> = await fetchOutstanding(listOfCoa);
-        if (!isMounted) return;
+          // Await the Promise and type the result explicitly
+          const balanceMap: Map<number, number> = await fetchOutstanding(listOfCoa);
+          if (!isMounted) return setLoading(false);;
 
-        // Build all rows in one pass
-        const newRows = formEntry.map((entry) => {
-          const { coa, amount, balanceType } = entry;
-          const name = getAccountName[coa];
-          const balance = balanceMap.get(coa) ?? 0;
-          const updated = balanceType === getBalanceType[coa] ? amount : -amount;
-          return createData(coa, name, balance, balance + updated);
-        });
+          // Build all rows in one pass
+          const newRows = formEntry.map((entry) => {
+            const { coa, amount, balanceType } = entry;
+            const name = getAccountName[coa];
+            const balance = balanceMap.get(coa) ?? 0;
+            const updated = balanceType === getBalanceType[coa] ? amount : -amount;
+            return createData(coa, name, balance, balance + updated);
+          });
+          setRowData(newRows);
+          setLoading(false);
 
-        setRowData(newRows);
-      } catch (err) {
-        if (isMounted) setRowData([]);
-        console.error("BalanceReview: failed to load balances", err);
-      }
-    }, 200); // small debounce to avoid network spam while typing
+        } catch (err) {
+          if (isMounted) setRowData([]);
+          console.error("BalanceReview: failed to load balances", err);
+        }
+      }, 200); // small debounce to avoid network spam while typing
 
     return () => {
       isMounted = false;
@@ -83,23 +85,34 @@ export default function BalanceReview() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rowData.map((row: ReturnType<typeof createData>) => (
+            { isLoading ? (
               <TableRow
-                key={row.coa}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
-                <TableCell component="th" scope="row">
-                  {row.name}
-                </TableCell>
-                <TableCell align="right">{row.coa}</TableCell>
-                <TableCell align="right">{row.balance}</TableCell>
-                <TableCell align="right">
-                  <Typography color={row.updated >= 0 ? "success" : "error"}>
-                    {row.updated}
-                  </Typography>
+                <TableCell component="th" scope="row" colSpan={4}>
+                  <Typography variant="caption">Loading...</Typography>
                 </TableCell>
               </TableRow>
-            ))}
+            ) : (
+              rowData.map((row: ReturnType<typeof createData>) => (
+                <TableRow
+                  key={row.coa}
+                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                >
+                  <TableCell component="th" scope="row">
+                    {row.name}
+                  </TableCell>
+                  <TableCell align="right">{row.coa}</TableCell>
+                  <TableCell align="right">{row.balance}</TableCell>
+                  <TableCell align="right">
+                    <Typography color={row.updated >= 0 ? "success" : "error"}>
+                      {row.updated}
+                    </Typography>
+                  </TableCell>
+                </TableRow>
+              ))
+            )
+            }
           </TableBody>
         </Table>
       </TableContainer>
