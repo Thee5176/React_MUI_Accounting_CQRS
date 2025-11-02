@@ -85,7 +85,7 @@ export const fetchRow = async (
 };
 
 export async function fetchOutstanding(
- listOfCoa: readonly number[]
+ listOfCoa: number[]
 ) {
   const data = await axiosQueryClient
     .post("/balance/json", listOfCoa)

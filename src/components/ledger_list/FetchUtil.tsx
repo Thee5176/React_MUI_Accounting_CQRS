@@ -4,8 +4,8 @@ import { axiosQueryClient } from "../../service/api";
 import type { LedgerResponse } from "./type";
 
 // define function to fetch data from the server
-export const fetchRows = async (
-  setRows: Dispatch<SetStateAction<GridRowsProp>>
+export const fetchTransactions = async (
+  setTransactionData: Dispatch<SetStateAction<GridRowsProp>>
 ) => {
   const data = await axiosQueryClient
     .get<LedgerResponse[]>("/api/ledgers/all")
@@ -15,7 +15,7 @@ export const fetchRows = async (
   // Null Case
   if (data == null) {
     console.warn("API returned null/invalid payload; rows cleared.");
-    setRows([]);
+    setTransactionData([]);
     return;
   }
 
@@ -54,7 +54,7 @@ export const fetchRows = async (
   );
   // console.log("After Transaform:", dataRows);
 
-  setRows(dataRows);
+  setTransactionData(dataRows);
 
   return Array.from(coaSet) as number[];
 };

@@ -5,7 +5,7 @@ import type { GridColumnGroupingModel, GridRowsProp } from "@mui/x-data-grid/mod
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useCoa } from "../../hooks/coa/useCoa";
 import { fetchOutstanding } from "../financial_statement/FetchUtil";
-import { fetchRows } from "./FetchUtil";
+import { fetchTransactions } from "./FetchUtil";
 import { cols } from "./GridColDef";
 import type { LedgerGridProps, SubsidiaryProps } from "./type";
 
@@ -22,10 +22,9 @@ export default function LedgerDataGrid({ isSubsidiary } : { isSubsidiary : boole
         }
     ] 
     //fetch data with Event hook and put data into row state
-    const [rows, setRows] = useState<GridRowsProp>([]);
-    const [outstandingData, setOutstandingData] = useState<Map<number, number>>(
-      new Map()
-    );
+    const [listOfCoa, setListOfCoa] = useState<number[]>([]);
+    const [transactionData, setTransactionData] = useState<GridRowsProp>([]);
+    const [outstandingData, setOutstandingData] = useState<Map<number, number>>(new Map());
     const [loading, setLoading] = useState(false);
     
     const { getAccountName } = useCoa();
@@ -41,9 +40,11 @@ export default function LedgerDataGrid({ isSubsidiary } : { isSubsidiary : boole
       (async () => {
         try {
           // fetch GL data and get the associated coa
-          const listOfCoaRaw = (await fetchRows(setRows)) as number[];
-          // de-duplicate and sort once to minimize payload and server work
-          const listOfCoa = Array.from(new Set(listOfCoaRaw)).sort((a, b) => a - b);
+          const getAssociateCoa = (await fetchTransactions(
+            setTransactionData
+          )) as number[];
+          setListOfCoa(getAssociateCoa);
+
           
           if(!isMounted) return;
           // fetch and process SL data
@@ -59,33 +60,34 @@ export default function LedgerDataGrid({ isSubsidiary } : { isSubsidiary : boole
 
         return isMounted = false;
       })();
-    });
+    }) ;
 
     // Group rows by COA once to avoid repeated O(n*m) filters on every render
     const rowsByCoa = useMemo(() => {
       const m = new Map<number, GridRowsProp>();
-      for (const row of rows) {
+      for (const row of transactionData) {
         const key = Number((row as unknown as { coa: number | string }).coa);
         const bucket = m.get(key);
         m.set(key, bucket ? [...bucket, row] : [row]);
       }
       return m;
-    }, [rows]);
+    }, [transactionData]);
 
     return (
       <>
         {isSubsidiary ? (
           <SubsidiaryLedgerGrid
-            rows={rows}
+            rows={transactionData}
             getAccountName={getAccountName}
             columnGroupingModel={columnGroupingModel}
             loading={loading}
+            listOfCoa={listOfCoa}
             outstanding={outstandingData}
             groupedRows={rowsByCoa}
           />
         ) : (
           <GeneralLedgerGrid
-            rows={rows}
+            rows={transactionData}
             columnGroupingModel={columnGroupingModel}
             loading={loading}
           />
@@ -128,12 +130,13 @@ function SubsidiaryLedgerGrid({
   getAccountName,
   columnGroupingModel,
   loading,
+  listOfCoa,
   outstanding,
   groupedRows,
-}: SubsidiaryProps & {outstanding: Map<number,number>; groupedRows: Map<number, GridRowsProp>}) {
+}: SubsidiaryProps & {listOfCoa: number[]; outstanding: Map<number,number>; groupedRows: Map<number, GridRowsProp>}) {
   return (
     <Box>
-      {Array.from(outstanding.entries()).map(([coa, balance]) => (
+      {listOfCoa.map((coa) => (
         <Box
           key={`${coa}`}
           sx={{
@@ -145,7 +148,7 @@ function SubsidiaryLedgerGrid({
             sx={{ mb: 1 }}
             variant="h5"
           >{`Name: ${getAccountName[coa]} ${coa}`}</Typography>
-          <Typography>{`Account Balance: ${balance.toLocaleString() ?? 0}`}</Typography>
+          <Typography>{`Account Balance: ${outstanding.get(coa) ?? 0}`}</Typography>
 
           <DataGrid
             rows={groupedRows.get(coa) ?? []}
