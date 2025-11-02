@@ -48,7 +48,6 @@ export default function BalanceReview() {
 
           // Await the Promise and type the result explicitly
           const balanceMap: Map<number, number> = await fetchOutstanding(listOfCoa);
-          if (!isMounted) return setLoading(false);;
 
           // Build all rows in one pass
           const newRows = formEntry.map((entry) => {
@@ -125,14 +124,14 @@ export default function BalanceReview() {
   );
 }
 
-const TableBodySkeleton = ({rows, cols}: {rows:number, cols:number}) => (
-          Array.from({ length: rows }).map((_, i) => (
-          <TableRow key={i}>
-            {Array.from({ length: cols }).map((_, j) => (
-              <TableCell key={j}>
-                <Skeleton variant="text" />
-              </TableCell>
-            ))}
-          </TableRow>
-        ))
+export const TableBodySkeleton = ({rows, cols}: {rows:number, cols:number}) => (
+    Array.from({ length: rows }).map((_, i) => (
+    <TableRow key={i}>
+      {Array.from({ length: cols }).map((_, j) => (
+        <TableCell key={j}>
+          <Skeleton variant="text" />
+        </TableCell>
+      ))}
+    </TableRow>
+  ))
 )
