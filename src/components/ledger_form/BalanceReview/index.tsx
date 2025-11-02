@@ -1,5 +1,6 @@
 import Button from "@mui/material/Button"
 import Paper from "@mui/material/Paper"
+import Skeleton from "@mui/material/Skeleton"
 import Table from "@mui/material/Table"
 import TableBody from "@mui/material/TableBody"
 import TableCell from "@mui/material/TableCell"
@@ -85,14 +86,8 @@ export default function BalanceReview() {
             </TableRow>
           </TableHead>
           <TableBody>
-            { isLoading ? (
-              <TableRow
-                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-              >
-                <TableCell component="th" scope="row" colSpan={4}>
-                  <Typography variant="caption">Loading...</Typography>
-                </TableCell>
-              </TableRow>
+            {isLoading ? (
+              <TableBodySkeleton rows={watchedLedgerItems.length} cols={4}/>
             ) : (
               rowData.map((row: ReturnType<typeof createData>) => (
                 <TableRow
@@ -111,8 +106,7 @@ export default function BalanceReview() {
                   </TableCell>
                 </TableRow>
               ))
-            )
-            }
+            )}
           </TableBody>
         </Table>
       </TableContainer>
@@ -130,3 +124,15 @@ export default function BalanceReview() {
     </>
   );
 }
+
+const TableBodySkeleton = ({rows, cols}: {rows:number, cols:number}) => (
+          Array.from({ length: rows }).map((_, i) => (
+          <TableRow key={i}>
+            {Array.from({ length: cols }).map((_, j) => (
+              <TableCell key={j}>
+                <Skeleton variant="text" />
+              </TableCell>
+            ))}
+          </TableRow>
+        ))
+)
