@@ -57,7 +57,7 @@ export const fetchTransactions = async (
 
   setTransactionData(dataRows);
 
-  return Array.from(coaSet).sort((a, b) => b - a);
+  return Array.from(coaSet);
 };
 
 interface BalanceOutput {

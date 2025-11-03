@@ -40,7 +40,7 @@ export default function LedgerDataGrid({ isSubsidiary } : { isSubsidiary : boole
           // fetch and process SL data
           const data = await fetchOutstanding(coaList);
 
-          const sortedData = Array.from(data.entries()).sort((a, b) => a[0] - b[0]);
+          const sortedData = Array.from(data.entries()).sort((a, b) => b[0] - a[0]);
 
           setOutstandingData(new Map<number,number>(sortedData));
         } catch (e) {
