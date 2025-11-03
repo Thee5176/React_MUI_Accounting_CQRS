@@ -46,6 +46,7 @@ export default function BalanceReview() {
 
           // Await the Promise and type the result explicitly
           const balanceMap: Map<number, number> = await fetchOutstanding(listOfCoa);
+          console.log(balanceMap);
 
           // Build all rows in one pass
           const newRows = formEntry.map((entry) => {

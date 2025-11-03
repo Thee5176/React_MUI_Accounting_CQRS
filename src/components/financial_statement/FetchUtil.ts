@@ -56,7 +56,7 @@ export const fetchRow = async (
 
   try {
     // Build rows by parsing json into maps
-    const entries = Object.entries(data as unknown as Record<string, unknown>);
+    const entries = Object.entries(data);
     const rowsData: formatType[] = entries
       // check for list of json object to be parsed into map
       .filter(([, val]) => val != null && typeof val === "object" && !Array.isArray(val))

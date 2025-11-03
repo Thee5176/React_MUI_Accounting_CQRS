@@ -33,19 +33,14 @@ export default function LedgerDataGrid({ isSubsidiary } : { isSubsidiary : boole
       if (didFetchRef.current) return;
 
       didFetchRef.current = true;
-      let isMounted = true;
       setLoading(true);
       
       (async () => {
         try {
           // fetch GL data and get the associated coa
-          const getAssociateCoa = (await fetchTransactions(
-            setTransactionData
-          )) as number[];
+          const getAssociateCoa = await fetchTransactions(setTransactionData);
           setListOfCoa(getAssociateCoa ?? []);
 
-          
-          if (listOfCoa.length === 0 || !isMounted) return;
           // fetch and process SL data
           const data = await fetchOutstanding(listOfCoa);
           // Expecting Map<number, number>; ensure state gets a new Map instance
@@ -56,8 +51,6 @@ export default function LedgerDataGrid({ isSubsidiary } : { isSubsidiary : boole
         } finally {
           setLoading(false);
         }
-
-        return isMounted = false;
       })();
     }) ;
 

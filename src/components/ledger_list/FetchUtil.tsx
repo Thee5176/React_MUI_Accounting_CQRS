@@ -56,25 +56,32 @@ export const fetchTransactions = async (
 
   setTransactionData(dataRows);
 
-  return Array.from(coaSet) as number[];
+  return Array.from(coaSet);
 };
 
+interface BalanceOutput {
+  coa: number;
+  balance: number;
+}
+
 export async function fetchOutstanding(listOfCoa: number[]) {
-  const data = (
-    await axiosQueryClient
-      .post("/balance/json", listOfCoa)
-      .then((res) => res.data ?? null)
-     .catch(() => null)  
-    ) as Map<number, number>;
+  try {
+    const data = await axiosQueryClient
+      .post<BalanceOutput[]>("/balance/json", listOfCoa)
+      .then((res) => res.data ?? []);
 
-  console.log("fetch param: ", listOfCoa);
-  console.log("Account Balance Data: ", data);
+    console.log("fetch param: ", listOfCoa);
+    console.log("Account Balance Data: ", data);
 
-  const result = new Map<number, number>();
-  for (const coa of listOfCoa) {
-    result.set(coa, data.get(coa) ?? 0);
+    const result = new Map<number, number>();
+    for (const { coa, balance } of data) {
+      result.set(coa, balance);
+    }
+
+    console.log("Fetch Account Outstanding : ", result);
+    return result;
+  } catch (e) {
+    console.warn("Failed to fetch balance; returning empty map.", e);
+    return new Map<number, number>();
   }
-
-  console.log("Fetch Account Outstanding : ", result);
-  return result;
 }

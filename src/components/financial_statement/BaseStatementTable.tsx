@@ -19,7 +19,8 @@ export default function BaseStatementTable( {reportId}: { readonly reportId: num
     if (didFetchRef.current) return;
     didFetchRef.current = true;
 
-    fetchRow(reportId, setRows, setNetIncome).catch(console.error);
+    fetchRow(reportId, setRows, setNetIncome)
+    .catch(console.error);
   }, [reportId]);
 
   // Compute totals for Balance Sheet footer using same rule as Row: assets/expenses are debit
