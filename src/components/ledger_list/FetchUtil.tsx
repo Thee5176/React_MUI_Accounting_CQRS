@@ -32,7 +32,6 @@ export const fetchTransactions = async (
           const isDebit = item.type == "Debit";
           const isCredit = item.type == "Credit";
 
-          console.log("processing account ", item.coa);
           // Ensure numeric keys for downstream Map lookups
           coaSet.add(Number(item.coa));
 
@@ -58,7 +57,7 @@ export const fetchTransactions = async (
 
   setTransactionData(dataRows);
 
-  return Array.from(coaSet);
+  return Array.from(coaSet).sort((a, b) => b - a);
 };
 
 interface BalanceOutput {
@@ -72,8 +71,8 @@ export async function fetchOutstanding(listOfCoa: number[]) {
       .post<BalanceOutput[]>("/balance/json", listOfCoa)
       .then((res) => res.data ?? []);
 
-    console.log("fetch param: ", listOfCoa);
-    console.log("Account Balance Data: ", data);
+    // console.log("fetch param: ", listOfCoa);
+    // console.log("Account Balance Data: ", data);
 
     const result = new Map<number, number>();
     for (const { coa, balance } of data) {
