@@ -50,11 +50,13 @@ export default function BalanceReview() {
 
           // Build all rows in one pass
           const newRows = formEntry.map((entry) => {
-            const { coa, amount, balanceType } = entry;
-            const name = getAccountName[coa];
-            const balance = balanceMap.get(coa) ?? 0;
-            const updated = balanceType === getBalanceType[coa] ? amount : -amount;
-            return createData(coa, name, balance, balance + updated);
+            const coaNum = Number(entry.coa);
+            const amountNum = Number(entry.amount);
+
+            const name = getAccountName[coaNum];
+            const balance = balanceMap.get(coaNum) ?? 0;
+            const updated = entry.balanceType === getBalanceType[coaNum] ? amountNum : -amountNum;
+            return createData(coaNum, name, balance, balance + updated);
           });
           setRowData(newRows);
           setLoading(false);

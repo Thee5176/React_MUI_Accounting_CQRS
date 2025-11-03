@@ -43,8 +43,10 @@ export default function LedgerDataGrid({ isSubsidiary } : { isSubsidiary : boole
 
           // fetch and process SL data
           const data = await fetchOutstanding(listOfCoa);
+          console.log("fetchOutstanding Result:", data);
           // Expecting Map<number, number>; ensure state gets a new Map instance
-          setOutstandingData(new Map(data));
+          setOutstandingData(data);
+          console.log("outstanding state: ", outstandingData)
         } catch (e) {
           console.error("fetchOutstanding failed", e);
           setOutstandingData(new Map());
