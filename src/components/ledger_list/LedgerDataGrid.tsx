@@ -33,13 +33,16 @@ export default function LedgerDataGrid({ isSubsidiary } : { isSubsidiary : boole
       (async () => {
         try {
           // fetch GL data and get the associated coa
-            const coaList = (await fetchTransactions(setTransactionData)) ?? [];
-            setListOfCoa(coaList);
+          const coaList = (await fetchTransactions(setTransactionData)) ?? [];
+          console.log("sorted coaList",  coaList);
+          setListOfCoa(coaList);
 
           // fetch and process SL data
-            const data = await fetchOutstanding(coaList);
-          // Expecting Map<number, number>; ensure state gets a new Map instance
-          setOutstandingData(data);
+          const data = await fetchOutstanding(coaList);
+
+          const sortedData = Array.from(data.entries()).sort((a, b) => a[0] - b[0]);
+
+          setOutstandingData(new Map<number,number>(sortedData));
         } catch (e) {
           console.error("fetchOutstanding failed", e);
           setOutstandingData(new Map());
