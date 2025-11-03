@@ -38,15 +38,13 @@ export default function LedgerDataGrid({ isSubsidiary } : { isSubsidiary : boole
       (async () => {
         try {
           // fetch GL data and get the associated coa
-          const getAssociateCoa = await fetchTransactions(setTransactionData);
-          setListOfCoa(getAssociateCoa ?? []);
+            const coaList = (await fetchTransactions(setTransactionData)) ?? [];
+            setListOfCoa(coaList);
 
           // fetch and process SL data
-          const data = await fetchOutstanding(listOfCoa);
-          console.log("fetchOutstanding Result:", data);
+            const data = await fetchOutstanding(coaList);
           // Expecting Map<number, number>; ensure state gets a new Map instance
           setOutstandingData(data);
-          console.log("outstanding state: ", outstandingData)
         } catch (e) {
           console.error("fetchOutstanding failed", e);
           setOutstandingData(new Map());
@@ -54,7 +52,7 @@ export default function LedgerDataGrid({ isSubsidiary } : { isSubsidiary : boole
           setLoading(false);
         }
       })();
-    }) ;
+    }, []);
 
     // Group rows by COA once to avoid repeated O(n*m) filters on every render
     const rowsByCoa = useMemo(() => {

@@ -16,7 +16,7 @@ export const fetchTransactions = async (
   if (data == null) {
     console.warn("API returned null/invalid payload; rows cleared.");
     setTransactionData([]);
-    return;
+    return [] as number[];
   }
 
   // console.log("Before Transaform :", data);
@@ -32,7 +32,9 @@ export const fetchTransactions = async (
           const isDebit = item.type == "Debit";
           const isCredit = item.type == "Credit";
 
-          coaSet.add(item.coa);
+          console.log("processing account ", item.coa);
+          // Ensure numeric keys for downstream Map lookups
+          coaSet.add(Number(item.coa));
 
           return {
             id: `${idx}-${idy}`,
