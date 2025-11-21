@@ -4,7 +4,7 @@ import { axiosQueryClient } from ".";
 import { useAuth } from "../../hooks/auth/useAuth";
 
 //Config Query API Endpoint
-export function AxiosQueryClientProvider({children}: {children: React.ReactNode}) {
+export function AxiosQueryClientProvider({children}: {readonly children: React.ReactNode}) {
   const { isAuthenticated, token, logout } = useAuth();
     
   useEffect(() => {

@@ -1,17 +1,9 @@
 import axios from "axios";
 
-// Type for runtime config
-interface RuntimeConfig {
-  VITE_HOST_IP?: string;
-  VITE_COMMAND_PORT?: string;
-  VITE_QUERY_PORT?: string;
-}
-
 // Fallback to window object for runtime config or use build-time env
-const host =
-  import.meta.env.VITE_HOST_IP ||
-  (window as RuntimeConfig).VITE_HOST_IP ||
-  "13.112.10.169";
+const host = import.meta.env.VITE_HOST_IP;
+
+console.log("API Host IP:", host);
 
 const COMMAND_PATH: string = `http://${host}:8181`;
 const QUERY_PATH: string = `http://${host}:8182`;

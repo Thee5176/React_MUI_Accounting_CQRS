@@ -4,7 +4,7 @@ import { axiosCommandClient } from ".";
 import { useAuth } from "../../hooks/auth/useAuth";
 
 //Config Command API Endpoint
-export function AxiosCommandClientProvider({children}: {children: React.ReactNode}) {
+export function AxiosCommandClientProvider({children}: {readonly children: React.ReactNode}) {
   const { isAuthenticated, token, logout } = useAuth();
 
   useEffect(() => {
