@@ -12,7 +12,7 @@ import { useEffect, useMemo, useState } from "react"
 import { useWatch } from "react-hook-form"
 import { useCoa } from "../../../hooks/coa/useCoa"
 import useStepper from "../../../hooks/stepper/useStepper"
-import { fetchOutstanding } from "../../financial_statement/FetchUtil"
+import { fetchOutstanding } from "../../ledger_list/FetchUtil"
 import type { LedgerEntry } from "../EntryForm/FormUtils"
 
 function createData(
@@ -42,20 +42,21 @@ export default function BalanceReview() {
       async () => {
         try {
           // Unique + sorted COAs to minimize request and ensure stable order
-          const listOfCoa = Array.from(new Set(formEntry.map((e) => e.coa))).sort(
-            (a, b) => a - b
-          );
+          const listOfCoa = Array.from(new Set(formEntry.map((e) => e.coa)));
 
           // Await the Promise and type the result explicitly
           const balanceMap: Map<number, number> = await fetchOutstanding(listOfCoa);
+          console.log(balanceMap);
 
           // Build all rows in one pass
           const newRows = formEntry.map((entry) => {
-            const { coa, amount, balanceType } = entry;
-            const name = getAccountName[coa];
-            const balance = balanceMap.get(coa) ?? 0;
-            const updated = balanceType === getBalanceType[coa] ? amount : -amount;
-            return createData(coa, name, balance, balance + updated);
+            const coaNum = Number(entry.coa);
+            const amountNum = Number(entry.amount);
+
+            const name = getAccountName[coaNum];
+            const balance = balanceMap.get(coaNum) ?? 0;
+            const updated = entry.balanceType === getBalanceType[coaNum] ? amountNum : -amountNum;
+            return createData(coaNum, name, balance, balance + updated);
           });
           setRowData(newRows);
           setLoading(false);

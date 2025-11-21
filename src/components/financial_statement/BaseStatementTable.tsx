@@ -8,7 +8,7 @@ import TableRow from "@mui/material/TableRow";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { BalanceSheetSummary, ProfitLossSummary } from "./CustomRowElement";
 import { fetchRow, type formatType } from "./FetchUtil";
-import { Row } from "./index";
+import { Row } from "./Row";
 
 export default function BaseStatementTable( {reportId}: { readonly reportId: number }) {
   const [rows, setRows] = useState<formatType[]>([]);
@@ -19,7 +19,8 @@ export default function BaseStatementTable( {reportId}: { readonly reportId: num
     if (didFetchRef.current) return;
     didFetchRef.current = true;
 
-    fetchRow(reportId, setRows, setNetIncome).catch(console.error);
+    fetchRow(reportId, setRows, setNetIncome)
+    .catch(console.error);
   }, [reportId]);
 
   // Compute totals for Balance Sheet footer using same rule as Row: assets/expenses are debit

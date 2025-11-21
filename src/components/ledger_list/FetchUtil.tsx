@@ -16,7 +16,7 @@ export const fetchTransactions = async (
   if (data == null) {
     console.warn("API returned null/invalid payload; rows cleared.");
     setTransactionData([]);
-    return;
+    return [] as number[];
   }
 
   // console.log("Before Transaform :", data);
@@ -32,7 +32,8 @@ export const fetchTransactions = async (
           const isDebit = item.type == "Debit";
           const isCredit = item.type == "Credit";
 
-          coaSet.add(item.coa);
+          // Ensure numeric keys for downstream Map lookups
+          coaSet.add(Number(item.coa));
 
           return {
             id: `${idx}-${idy}`,
@@ -56,5 +57,32 @@ export const fetchTransactions = async (
 
   setTransactionData(dataRows);
 
-  return Array.from(coaSet) as number[];
+  return Array.from(coaSet);
 };
+
+interface BalanceOutput {
+  coa: number;
+  balance: number;
+}
+
+export async function fetchOutstanding(listOfCoa: number[]) {
+  try {
+    const data = await axiosQueryClient
+      .post<BalanceOutput[]>("/balance/json", listOfCoa)
+      .then((res) => res.data ?? []);
+
+    // console.log("fetch param: ", listOfCoa);
+    // console.log("Account Balance Data: ", data);
+
+    const result = new Map<number, number>();
+    for (const { coa, balance } of data) {
+      result.set(coa, balance);
+    }
+
+    console.log("Fetch Account Outstanding : ", result);
+    return result;
+  } catch (e) {
+    console.warn("Failed to fetch balance; returning empty map.", e);
+    return new Map<number, number>();
+  }
+}

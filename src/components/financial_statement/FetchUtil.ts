@@ -56,7 +56,7 @@ export const fetchRow = async (
 
   try {
     // Build rows by parsing json into maps
-    const entries = Object.entries(data as unknown as Record<string, unknown>);
+    const entries = Object.entries(data);
     const rowsData: formatType[] = entries
       // check for list of json object to be parsed into map
       .filter(([, val]) => val != null && typeof val === "object" && !Array.isArray(val))
@@ -83,24 +83,3 @@ export const fetchRow = async (
     console.error("Transform Data Failed", e);
   }
 };
-
-export async function fetchOutstanding(
- listOfCoa: number[]
-) {
-  const data = await axiosQueryClient
-    .post("/balance/json", listOfCoa)
-    .then((res) => res.data);
-
-  // console.log("fetch param: ", listOfCoa);
-  // console.log("Account Balance Data: ", data);
-
-  const map = new Map<number, number>();
-  if (Array.isArray(data)) {
-    for (const { coa, balance } of data) {
-      map.set(Number(coa), Number(balance));
-    }
-  }
-
-  // console.log("Fetch Account Outstanding (map): ", result);
-  return map;
-}
