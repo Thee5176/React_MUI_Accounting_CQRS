@@ -1,15 +1,17 @@
+import { useAuth0 } from "@auth0/auth0-react";
 import type { AxiosError, AxiosResponse } from "axios";
 import { useEffect } from "react";
 import { axiosQueryClient } from ".";
-import { useAuth } from "../../hooks/auth/useAuth";
 
 //Config Query API Endpoint
 export function AxiosQueryClientProvider({children}: {readonly children: React.ReactNode}) {
-  const { isAuthenticated, token, logout } = useAuth();
+  const { isAuthenticated, getAccessTokenSilently } = useAuth0();
     
   useEffect(() => {
-      const requestQueryInterceptor = axiosQueryClient.interceptors.request.use((config) => {
+      const requestQueryInterceptor = axiosQueryClient.interceptors.request.use(async (config) => {
             if (isAuthenticated) {
+              const token = await getAccessTokenSilently();
+              console.log("Query Token:", token);
               config.headers.Authorization = `Bearer ${token}`;
             } else {
               console.log("Query : No token available for authorization"); //Message
@@ -26,11 +28,9 @@ export function AxiosQueryClientProvider({children}: {readonly children: React.R
                 switch (error.response?.status) {
                   case 401:
                     console.log("Unauthorized: Token invalid or expired"); //Message
-                    logout();
                     break;
                   case 403:
                     console.log("Forbidden: Access denied"); //Message
-                    logout();
                     break;
       
                   default:
@@ -45,7 +45,7 @@ export function AxiosQueryClientProvider({children}: {readonly children: React.R
             axiosQueryClient.interceptors.response.eject(responseQueryInterceptor)
           }
       
-        }, [isAuthenticated, token, logout])
+        }, [isAuthenticated, getAccessTokenSilently])
 
   return(<>{children}</>);
 }

@@ -1,8 +1,7 @@
+import { useAuth0 } from '@auth0/auth0-react';
 import { useCallback, useMemo } from "react";
 import { useLocalStorage } from 'usehooks-ts';
 import { axiosQueryClient } from '../../service/api';
-import { useAuth } from "../auth/useAuth";
-
 export interface CodeOfAccount {
     code: number;
     title: string;
@@ -12,7 +11,7 @@ export interface CodeOfAccount {
 
 // fetch list of available COA along with associated information
 export default function useProvideCoa() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth0();
   const [coaCached, setCoaCached, removeCoaCached] = useLocalStorage<
     CodeOfAccount[]
   >("coa", []);

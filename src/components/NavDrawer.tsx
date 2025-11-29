@@ -1,3 +1,4 @@
+import { useAuth0 } from "@auth0/auth0-react";
 import DvrIcon from "@mui/icons-material/Dvr";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import SummarizeIcon from '@mui/icons-material/Summarize';
@@ -9,9 +10,8 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import { Link } from "react-router-dom";
-import { useAuth } from "../hooks/auth/useAuth";
 
-export default function NavDrawer({ drawerWidth }: { drawerWidth: number }) {
+export default function NavDrawer({ drawerWidth }: { readonly drawerWidth: number }) {
   
   type MenuItem = {
     path: string;
@@ -38,8 +38,7 @@ export default function NavDrawer({ drawerWidth }: { drawerWidth: number }) {
     </List>
   );
 
-  const { isAuthenticated } = useAuth();
-  const { login, logout } = useAuth();
+  const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
 
   return (
     <Drawer
@@ -58,9 +57,11 @@ export default function NavDrawer({ drawerWidth }: { drawerWidth: number }) {
     >
       {drawer}
       {isAuthenticated ? (
-        <Button onClick={logout}>Logout</Button>
+        <Button onClick={() => logout(
+          { logoutParams: { returnTo: "/authentication"} }
+        )}>Logout</Button>
       ) : (
-        <Button onClick={() => login()}>Login</Button>
+        <Button onClick={() => loginWithRedirect()}>Login</Button>
       )}
     </Drawer>
   );

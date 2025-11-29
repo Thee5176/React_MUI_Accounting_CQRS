@@ -7,7 +7,7 @@ CONFIG_FILE="$APP_DIR/config.js"
 
 # Create config.js dynamically from environment variables
 cat > "$CONFIG_FILE" <<'EOF'
-window.runtimeConfig = {
+globalThis.runtimeConfig = {
   VITE_HOST_IP: "$VITE_HOST_IP",
   VITE_COMMAND_PORT: "$VITE_COMMAND_PORT",
   VITE_QUERY_PORT: "$VITE_QUERY_PORT"
