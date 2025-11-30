@@ -8,7 +8,7 @@ import LoginRedirectPage from "./pages/LoginRedirectPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import SignUpPage from "./pages/SignUpPage";
 import ProtectedRoute from "./service/route/ProtectedRoute";
-// Import required hooks and components for authentication
+
 export const routes = createBrowserRouter([
   {
     path: "/",

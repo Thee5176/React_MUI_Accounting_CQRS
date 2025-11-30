@@ -1,24 +1,26 @@
 #!/bin/sh
 set -e
 
-# Location where static files are served from (adjust if different)
 APP_DIR=/app/dist
 CONFIG_FILE="$APP_DIR/config.js"
 
-# Create config.js dynamically from environment variables
-cat > "$CONFIG_FILE" <<'EOF'
+RAW_DOMAIN="${AUTH0_DOMAIN}" || true
+STRIPPED_DOMAIN="${RAW_DOMAIN#https://}"
+STRIPPED_DOMAIN="${STRIPPED_DOMAIN#http://}"
+STRIPPED_DOMAIN="${STRIPPED_DOMAIN%/}"
+
+cat > "$CONFIG_FILE" <<EOF
+// Generated at container start; do not commit secrets.
 globalThis.runtimeConfig = {
-  HOST_IP: "$HOST_IP",
-  COMMAND_PORT: "$COMMAND_PORT",
-  QUERY_PORT: "$QUERY_PORT"
+  AUTH0_DOMAIN: "${STRIPPED_DOMAIN}",
+  AUTH0_CLIENT_ID: "${AUTH0_CLIENT_ID}",
+  GENERATED_AT: "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 };
 EOF
 
-# Fallback defaults if variables are empty
-sed -i 's/HOST_IP: ""/HOST_IP: "localhost"/' "$CONFIG_FILE"
-[ -z "$COMMAND_PORT" ] && sed -i 's/COMMAND_PORT: ""/COMMAND_PORT: "8181"/' "$CONFIG_FILE"
-[ -z "$QUERY_PORT" ] && sed -i 's/QUERY_PORT: ""/QUERY_PORT: "8182"/' "$CONFIG_FILE"
-
 echo "Generated runtime config.js:" && cat "$CONFIG_FILE"
+
+[ -z "$STRIPPED_DOMAIN" ] && echo "[WARN] AUTH0_DOMAIN not set; login will fail." || true
+[ -z "$AUTH0_CLIENT_ID" ] && echo "[WARN] AUTH0_CLIENT_ID not set; login will fail." || true
 
 exec "$@"

@@ -7,17 +7,35 @@ import { routes } from './Routes';
 import { AxiosCommandClientProvider } from './service/api/command';
 import { AxiosQueryClientProvider } from './service/api/query';
 
+// Resolve runtime + build-time environment values
+const runtime: any = (globalThis as any).runtimeConfig || {};
+const rawDomain = runtime.AUTH0_DOMAIN || import.meta.env.VITE_AUTH0_DOMAIN || '';
+const clientId = runtime.AUTH0_CLIENT_ID || import.meta.env.VITE_AUTH0_CLIENT_ID || '';
+
+// Normalize domain (remove protocol & trailing slash) then reconstruct https://
+const normalizedDomain = rawDomain.replace(/^https?:\/\//, '').replace(/\/$/, '');
+const domainForProvider = normalizedDomain ? `https://${normalizedDomain}` : '';
+
+if (!normalizedDomain) {
+  // eslint-disable-next-line no-console
+  console.warn('[Auth0] Missing AUTH0_DOMAIN (runtimeConfig or VITE_AUTH0_DOMAIN).');
+}
+if (!clientId) {
+  // eslint-disable-next-line no-console
+  console.warn('[Auth0] Missing AUTH0_CLIENT_ID (runtimeConfig or VITE_AUTH0_CLIENT_ID).');
+}
+
 function App() : React.ReactElement {
   return (
     <Container sx={{ height: '100vh' }}>
       <Auth0Provider
-              domain={`https://${import.meta.env.AUTH0_DOMAIN}`}
-              clientId={import.meta.env.AUTH0_CLIENT_ID}
-              authorizationParams={{
-                redirect_uri: globalThis.location.origin
-              }}
-              cacheLocation="localstorage"
-              useRefreshTokens
+        domain={domainForProvider}
+        clientId={clientId}
+        authorizationParams={{
+          redirect_uri: globalThis.location.origin
+        }}
+        cacheLocation="memory"
+        useRefreshTokens
       >
       <ProvideAuth>
         <AxiosCommandClientProvider>

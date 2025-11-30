@@ -4,8 +4,8 @@ import axios from "axios";
 const host = globalThis.location.origin;
 console.log("API Host IP (resolved):", host);
 
-const COMMAND_PATH: string = `http://${host}/api/command/`;
-const QUERY_PATH: string = `http://${host}/api/query/`;
+const COMMAND_PATH: string = `${host}/command/`;
+const QUERY_PATH: string = `${host}/query/`;
 
 const axiosClient = (endpoint:string) => axios.create({
     baseURL: endpoint == "command" ? COMMAND_PATH : QUERY_PATH,

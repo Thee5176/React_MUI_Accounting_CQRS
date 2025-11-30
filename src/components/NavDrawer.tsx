@@ -40,6 +40,8 @@ export default function NavDrawer({ drawerWidth }: { readonly drawerWidth: numbe
 
   const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
 
+  const base_url = globalThis.location.origin;
+
   return (
     <Drawer
       sx={{
@@ -58,7 +60,7 @@ export default function NavDrawer({ drawerWidth }: { readonly drawerWidth: numbe
       {drawer}
       {isAuthenticated ? (
         <Button onClick={() => logout(
-          { logoutParams: { returnTo: "/authentication"} }
+          { logoutParams: { returnTo: `${base_url}/authentication`} }
         )}>Logout</Button>
       ) : (
         <Button onClick={() => loginWithRedirect()}>Login</Button>

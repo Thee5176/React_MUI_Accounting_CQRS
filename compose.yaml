@@ -2,10 +2,6 @@ services:
   test_frontend_service:
     build: 
       context: .
-      args:
-        - HOST_IP=${HOST_IP}
-        - COMMAND_PORT=${COMMAND_PORT}
-        - QUERY_PORT=${QUERY_PORT}
     container_name: test_react_mui_cqrs
     develop:
       watch:
