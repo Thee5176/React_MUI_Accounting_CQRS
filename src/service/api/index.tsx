@@ -1,9 +1,8 @@
 import axios from "axios";
 
-// Fallback to globalThis object for runtime config or use build-time env
-const host = import.meta.env.VITE_HOST_IP;
-
-console.log("API Host IP:", host);
+// Resolve host from runtime injection first, then Vite build-time env (must be prefixed with VITE_), finally fallback to localhost.
+const host = globalThis.location.origin;
+console.log("API Host IP (resolved):", host);
 
 const COMMAND_PATH: string = `http://${host}:8181`;
 const QUERY_PATH: string = `http://${host}:8182`;

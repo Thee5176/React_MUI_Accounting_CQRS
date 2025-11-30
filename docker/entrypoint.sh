@@ -8,16 +8,16 @@ CONFIG_FILE="$APP_DIR/config.js"
 # Create config.js dynamically from environment variables
 cat > "$CONFIG_FILE" <<'EOF'
 globalThis.runtimeConfig = {
-  VITE_HOST_IP: "$VITE_HOST_IP",
-  VITE_COMMAND_PORT: "$VITE_COMMAND_PORT",
-  VITE_QUERY_PORT: "$VITE_QUERY_PORT"
+  HOST_IP: "$HOST_IP",
+  COMMAND_PORT: "$COMMAND_PORT",
+  QUERY_PORT: "$QUERY_PORT"
 };
 EOF
 
 # Fallback defaults if variables are empty
-sed -i 's/VITE_HOST_IP: ""/VITE_HOST_IP: "localhost"/' "$CONFIG_FILE"
-[ -z "$VITE_COMMAND_PORT" ] && sed -i 's/VITE_COMMAND_PORT: ""/VITE_COMMAND_PORT: "8181"/' "$CONFIG_FILE"
-[ -z "$VITE_QUERY_PORT" ] && sed -i 's/VITE_QUERY_PORT: ""/VITE_QUERY_PORT: "8182"/' "$CONFIG_FILE"
+sed -i 's/HOST_IP: ""/HOST_IP: "localhost"/' "$CONFIG_FILE"
+[ -z "$COMMAND_PORT" ] && sed -i 's/COMMAND_PORT: ""/COMMAND_PORT: "8181"/' "$CONFIG_FILE"
+[ -z "$QUERY_PORT" ] && sed -i 's/QUERY_PORT: ""/QUERY_PORT: "8182"/' "$CONFIG_FILE"
 
 echo "Generated runtime config.js:" && cat "$CONFIG_FILE"
 

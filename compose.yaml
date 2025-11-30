@@ -3,9 +3,9 @@ services:
     build: 
       context: .
       args:
-        - VITE_HOST_IP=${VITE_HOST_IP}
-        - VITE_COMMAND_PORT=${VITE_COMMAND_PORT}
-        - VITE_QUERY_PORT=${VITE_QUERY_PORT}
+        - HOST_IP=${HOST_IP}
+        - COMMAND_PORT=${COMMAND_PORT}
+        - QUERY_PORT=${QUERY_PORT}
     container_name: test_react_mui_cqrs
     develop:
       watch:

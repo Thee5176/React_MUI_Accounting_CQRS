@@ -11,8 +11,8 @@ function App() : React.ReactElement {
   return (
     <Container sx={{ height: '100vh' }}>
       <Auth0Provider
-              domain={import.meta.env.VITE_AUTH0_DOMAIN}
-              clientId={import.meta.env.VITE_AUTH0_CLIENT_ID}
+              domain={`https://${import.meta.env.AUTH0_DOMAIN}`}
+              clientId={import.meta.env.AUTH0_CLIENT_ID}
               authorizationParams={{
                 redirect_uri: globalThis.location.origin
               }}
