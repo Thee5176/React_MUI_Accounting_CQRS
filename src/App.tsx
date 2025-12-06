@@ -13,17 +13,20 @@ const rawDomain = runtime.AUTH0_DOMAIN || import.meta.env.VITE_AUTH0_DOMAIN || '
 const clientId = runtime.AUTH0_CLIENT_ID || import.meta.env.VITE_AUTH0_CLIENT_ID || '';
 const audience = runtime.AUTH0_AUDIENCE || import.meta.env.VITE_AUTH0_AUDIENCE || '';
 
-if (!rawDomain) {
+if (rawDomain) {
+  console.log('[Auth0] Using domain:', rawDomain);
+} else {
   // eslint-disable-next-line no-console
   console.warn('[Auth0] Missing AUTH0_DOMAIN (runtimeConfig or VITE_AUTH0_DOMAIN).');
-} else {
-  console.log('[Auth0] Using domain:', rawDomain);
 }
-if (!clientId) {
+if (clientId) {
   // eslint-disable-next-line no-console
-  console.warn('[Auth0] Missing AUTH0_CLIENT_ID (runtimeConfig or VITE_AUTH0_CLIENT_ID).');
+  console.log('[Auth0] Using clientId:', clientId);
 }
-if (!audience) {
+if (audience) {
+  // eslint-disable-next-line no-console
+  console.log('[Auth0] Using audience:', audience);
+} else {
   // eslint-disable-next-line no-console
   console.warn('[Auth0] Missing AUTH0_AUDIENCE (runtimeConfig or VITE_AUTH0_AUDIENCE). Tokens may be unusable for the API.');
 }
