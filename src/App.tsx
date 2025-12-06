@@ -9,15 +9,15 @@ import { AxiosQueryClientProvider } from './service/api/query';
 
 // Resolve runtime + build-time environment values
 const runtime: any = (globalThis as any).runtimeConfig || {};
-const domain = runtime.AUTH0_DOMAIN || import.meta.env.VITE_AUTH0_DOMAIN || '';
+const rawDomain = runtime.AUTH0_DOMAIN || import.meta.env.VITE_AUTH0_DOMAIN || '';
 const clientId = runtime.AUTH0_CLIENT_ID || import.meta.env.VITE_AUTH0_CLIENT_ID || '';
 const audience = runtime.AUTH0_AUDIENCE || import.meta.env.VITE_AUTH0_AUDIENCE || '';
 
-if (!domain) {
+if (!rawDomain) {
   // eslint-disable-next-line no-console
   console.warn('[Auth0] Missing AUTH0_DOMAIN (runtimeConfig or VITE_AUTH0_DOMAIN).');
 } else {
-  console.log('[Auth0] Using domain:', domain);
+  console.log('[Auth0] Using domain:', rawDomain);
 }
 if (!clientId) {
   // eslint-disable-next-line no-console
@@ -32,7 +32,7 @@ function App() : React.ReactElement {
   return (
     <Container sx={{ height: '100vh' }}>
       <Auth0Provider
-        domain={domain}
+        domain={`https://${rawDomain}`}
         clientId={clientId}
         authorizationParams={{
           redirect_uri: globalThis.location.origin,
