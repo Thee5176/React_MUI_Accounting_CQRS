@@ -60,7 +60,7 @@ export default function NavDrawer({ drawerWidth }: { readonly drawerWidth: numbe
       {drawer}
       {isAuthenticated ? (
         <Button onClick={() => logout(
-          { logoutParams: { returnTo: `${base_url}/authentication`} }
+          { logoutParams: { returnTo: `${base_url}/authorize`} }
         )}>Logout</Button>
       ) : (
         <Button onClick={() => loginWithRedirect()}>Login</Button>

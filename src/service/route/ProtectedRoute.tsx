@@ -8,7 +8,7 @@ export interface ProtectedPathProps {
     readonly redirectPath?: string;
 }
 
-export default function ProtectedRoute({ children, redirectPath="/authentication" } : ProtectedPathProps) {
+export default function ProtectedRoute({ children, redirectPath="/authorize" } : ProtectedPathProps) {
     const {isAuthenticated, isLoading, error} = useAuth0();
   
     if (isLoading) {

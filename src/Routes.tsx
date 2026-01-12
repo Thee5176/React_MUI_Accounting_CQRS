@@ -40,7 +40,7 @@ export const routes = createBrowserRouter([
         ),
       },
 
-      { path: "/authentication", element: <LoginRedirectPage /> },
+      { path: "/authorize", element: <LoginRedirectPage /> },
       
       /**
        * @deprecated Redirect to Auth0-provided UI instead
