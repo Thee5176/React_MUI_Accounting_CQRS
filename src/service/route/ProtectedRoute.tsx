@@ -1,17 +1,24 @@
-import { useCookies } from "react-cookie";
-import { Navigate } from "react-router-dom";
+import { withAuthenticationRequired } from "@auth0/auth0-react";
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
 
-export interface ProtectedPathProps {
-    children: React.ReactElement;
-    redirectPath?: string;
+export interface ProtectedRouteProps {
+    component: React.ComponentType<any>;
 }
 
-export default function ProtectedRoute({ children, redirectPath="/auth/login" } : ProtectedPathProps) {
-    const [cookies, , ] = useCookies(['token']);
-  
-    if (!cookies.token) {
-        return <Navigate to={redirectPath} replace/>;
-    }
+const LoadingComponent = () => (
+    <Backdrop
+        sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
+        open={true}
+    >
+        <CircularProgress color="inherit" />
+    </Backdrop>
+);
 
-  return children;
+export const ProtectedRoute = ({ component }: ProtectedRouteProps) => {
+    const Component = withAuthenticationRequired(component, {
+        onRedirecting: LoadingComponent,
+    });
+    
+    return <Component />;
 };

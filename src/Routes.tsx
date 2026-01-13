@@ -3,11 +3,10 @@ import Layout from "./Layout";
 import FinancialStatementPage from "./pages/FinancialStatementPage";
 import LedgerEntryForm from "./pages/LedgerEntryForm";
 import GeneralLedgerView from "./pages/LedgerReportView";
-import LoginPage from "./pages/LoginPage";
+import LoginRedirectPage from "./pages/LoginRedirectPage";
 import NotFoundPage from "./pages/NotFoundPage";
-import SignUpPage from "./pages/SignUpPage";
-import ProtectedRoute from "./service/route/ProtectedRoute";
-// Import required hooks and components for authentication
+import { ProtectedRoute } from "./service/route/ProtectedRoute";
+
 export const routes = createBrowserRouter([
   {
     path: "/",
@@ -17,29 +16,29 @@ export const routes = createBrowserRouter([
       {
         path: "/form",
         element: (
-          <ProtectedRoute>
-            <LedgerEntryForm />
-          </ProtectedRoute>
+          <ProtectedRoute component={LedgerEntryForm} />
         ),
       },
       {
         path: "/",
         element: (
-          <ProtectedRoute>
-            <GeneralLedgerView />
-          </ProtectedRoute>
+          <ProtectedRoute component={GeneralLedgerView} />
         ),
       },
       {
         path: "/report",
         element: (
-          <ProtectedRoute>
-            <FinancialStatementPage />
-          </ProtectedRoute>
+          <ProtectedRoute component={FinancialStatementPage} />
         ),
       },
-      { path: "/auth/login", element: <LoginPage /> },
-      { path: "/auth/register", element: <SignUpPage /> },
+
+      { path: "/login", element: <LoginRedirectPage /> },
+      
+      /**
+       * @deprecated Redirect to Auth0-provided UI instead
+      */
+      // { path: "/auth/login", element: <LoginPage /> },
+      // { path: "/auth/register", element: <SignUpPage /> },
     ],
   },
 ]);

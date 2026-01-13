@@ -1,15 +1,16 @@
+import { useAuth0 } from "@auth0/auth0-react";
 import type { AxiosError, AxiosResponse } from "axios";
 import { useEffect } from "react";
 import { axiosCommandClient } from ".";
-import { useAuth } from "../../hooks/auth/useAuth";
 
 //Config Command API Endpoint
 export function AxiosCommandClientProvider({children}: {readonly children: React.ReactNode}) {
-  const { isAuthenticated, token, logout } = useAuth();
-
+  const { isAuthenticated, getAccessTokenSilently } = useAuth0();
   useEffect(() => {
-    const requestCommandInterceptor = axiosCommandClient.interceptors.request.use((config) => {
+    const requestCommandInterceptor = axiosCommandClient.interceptors.request.use(async (config) => {
       if (isAuthenticated) {
+        const token = await getAccessTokenSilently();
+        console.log("Command Token:", token);
         config.headers.Authorization = `Bearer ${token}`;
       } else {
         console.log("Command : No token available for authorization"); //Message
@@ -26,11 +27,9 @@ export function AxiosCommandClientProvider({children}: {readonly children: React
           switch (error.response?.status) {
             case 401:
               console.log("Unauthorized: Token invalid or expired"); //Message
-              logout();
               break;
             case 403:
               console.log("Forbidden: Access denied"); //Message
-              logout();
               break;
 
             default:
@@ -45,7 +44,7 @@ export function AxiosCommandClientProvider({children}: {readonly children: React
       axiosCommandClient.interceptors.response.eject(responseCommandInterceptor)
     }
 
-  }, [isAuthenticated, token, logout])
+  }, [isAuthenticated, getAccessTokenSilently])
   
   return (<>{children}</>)
 }

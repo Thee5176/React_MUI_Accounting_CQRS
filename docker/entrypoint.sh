@@ -1,24 +1,28 @@
 #!/bin/sh
 set -e
 
-# Location where static files are served from (adjust if different)
 APP_DIR=/app/dist
 CONFIG_FILE="$APP_DIR/config.js"
 
-# Create config.js dynamically from environment variables
-cat > "$CONFIG_FILE" <<'EOF'
-window.runtimeConfig = {
-  VITE_HOST_IP: "$VITE_HOST_IP",
-  VITE_COMMAND_PORT: "$VITE_COMMAND_PORT",
-  VITE_QUERY_PORT: "$VITE_QUERY_PORT"
+RAW_DOMAIN="${AUTH0_DOMAIN}" || true
+STRIPPED_DOMAIN="${RAW_DOMAIN#https://}"
+STRIPPED_DOMAIN="${STRIPPED_DOMAIN#http://}"
+STRIPPED_DOMAIN="${STRIPPED_DOMAIN%/}"
+
+cat > "$CONFIG_FILE" <<EOF
+// Generated at container start; do not commit secrets.
+globalThis.runtimeConfig = {
+  AUTH0_DOMAIN: "${STRIPPED_DOMAIN}",
+  AUTH0_CLIENT_ID: "${AUTH0_CLIENT_ID}",
+  AUTH0_AUDIENCE: "${AUTH0_AUDIENCE}",
+  GENERATED_AT: "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 };
 EOF
 
-# Fallback defaults if variables are empty
-sed -i 's/VITE_HOST_IP: ""/VITE_HOST_IP: "localhost"/' "$CONFIG_FILE"
-[ -z "$VITE_COMMAND_PORT" ] && sed -i 's/VITE_COMMAND_PORT: ""/VITE_COMMAND_PORT: "8181"/' "$CONFIG_FILE"
-[ -z "$VITE_QUERY_PORT" ] && sed -i 's/VITE_QUERY_PORT: ""/VITE_QUERY_PORT: "8182"/' "$CONFIG_FILE"
-
 echo "Generated runtime config.js:" && cat "$CONFIG_FILE"
+
+[ -z "$STRIPPED_DOMAIN" ] && echo "[WARN] AUTH0_DOMAIN not set; login will fail." || true
+[ -z "$AUTH0_CLIENT_ID" ] && echo "[WARN] AUTH0_CLIENT_ID not set; login will fail." || true
+[ -z "$AUTH0_AUDIENCE" ] && echo "[WARN] AUTH0_AUDIENCE not set; API calls may fail." || true
 
 exec "$@"
