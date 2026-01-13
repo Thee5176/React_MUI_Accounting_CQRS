@@ -1,12 +1,12 @@
 import { FormControl, InputLabel, OutlinedInput } from "@mui/material";
 import { Controller, useFormContext } from "react-hook-form";
-import type { LedgerEntry } from "../../../pages/LedgerEntryForm";
+import type { LedgerEntry } from "../FormUtils";
 
 export default function DescriptionField() {
     const { control } = useFormContext<LedgerEntry>();
     
     return (
-        <FormControl sx={{py:3}}>
+        <FormControl >
             <InputLabel htmlFor='description'>
                 Description
             </InputLabel>

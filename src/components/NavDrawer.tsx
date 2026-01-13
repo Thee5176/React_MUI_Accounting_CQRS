@@ -1,5 +1,7 @@
+import { useAuth0 } from "@auth0/auth0-react";
 import DvrIcon from "@mui/icons-material/Dvr";
 import EditNoteIcon from "@mui/icons-material/EditNote";
+import SummarizeIcon from '@mui/icons-material/Summarize';
 import Button from "@mui/material/Button";
 import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
@@ -7,11 +9,9 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import { useCookies } from "react-cookie";
 import { Link } from "react-router-dom";
-import { useProvideAuth } from "../hooks/auth";
 
-export default function NavDrawer({ drawerWidth }: { drawerWidth: number }) {
+export default function NavDrawer({ drawerWidth }: { readonly drawerWidth: number }) {
   
   type MenuItem = {
     path: string;
@@ -20,8 +20,9 @@ export default function NavDrawer({ drawerWidth }: { drawerWidth: number }) {
   };
 
   const menuItems: MenuItem[] = [
-    { path: "/", name: "General Ledger", icon: DvrIcon },
+    { path: "/", name: "Accounting Ledger", icon: DvrIcon },
     { path: "/form", name: "Record Transaction", icon: EditNoteIcon },
+    { path: "/report", name: "Financial Statement", icon: SummarizeIcon },
   ];
 
   const drawer = (
@@ -37,9 +38,9 @@ export default function NavDrawer({ drawerWidth }: { drawerWidth: number }) {
     </List>
   );
 
-  const [cookies, , ] = useCookies(['token']);
-  const login_status : boolean = cookies.token;
-  const {login, logout} = useProvideAuth();
+  const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
+
+  const base_url = globalThis.location.origin;
 
   return (
     <Drawer
@@ -57,10 +58,12 @@ export default function NavDrawer({ drawerWidth }: { drawerWidth: number }) {
       open
     >
       {drawer}
-      {login_status ? (
-        <Button onClick={logout}>Logout</Button>
+      {isAuthenticated ? (
+        <Button onClick={() => logout(
+          { logoutParams: { returnTo: `${base_url}/authorize`} }
+        )}>Logout</Button>
       ) : (
-        <Button onClick={() => login()}>Login</Button>
+        <Button onClick={() => loginWithRedirect()}>Login</Button>
       )}
     </Drawer>
   );

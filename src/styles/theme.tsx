@@ -47,6 +47,29 @@ const theme = createTheme({
   },
   typography: {
     fontFamily: "roboto",
+    // Bump the base font size slightly (default ~14); this scales rem-based variants
+    fontSize: 15,
+  },
+  components: {
+    MuiTableCell: {
+      styleOverrides: {
+        // Body cells
+        root: {
+          fontSize: '0.95rem',
+        },
+        // Header cells
+        head: {
+          fontSize: '1rem',
+          fontWeight: 600,
+        },
+      },
+    },
+    // Optional: make tables a bit roomier globally
+    MuiTable: {
+      defaultProps: {
+        size: 'medium',
+      },
+    },
   },
 });
 

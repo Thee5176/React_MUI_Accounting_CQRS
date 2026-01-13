@@ -1,7 +1,7 @@
 import Card from "@mui/material/Card";
 import Container from "@mui/material/Container";
 
-export default function AuthLayout({children} : {children: React.ReactNode}) {
+export default function AuthLayout({children} : {readonly children: React.ReactNode}) {
 
   return (
     <Container 

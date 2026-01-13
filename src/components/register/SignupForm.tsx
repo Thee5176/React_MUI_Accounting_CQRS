@@ -1,8 +1,11 @@
+import Alert from "@mui/material/Alert";
+import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import CircularProgress from "@mui/material/CircularProgress";
 import FormGroup from "@mui/material/FormGroup";
 import { useEffect } from "react";
 import { FormProvider, useForm, type SubmitHandler } from "react-hook-form";
-import { useProvideAuth } from "../../hooks/auth";
+import { useAuth } from "../../hooks/auth/useAuth";
 import SetEmailField from "./EmailField";
 import SetFirstNameField from "./FirstNameField";
 import SetLastNameField from "./LastNameField";
@@ -19,7 +22,7 @@ export interface CreateUser{
 };
 
 export default function SignUpForm(){ 
-      const {signup} = useProvideAuth();
+      const {signup, authState, clearMessages} = useAuth();
       const formContext = useForm<CreateUser>();
 
       const {
@@ -29,9 +32,8 @@ export default function SignUpForm(){
       } = formContext;
     
       const onSubmit: SubmitHandler<CreateUser> = async (data: CreateUser) => {
-        const result = await signup(data);
-        console.log(data);
-        console.log(result);
+        clearMessages();
+        await signup(data);
       };
 
       // Reset form after submission
@@ -51,15 +53,46 @@ export default function SignUpForm(){
       <FormProvider  {...formContext}>
           <form onSubmit={handleSubmit(onSubmit)}>
               <FormGroup>
+                  {authState.error && (
+                    <Alert severity="error" sx={{ mb: 2 }}>
+                      {authState.error}
+                    </Alert>
+                  )}
+                  {authState.success && (
+                    <Alert severity="success" sx={{ mb: 2 }}>
+                      {authState.success}
+                    </Alert>
+                  )}
+                  
                   <SetFirstNameField />
                   <SetLastNameField />
                   <SetUserNameField />
                   <SetPasswordField />
                   <SetEmailField />
 
-                  <Button type="submit" variant="contained" sx={{ my : 2 }}>
-                  Create Account
-                  </Button>
+                  <Box sx={{ position: 'relative' }}>
+                    <Button 
+                      type="submit" 
+                      variant="contained" 
+                      sx={{ my: 2 }}
+                      disabled={authState.isLoading}
+                      fullWidth
+                    >
+                      {authState.isLoading ? 'Creating Account...' : 'Create Account'}
+                    </Button>
+                    {authState.isLoading && (
+                      <CircularProgress
+                        size={24}
+                        sx={{
+                          position: 'absolute',
+                          top: '50%',
+                          left: '50%',
+                          marginTop: '-12px',
+                          marginLeft: '-12px',
+                        }}
+                      />
+                    )}
+                  </Box>
               </FormGroup>
           </form>
       </FormProvider>

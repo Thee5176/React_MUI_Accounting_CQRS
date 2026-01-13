@@ -4,13 +4,13 @@ import Button from "@mui/material/Button";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import { useFieldArray, useFormContext } from "react-hook-form";
-import type { LedgerEntry } from "../../../../pages/LedgerEntryForm";
-import ErrorAlert from "../../ErrorAlert";
-import AmountField from "./AmountField";
-import BalanceTypeField from "./BalanceTypeField";
-import CoaField from "./CoaField";
+import ErrorAlert from "../ErrorAlert";
+import AmountField from "../FormFields/AmountField";
+import BalanceTypeField from "../FormFields/BalanceTypeField";
+import CoaField from "../FormFields/CoaField";
+import type { LedgerEntry } from "../FormUtils";
 
-export default function LedgerItemInputRow() {
+export default function InputRow() {
   const {
     control,
     formState: { errors },
@@ -28,7 +28,7 @@ export default function LedgerItemInputRow() {
 
   // Add new row with unique index
   const insertLedgerItemForm = () => {
-    append({ coa: "", amount:0, balanceType:"Debit"});
+    append({ coa: 0, amount:0, balanceType:""});
   };
 
   return (
@@ -40,9 +40,11 @@ export default function LedgerItemInputRow() {
               onClick={() => {
                 remove(index);
               }}
-              disabled={fields.length === 1}
+              disabled={fields.length <= 2}
             >
-              <RemoveCircleOutlineIcon color="error" />
+              <RemoveCircleOutlineIcon
+                color={fields.length <= 2 ? "disabled" : "error"}
+              />
             </Button>
           </TableCell>
           <TableCell>
@@ -51,19 +53,21 @@ export default function LedgerItemInputRow() {
           </TableCell>
           <TableCell>
             <AmountField insertIndex={index} />
-            <ErrorAlert message={errors.ledgerItems?.[index]?.amount?.message} />
+            <ErrorAlert
+              message={errors.ledgerItems?.[index]?.amount?.message}
+            />
           </TableCell>
           <TableCell>
-            <BalanceTypeField
-              insertIndex={index}
-            />
+            <BalanceTypeField insertIndex={index} />
+              <ErrorAlert message={errors.ledgerItems ? "Double Check the Dr/Cr" : ""}
+              />
           </TableCell>
         </TableRow>
       ))}
       <TableRow>
         <TableCell colSpan={4} align="center">
           <Button onClick={insertLedgerItemForm}>
-            <AddCircle color="primary"/>
+            <AddCircle color="primary" />
           </Button>
         </TableCell>
       </TableRow>

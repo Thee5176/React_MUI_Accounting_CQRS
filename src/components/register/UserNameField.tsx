@@ -8,7 +8,7 @@ export default function SetUserNameField() {
         name="username"
         control={control}
         render={({ field }) => (
-          <TextField {...field} label="User Name" variant="outlined" />
+          <TextField {...field} label="Username" variant="outlined" />
         )}
       />
     );

@@ -1,9 +1,9 @@
 import { OutlinedInput } from '@mui/material';
 import FormControl from '@mui/material/FormControl';
 import { Controller, useFormContext } from 'react-hook-form';
-import type { LedgerEntry } from '../../../../pages/LedgerEntryForm';
+import type { LedgerEntry } from '../FormUtils';
 
-export default function AmountField({ insertIndex }: { insertIndex: number }) {
+export default function AmountField({ insertIndex }: { readonly insertIndex: number }) {
   const { control } = useFormContext<LedgerEntry>();
 
   return (
@@ -20,7 +20,7 @@ export default function AmountField({ insertIndex }: { insertIndex: number }) {
             {...field}
             type="number"
             autoComplete="amount"
-            onChange={(e) => field.onChange(parseFloat(e.target.value))}
+            onChange={(e) => field.onChange(Number.parseFloat(e.target.value))}
           />
         )}
       />

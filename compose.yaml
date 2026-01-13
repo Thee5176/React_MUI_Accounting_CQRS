@@ -1,6 +1,7 @@
 services:
   test_frontend_service:
-    build: .
+    build: 
+      context: .
     container_name: test_react_mui_cqrs
     develop:
       watch:

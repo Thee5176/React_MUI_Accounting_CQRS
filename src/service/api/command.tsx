@@ -1,47 +1,50 @@
+import { useAuth0 } from "@auth0/auth0-react";
 import type { AxiosError, AxiosResponse } from "axios";
 import { useEffect } from "react";
-import { useCookies } from "react-cookie";
 import { axiosCommandClient } from ".";
 
 //Config Command API Endpoint
-export function AxiosCommandClientProvider({children}: {children: React.ReactNode}) {
-  const [cookies, , resetCookies] = useCookies(['token']);
-  
+export function AxiosCommandClientProvider({children}: {readonly children: React.ReactNode}) {
+  const { isAuthenticated, getAccessTokenSilently } = useAuth0();
   useEffect(() => {
-    // const accessToken = cookies.token
-    const requestInterceptor = axiosCommandClient.interceptors.request.use((config) => {
-      const accessToken = cookies.token;
-      if (accessToken) {
-        config.headers.Authorization = `Bearer ${accessToken}`;
-        console.log("Command : Token set to Authorize Header");
+    const requestCommandInterceptor = axiosCommandClient.interceptors.request.use(async (config) => {
+      if (isAuthenticated) {
+        const token = await getAccessTokenSilently();
+        console.log("Command Token:", token);
+        config.headers.Authorization = `Bearer ${token}`;
+      } else {
+        console.log("Command : No token available for authorization"); //Message
       }
       return config;
       }
     )
 
-    const responseInterceptor = axiosCommandClient.interceptors.response.use(
+    const responseCommandInterceptor = axiosCommandClient.interceptors.response.use(
       (response: AxiosResponse) => {
         return response;
       },
       (error: AxiosError) => {
-        switch (error.response?.status) {
-        case 403:
-          resetCookies('token');
-          window.location.href = "/auth/login";
-          break;
-        default:
-          break;
-        }
+          switch (error.response?.status) {
+            case 401:
+              console.log("Unauthorized: Token invalid or expired"); //Message
+              break;
+            case 403:
+              console.log("Forbidden: Access denied"); //Message
+              break;
+
+            default:
+              break;
+          }
         return Promise.reject(error);
       }
     )
 
     return () => {
-      axiosCommandClient.interceptors.request.eject(requestInterceptor)
-      axiosCommandClient.interceptors.response.eject(responseInterceptor)
+      axiosCommandClient.interceptors.request.eject(requestCommandInterceptor)
+      axiosCommandClient.interceptors.response.eject(responseCommandInterceptor)
     }
 
-  }, [cookies, resetCookies])
+  }, [isAuthenticated, getAccessTokenSilently])
   
   return (<>{children}</>)
 }

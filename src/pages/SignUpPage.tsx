@@ -3,6 +3,11 @@ import { Link } from "react-router-dom";
 import SignUpForm from "../components/register/SignupForm";
 import AuthLayout from "../layout/user";
 
+/**
+ * 
+ * @deprecated use Auth0-provided UI instead
+ */
+
 export default function SignUpPage() {
 
     return (
