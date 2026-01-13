@@ -12,7 +12,7 @@ ENV AUTH0_AUDIENCE=${AUTH0_AUDIENCE}
 
 WORKDIR /build
 COPY package*.json ./
-RUN npm ci
+RUN npm ci && npm cache clean --force
 COPY . .
 RUN npm run build
 
