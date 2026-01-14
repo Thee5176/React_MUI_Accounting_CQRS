@@ -40,7 +40,6 @@ function App() : React.ReactElement {
         authorizationParams={{
           redirect_uri: globalThis.location.origin,
           audience: audience,
-          scope: "openid profile email"
         }}
         cacheLocation="memory"
         useRefreshTokens
