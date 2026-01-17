@@ -41,7 +41,7 @@ function App() : React.ReactElement {
           redirect_uri: globalThis.location.origin,
           audience: audience,
         }}
-        cacheLocation="memory"
+        cacheLocation="localstorage"
         useRefreshTokens
       >
       <ProvideAuth>

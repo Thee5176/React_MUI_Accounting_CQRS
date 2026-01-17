@@ -5,13 +5,23 @@ import { axiosCommandClient } from ".";
 
 //Config Command API Endpoint
 export function AxiosCommandClientProvider({children}: {readonly children: React.ReactNode}) {
-  const { isAuthenticated, getAccessTokenSilently } = useAuth0();
+  const { isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
   useEffect(() => {
     const requestCommandInterceptor = axiosCommandClient.interceptors.request.use(async (config) => {
-      if (isAuthenticated) {
-        const token = await getAccessTokenSilently();
-        console.log("Command Token:", token);
-        config.headers.Authorization = `Bearer ${token}`;
+      if (isAuthenticated && !isLoading) {
+        try {
+          const token = await getAccessTokenSilently({ 
+            timeoutInSeconds: 10 
+          });
+          console.log("Command Token:", token);
+          config.headers.Authorization = `Bearer ${token}`;
+        } catch (error) {
+          console.error("Command: Failed to get token", error);
+          throw new Error("Failed to acquire Auth0 token");
+        }
+      } else if (isLoading) {
+        console.log("Command: Auth0 is still loading, deferring request");
+        throw new Error("Auth0 is still initializing");
       } else {
         console.log("Command : No token available for authorization"); //Message
       }
@@ -44,7 +54,7 @@ export function AxiosCommandClientProvider({children}: {readonly children: React
       axiosCommandClient.interceptors.response.eject(responseCommandInterceptor)
     }
 
-  }, [isAuthenticated, getAccessTokenSilently])
+  }, [isAuthenticated, isLoading, getAccessTokenSilently])
   
   return (<>{children}</>)
 }

@@ -28,5 +28,10 @@ export const ProtectedRoute = ({ component: Component }: ProtectedPathProps) => 
         return <Navigate to="/login" replace />;
     }
 
-    return isAuthenticated ? <Component /> : <Navigate to="/login" replace/>;
+    if (!isAuthenticated) {
+        return <Navigate to="/login" replace/>;
+    }
+
+    // Render component only after Auth0 is fully loaded and authenticated
+    return <Component />;
 };

@@ -14,15 +14,15 @@ export const routes = createBrowserRouter([
     errorElement: <NotFoundPage />,
     children: [
       {
-        path: "/form",
-        element: (
-          <ProtectedRoute component={LedgerEntryForm} />
-        ),
-      },
-      {
         path: "/",
         element: (
           <ProtectedRoute component={GeneralLedgerView} />
+        ),
+      },
+      {
+        path: "/form",
+        element: (
+          <ProtectedRoute component={LedgerEntryForm} />
         ),
       },
       {

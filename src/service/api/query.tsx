@@ -5,14 +5,24 @@ import { axiosQueryClient } from ".";
 
 //Config Query API Endpoint
 export function AxiosQueryClientProvider({children}: {readonly children: React.ReactNode}) {
-  const { isAuthenticated, getAccessTokenSilently } = useAuth0();
+  const { isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
     
   useEffect(() => {
       const requestQueryInterceptor = axiosQueryClient.interceptors.request.use(async (config) => {
-            if (isAuthenticated) {
-              const token = await getAccessTokenSilently();
-              console.log("Query Token:", token);
-              config.headers.Authorization = `Bearer ${token}`;
+            if (isAuthenticated && !isLoading) {
+              try {
+                const token = await getAccessTokenSilently({ 
+                  timeoutInSeconds: 10 
+                });
+                console.log("Query Token:", token);
+                config.headers.Authorization = `Bearer ${token}`;
+              } catch (error) {
+                console.error("Query: Failed to get token", error);
+                throw new Error("Failed to acquire Auth0 token");
+              }
+            } else if (isLoading) {
+              console.log("Query: Auth0 is still loading, deferring request");
+              throw new Error("Auth0 is still initializing");
             } else {
               console.log("Query : No token available for authorization"); //Message
             }
@@ -45,7 +55,7 @@ export function AxiosQueryClientProvider({children}: {readonly children: React.R
             axiosQueryClient.interceptors.response.eject(responseQueryInterceptor)
           }
       
-        }, [isAuthenticated, getAccessTokenSilently])
+        }, [isAuthenticated, isLoading, getAccessTokenSilently])
 
   return(<>{children}</>);
 }
