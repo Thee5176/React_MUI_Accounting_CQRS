@@ -32,7 +32,9 @@ export const routes = createBrowserRouter([
         ),
       },
 
-      { path: "/login", element: <LoginRedirectPage /> },
+      { path: "/login", 
+        element: <LoginRedirectPage /> 
+      },
       
       /**
        * @deprecated Redirect to Auth0-provided UI instead

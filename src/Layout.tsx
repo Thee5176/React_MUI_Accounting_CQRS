@@ -5,7 +5,7 @@ import NavDrawer from "./components/NavDrawer";
 
 export default function Layout() {
     const path : Location = useLocation();
-    const isAuthPath : boolean = path.pathname.startsWith("/auth");
+    const isAuthPath : boolean = path.pathname.startsWith("/login");
 
     const drawerWidth: number = isAuthPath ? 0 : 240;
 
