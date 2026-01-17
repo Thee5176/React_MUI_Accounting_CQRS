@@ -33,7 +33,7 @@ export const routes = createBrowserRouter([
       },
 
       { path: "/login", 
-        element: <LoginRedirectPage /> 
+        element: <LoginRedirectPage />
       },
       
       /**

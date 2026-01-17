@@ -42,7 +42,7 @@ function App() : React.ReactElement {
           audience: audience,
         }}
         cacheLocation="localstorage"
-        useRefreshTokens
+        useRefreshTokens={true}
       >
       <ProvideAuth>
         <AxiosCommandClientProvider>
