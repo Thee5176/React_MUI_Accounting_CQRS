@@ -13,10 +13,34 @@ const sendLedgerEntry = async (data: LedgerEntry) => {
   }
 };
 
+const updateLedgerEntry = async (data: LedgerEntry) => {
+  try {
+    const response = await axiosCommandClient.put("/ledger", data);
+    console.log(response.status);
+    return response.data;
+  } catch (error) {
+    console.error("Failed to update ledger entry data:", error);
+    throw error;
+  }
+};
+
+export const deleteLedgerEntry = async (uuid: string) => {
+  try {
+    const response = await axiosCommandClient.delete("/ledger", {
+      params: { uuid },
+    });
+    console.log(response.status);
+    return response.data;
+  } catch (error) {
+    console.error("Failed to delete ledger entry:", error);
+    throw error;
+  }
+};
+
 export const onSubmit: SubmitHandler<LedgerEntry> = async (
   data: LedgerEntry
 ) => {
-  // Add id and timestamp to the data
+  // Add timestamp to the data
   data.timestamp = new Date().toISOString();
 
   // Adjust null and fix ledgeritem order
@@ -27,8 +51,13 @@ export const onSubmit: SubmitHandler<LedgerEntry> = async (
       id: idx + 1,
     }));
 
-  const result = await sendLedgerEntry(data);
-  console.log(result);
+  if (data.id) {
+    const result = await updateLedgerEntry(data);
+    console.log("Update result:", result);
+  } else {
+    const result = await sendLedgerEntry(data);
+    console.log("Create result:", result);
+  }
 };
 
 export const formInitialValue = {

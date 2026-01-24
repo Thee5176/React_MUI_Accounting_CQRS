@@ -37,6 +37,7 @@ export const fetchTransactions = async (
 
           return {
             id: `${idx}-${idy}`,
+            ledgerId: ledger.ledgerId,
             date: ledger.date,
             coa: item.coa,
             description: ledger.description,
