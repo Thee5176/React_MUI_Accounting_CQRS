@@ -11,8 +11,11 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import { Link } from "react-router-dom";
 
-export default function NavDrawer({ drawerWidth }: { readonly drawerWidth: number }) {
-  
+export default function NavDrawer({
+  drawerWidth,
+}: {
+  readonly drawerWidth: number;
+}) {
   type MenuItem = {
     path: string;
     name: string;
@@ -25,11 +28,33 @@ export default function NavDrawer({ drawerWidth }: { readonly drawerWidth: numbe
     { path: "/report", name: "Financial Statement", icon: SummarizeIcon },
   ];
 
+  const { isAuthenticated, user, loginWithRedirect, logout } = useAuth0();
+
+  const getCacheKey = () =>
+    user?.sub ? `myFormState_${user.sub}` : "myFormState";
+
+  const handleMenuClick = (path: string) => {
+    if (path === "/form") {
+      const cacheKey = getCacheKey();
+      const savedData = localStorage.getItem(cacheKey);
+      if (savedData) {
+        const parsed = JSON.parse(savedData);
+        if (parsed.id) {
+          localStorage.removeItem(cacheKey);
+        }
+      }
+    }
+  };
+
   const drawer = (
     <List>
       {menuItems.map((item, idx) => (
         <ListItem key={`${item.name}-${idx}`} disablePadding>
-          <ListItemButton component={Link} to={item.path}>
+          <ListItemButton
+            component={Link}
+            to={item.path}
+            onClick={() => handleMenuClick(item.path)}
+          >
             <ListItemIcon>{item.icon && <item.icon />}</ListItemIcon>
             <ListItemText primary={item.name} />
           </ListItemButton>
@@ -37,8 +62,6 @@ export default function NavDrawer({ drawerWidth }: { readonly drawerWidth: numbe
       ))}
     </List>
   );
-
-  const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
 
   const base_url = globalThis.location.origin;
 
@@ -59,9 +82,14 @@ export default function NavDrawer({ drawerWidth }: { readonly drawerWidth: numbe
     >
       {drawer}
       {isAuthenticated ? (
-        <Button onClick={() => logout(
-          { logoutParams: { returnTo: base_url} }
-        )}>Logout</Button>
+        <Button
+          onClick={() => {
+            localStorage.removeItem(getCacheKey());
+            logout({ logoutParams: { returnTo: base_url } });
+          }}
+        >
+          Logout
+        </Button>
       ) : (
         <Button onClick={() => loginWithRedirect()}>Login</Button>
       )}

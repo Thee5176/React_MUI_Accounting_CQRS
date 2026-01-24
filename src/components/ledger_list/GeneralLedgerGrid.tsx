@@ -8,6 +8,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { useNavigate } from "react-router-dom";
 import { deleteLedgerEntry } from "../ledger_form/EntryForm/FormUtils";
 import type { GridColDef } from "@mui/x-data-grid/models";
+import { useAuth0 } from "@auth0/auth0-react";
 
 export default function GeneralLedgerGrid({
   rows,
@@ -15,6 +16,9 @@ export default function GeneralLedgerGrid({
   loading,
 }: LedgerGridProps) {
   const navigate = useNavigate();
+  const { user } = useAuth0();
+
+  const getCacheKey = () => (user?.sub ? `myFormState_${user.sub}` : "myFormState");
 
   const handleEdit = (ledgerId: string) => {
     // Find the ledger data from rows. Since rows are flattened, we need the original ledger structure.
@@ -39,7 +43,7 @@ export default function GeneralLedgerGrid({
     };
 
     // Save to localStorage so MultiStepForm can pick it up
-    localStorage.setItem("myFormState", JSON.stringify(ledgerData));
+    localStorage.setItem(getCacheKey(), JSON.stringify(ledgerData));
     navigate("/form");
   };
 
@@ -47,6 +51,17 @@ export default function GeneralLedgerGrid({
     if (window.confirm("Are you sure you want to delete this ledger entry?")) {
       try {
         await deleteLedgerEntry(ledgerId);
+
+        // Clear cache if we are deleting the item being edited
+        const cacheKey = getCacheKey();
+        const savedData = localStorage.getItem(cacheKey);
+        if (savedData) {
+          const parsed = JSON.parse(savedData);
+          if (parsed.id === ledgerId) {
+            localStorage.removeItem(cacheKey);
+          }
+        }
+
         window.location.reload(); // Simple way to refresh data for now
       } catch (error) {
         alert("Failed to delete ledger entry");

@@ -1,3 +1,4 @@
+import { useAuth0 } from "@auth0/auth0-react";
 import Box from "@mui/material/Box";
 import FormGroup from "@mui/material/FormGroup";
 import Step from "@mui/material/Step";
@@ -16,12 +17,16 @@ import FormModal from "./FormModal";
 const labels = ["Entry Form", "Balance Review"];
 
 export default function MutiStepForm() {
+  const { user } = useAuth0();
+  const getCacheKey = () => (user?.sub ? `myFormState_${user.sub}` : "myFormState");
+
   //stepper
   const { activeStep, setActiveStep } = useStepper();
   const [openModal, setOpenModal] = useState<boolean>(false);
   const defaultValues = useMemo<LedgerEntry>(() => {
     try {
-      const savedData = localStorage.getItem("myFormState");
+      const cacheKey = getCacheKey();
+      const savedData = localStorage.getItem(cacheKey);
       if (savedData) {
         const parsed = JSON.parse(savedData) as Partial<LedgerEntry>;
 
@@ -37,7 +42,7 @@ export default function MutiStepForm() {
     } catch {
       return { ...formInitialValue } as LedgerEntry;
     }
-  }, []);
+  }, [user?.sub]); // Re-run if user changes
 
   //form
   const formContext = useForm<LedgerEntry>({
@@ -68,7 +73,7 @@ export default function MutiStepForm() {
     if (isSubmitSuccessful) {
       reset(formInitialValue);
       setOpenModal(true);
-      localStorage.removeItem("myFormState");
+      localStorage.removeItem(getCacheKey());
     }
   }, [reset, isSubmitSuccessful]);
 
@@ -76,13 +81,13 @@ export default function MutiStepForm() {
   useEffect(() => {
     const subscription = formContext.watch((value) => {
       try {
-        localStorage.setItem("myFormState", JSON.stringify(value));
+        localStorage.setItem(getCacheKey(), JSON.stringify(value));
       } catch {
         // ignore quota/serialization errors
       }
     });
     return () => subscription.unsubscribe();
-  }, [formContext]);
+  }, [formContext, user?.sub]);
 
   return (
     <>

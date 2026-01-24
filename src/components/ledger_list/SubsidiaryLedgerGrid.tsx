@@ -10,6 +10,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { useNavigate } from "react-router-dom";
 import { deleteLedgerEntry } from "../ledger_form/EntryForm/FormUtils";
 import type { GridColDef } from "@mui/x-data-grid/models";
+import { useAuth0 } from "@auth0/auth0-react";
 
 export default function SubsidiaryLedgerGrid({
   rows,
@@ -25,6 +26,9 @@ export default function SubsidiaryLedgerGrid({
   groupedRows: Map<number, GridRowsProp>;
 }) {
   const navigate = useNavigate();
+  const { user } = useAuth0();
+
+  const getCacheKey = () => (user?.sub ? `myFormState_${user.sub}` : "myFormState");
 
   const handleEdit = (ledgerId: string) => {
     const ledgerRows = rows.filter((r: any) => r.ledgerId === ledgerId);
@@ -43,7 +47,7 @@ export default function SubsidiaryLedgerGrid({
       timestamp: new Date().toISOString(),
     };
 
-    localStorage.setItem("myFormState", JSON.stringify(ledgerData));
+    localStorage.setItem(getCacheKey(), JSON.stringify(ledgerData));
     navigate("/form");
   };
 
@@ -51,7 +55,18 @@ export default function SubsidiaryLedgerGrid({
     if (window.confirm("Are you sure you want to delete this ledger entry?")) {
       try {
         await deleteLedgerEntry(ledgerId);
-        window.location.reload();
+
+        // Clear cache if we are deleting the item being edited
+        const cacheKey = getCacheKey();
+        const savedData = localStorage.getItem(cacheKey);
+        if (savedData) {
+          const parsed = JSON.parse(savedData);
+          if (parsed.id === ledgerId) {
+            localStorage.removeItem(cacheKey);
+          }
+        }
+
+        navigate("/");
       } catch (error) {
         alert("Failed to delete ledger entry");
       }
