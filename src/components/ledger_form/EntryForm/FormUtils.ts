@@ -49,6 +49,7 @@ export const onSubmit: SubmitHandler<LedgerEntry> = async (
     .map((item, idx) => ({
       ...item,
       id: idx + 1,
+      coa: Number(item.coa),
     }));
 
   if (data.id) {
